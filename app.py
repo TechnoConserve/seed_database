@@ -13,6 +13,24 @@ def hello_world():
     return 'Hello World!'
 
 
+@app.route('/institutions', methods=('GET', 'POST'))
+def institutions():
+    form = forms.InstitutionForm()
+    if form.validate_on_submit():
+        flash('Yay, Institution created!', 'success')
+        institute = models.Institution(
+            name=form.name.data,
+            address=form.address.data,
+            contact_name=form.contact_name.data,
+            contact_phone=form.contact_phone.data,
+            contact_phone_ext=form.contact_phone_ext.data,
+            contact_email=form.contact_email.data,
+            request_costs=form.request_costs.data
+        )
+        return redirect('/success')
+    return render_template('institutions.html', form=form)
+
+
 @app.route('/shipments', methods=('GET', 'POST'))
 def shipments():
     form = forms.ShipmentForm()

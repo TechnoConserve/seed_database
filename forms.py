@@ -1,6 +1,6 @@
-from flask_wtf import FlaskForm
-from wtforms import DateField, FloatField, SelectField, StringField
-from wtforms.validators import (DataRequired, ValidationError)
+from flask_wtf import Form
+from wtforms import DateField, FloatField, IntegerField, SelectField, StringField
+from wtforms.validators import (Email, InputRequired, ValidationError)
 
 from models import Shipping
 
@@ -21,57 +21,84 @@ def shipment_exists(field):
         raise ValidationError('Shipment with that tracking number already exists.')
 
 
-class ShipmentForm(FlaskForm):
+class InstitutionForm(Form):
+    name = StringField(
+        'Name',
+        validators=[InputRequired()]
+    )
+    address = StringField(
+        'Address',
+        validators=[InputRequired()]
+    )
+    contact_name = StringField(
+        'Contact Name'
+    )
+    contact_phone = IntegerField(
+        'Contact Phone'
+    )
+    contact_phone_ext = IntegerField(
+        'Contact Phone Extension'
+    )
+    contact_email = StringField(
+        'Contact Email',
+        validators=[Email()]
+    )
+    request_costs = StringField(
+        'Request Costs?'
+    )
+
+
+class ShipmentForm(Form):
     ship_date = DateField(
         'Shipment Date',
-        validators=[DataRequired()],
+        validators=[InputRequired()],
         format='%m-%d-%Y')
     tracking_num = StringField(
         'Tracking Number',
         validators=[
-            DataRequired(),
+            InputRequired(),
             shipment_exists
         ])
     tracking_num_comp = SelectField(
         'Company',
-        validators=[DataRequired()],
+        validators=[InputRequired()],
         choices=COMPANIES)
     amount_gr = FloatField(
         'Amount in grams',
-        validators=[DataRequired()])
+        validators=[InputRequired()])
     calc_by = SelectField(
         'Amount calculated by...',
-        validators=[DataRequired()],
+        validators=[InputRequired()],
         choices=[('ct', 'Counting'), ('wt', 'Weighed')])
     origin_institute_id = SelectField('Origin', coerce=int)
     destination_institute_id = SelectField('Destination', coerce=int)
     accession = SelectField('Accession', coerce=int)
 
 
-class SpeciesForm(FlaskForm):
+class SpeciesForm(Form):
     symbol = StringField(
         'Symbol',
-        validators=[DataRequired()]
+        validators=[InputRequired()]
     )
     name_full = StringField(
         'Full name',
-        validators=[DataRequired()]
+        validators=[InputRequired()]
     )
     common = StringField(
         'Common name',
-        validators=[DataRequired()]
+        validators=[InputRequired()]
     )
     family = StringField(
         'Family',
-        validators=[DataRequired()]
+        validators=[InputRequired()]
     )
     genus = StringField(
         'Genus',
-        validators=[DataRequired()]
+        validators=[InputRequired()]
     )
     species = StringField(
         'Species',
-        validators=[DataRequired()]
+        validators=[InputRequired()]
     )
     var_ssp1 = SelectField(
         'ssp / var',
