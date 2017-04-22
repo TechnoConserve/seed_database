@@ -14,7 +14,7 @@ def hello_world():
 
 
 @app.route('/shipments', methods=('GET', 'POST'))
-def shipment():
+def shipments():
     form = forms.ShipmentForm()
     form.origin_institute_id.choices = [
         (inst.id, inst.name) for inst in models.Institution.query.order_by('name')]
@@ -36,6 +36,27 @@ def shipment():
         )
         return redirect('/success')
     return render_template('shipments.html', form=form)
+
+
+@app.route('/species', methods=('GET', 'POST'))
+def species():
+    form = forms.SpeciesForm()
+    if form.validate_on_submit():
+        flash('Yay, Species created!', 'success')
+        species = models.Species(
+            symbol=form.symbol.data,
+            name_full=form.name_full.data,
+            common=form.common.data,
+            family=form.family.data,
+            genus=form.genus.data,
+            species=form.species.data,
+            var_ssp1=form.var_ssp1.data,
+            var_ssp2=form.var_ssp2.data,
+            plant_type=form.plant_type.data,
+            plant_duration=form.plant_duration
+        )
+        return redirect('/success')
+    return render_template('species.html', form=form)
 
 
 @app.route('/success')

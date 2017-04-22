@@ -5,6 +5,15 @@ from wtforms.validators import (DataRequired, ValidationError)
 from models import Shipping
 
 COMPANIES = [('fx', 'FedEx'), ('ups', 'UPS'), ('usps', 'USPS')]
+DURATION_CHOICES = [('ann', 'Annual'), ('per', 'Perennial'), ('bi', 'Biennial'), ('mon', 'Monocarpic')]
+TYPE_CHOICES = [
+    ('gram', 'Graminoid'),
+    ('forb', 'Forb/Herb'),
+    ('tree', 'Tree'),
+    ('shrub', 'Shrub'),
+    ('sub', 'Subshrub'),
+    ('vine', 'Vine'),
+]
 
 
 def shipment_exists(field):
@@ -37,3 +46,45 @@ class ShipmentForm(FlaskForm):
     origin_institute_id = SelectField('Origin', coerce=int)
     destination_institute_id = SelectField('Destination', coerce=int)
     accession = SelectField('Accession', coerce=int)
+
+
+class SpeciesForm(FlaskForm):
+    symbol = StringField(
+        'Symbol',
+        validators=[DataRequired()]
+    )
+    name_full = StringField(
+        'Full name',
+        validators=[DataRequired()]
+    )
+    common = StringField(
+        'Common name',
+        validators=[DataRequired()]
+    )
+    family = StringField(
+        'Family',
+        validators=[DataRequired()]
+    )
+    genus = StringField(
+        'Genus',
+        validators=[DataRequired()]
+    )
+    species = StringField(
+        'Species',
+        validators=[DataRequired()]
+    )
+    var_ssp1 = SelectField(
+        'ssp / var',
+        choices=[('ssp', 'ssp'), ('var', 'var')]
+    )
+    var_ssp2 = StringField(
+        'ssp / var name',
+    )
+    plant_type = SelectField(
+        'Type',
+        choices=TYPE_CHOICES
+    )
+    plant_duration = SelectField(
+        'Duration',
+        choices=DURATION_CHOICES
+    )
