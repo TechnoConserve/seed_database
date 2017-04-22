@@ -5,13 +5,8 @@ import forms
 import models
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cpnpp.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_pyfile('settings.cfg')
 app.app_context().push()
-
-DEBUG = True
-PORT = 8000
-HOST = '127.0.0.1'
 
 
 @app.route('/')
@@ -45,4 +40,4 @@ if __name__ == '__main__':
   models.db.init_app(app)
   models.db.create_all()
 
-  app.run(debug=DEBUG, host=HOST, port=PORT)
+  app.run()
