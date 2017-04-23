@@ -458,6 +458,9 @@ class Availability(db.Model):
     """
     The Availability table has a One-to-One relationship with the
     Accession table.
+    
+    The Availability table has a Many-to-One relationship with the
+    Institution table.
     """
     __tablename__ = 'availability'
 
@@ -478,12 +481,14 @@ class Availability(db.Model):
     sum_lb_no_grin = db.Column(db.Float)
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+    misc_avail_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
 
     accession = db.relationship('Accession', backref=db.backref('availability', uselist=False), uselist=False)
+    misc_avail_inst = db.relationship('Institution', backref=db.backref('availability', lazy='dynamic'), uselist=False)
 
     def __init__(
             self, grin_avail, bend_avail, cbg_avail, meeker_avail, misc_avail, ephraim_avail,
-            nau_avail, accession):
+            nau_avail, accession, misc_avail_inst):
 
         self.grin_avail = grin_avail
         self.bend_avail = bend_avail
@@ -493,6 +498,7 @@ class Availability(db.Model):
         self.ephraim_avail = ephraim_avail
         self.nau_avail = nau_avail
         self.accession = accession
+        self.misc_avail_inst = misc_avail_inst
 
         self.gr_avail = self.compute_gr_avail()
 

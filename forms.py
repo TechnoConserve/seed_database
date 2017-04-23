@@ -21,6 +21,38 @@ def shipment_exists(field):
         raise validators.ValidationError('Shipment with that tracking number already exists.')
 
 
+class AvailabilityForm(FlaskForm):
+    grin_avail = FloatField(
+        'GRIN Availability in Grams'
+    )
+    bend_avail = FloatField(
+        'Bend Availability in Grams'
+    )
+    cbg_avail = FloatField(
+        'Chicago Botanic Garden Availability in Grams'
+    )
+    meeker_avail = FloatField(
+        'Meeker Availability in Grams'
+    )
+    
+    """
+        grin_avail = db.Column(db.Float)
+    bend_avail = db.Column(db.Float)
+    cbg_avail = db.Column(db.Float)
+    meeker_avail = db.Column(db.Float)
+    misc_avail = db.Column(db.Float)
+    ephraim_avail = db.Column(db.Float)
+    nau_avail = db.Column(db.Float)
+    avail_any = db.Column(db.Boolean)
+    gr_avail = db.Column(db.Float)
+    lb_avail = db.Column(db.Float)
+    est_pls_avail = db.Column(db.Float)
+    avail_no_grin = db.Column(db.Boolean)
+    sum_gr_no_grin = db.Column(db.Float)
+    sum_lb_no_grin = db.Column(db.Float)
+    """
+
+
 class AccessionForm(FlaskForm):
     family = SelectField(
         'Family'
