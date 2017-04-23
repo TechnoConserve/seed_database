@@ -1,34 +1,202 @@
-from flask_wtf import Form
-from wtforms import DateField, FloatField, IntegerField, SelectField, StringField
-from wtforms.validators import (Email, InputRequired, ValidationError)
+from flask_wtf import FlaskForm
+from wtforms import DateField, FloatField, IntegerField, SelectField, StringField, TextAreaField
+from wtforms import validators
 
 from models import Shipping
 
-COMPANIES = [('fx', 'FedEx'), ('ups', 'UPS'), ('usps', 'USPS')]
-DURATION_CHOICES = [('ann', 'Annual'), ('per', 'Perennial'), ('bi', 'Biennial'), ('mon', 'Monocarpic')]
+COMPANIES = [('FedEx', 'FedEx'), ('UPS', 'UPS'), ('USPS', 'USPS')]
+DURATION_CHOICES = [('Annual', 'Annual'), ('Perennial', 'Perennial'), ('Biennial', 'Biennial'), ('Monocarpic', 'Monocarpic')]
 TYPE_CHOICES = [
-    ('gram', 'Graminoid'),
-    ('forb', 'Forb/Herb'),
-    ('tree', 'Tree'),
-    ('shrub', 'Shrub'),
-    ('sub', 'Subshrub'),
-    ('vine', 'Vine'),
+    ('Graminoid', 'Graminoid'),
+    ('Forb/Herb', 'Forb/Herb'),
+    ('Tree', 'Tree'),
+    ('Shrub', 'Shrub'),
+    ('Subshrub', 'Subshrub'),
+    ('Vine', 'Vine'),
 ]
 
 
 def shipment_exists(field):
     if Shipping.select().where(Shipping.tracking_num == field.data).exists():
-        raise ValidationError('Shipment with that tracking number already exists.')
+        raise validators.ValidationError('Shipment with that tracking number already exists.')
 
 
-class InstitutionForm(Form):
+class AccessionForm(FlaskForm):
+    family = SelectField(
+        'Family'
+    )
+    genus = SelectField(
+        'Genus'
+    )
+    species = SelectField(
+        'Species',
+        coerce=int
+    )
+    data_source = StringField(
+        'Data Source',
+        validators=[validators.length(max=30)]
+    )
+    plant_habit = SelectField(
+        'Plant Habit',
+        choices=TYPE_CHOICES,
+        validators=[validators.length(max=30)]
+    )
+    coll_date = DateField(
+        'Collection Date',
+        validators=[validators.InputRequired()]
+    )
+    acc_num = StringField(
+        'Accession Number',
+        validators=[validators.InputRequired(), validators.length(max=10)]
+    )
+    collected_with = StringField(
+        'Collectors',
+        validators=[validators.InputRequired(), validators.length(max=100)]
+    )
+    collection_misc = TextAreaField(
+        'Collection Miscellaneous',
+    )
+    seed_source = StringField(
+        'Seed Source',
+        validators=[validators.length(max=100)]
+    )
+    description = TextAreaField(
+        'Description',
+    )
+    notes = TextAreaField(
+        'Notes'
+    )
+    # Location Fields
+    phytoregion = StringField(
+        'Phytoregion Code',
+        validators=[validators.length(max=30)]
+    )
+    phytoregion_full = StringField(
+        'Phytoregion Full',
+        validators=[validators.length(max=50)]
+    )
+    locality = StringField(
+        'Locality',
+        validators=[validators.length(max=50)]
+    )
+    geog_area = StringField(
+        'Geographic Area',
+        validators=[validators.length(max=50)]
+    )
+    directions = TextAreaField(
+        'Directions',
+    )
+    degrees_n = IntegerField(
+        'Degrees North'
+    )
+    minutes_n = IntegerField(
+        'Minutes North'
+    )
+    seconds_n = IntegerField(
+        'Seconds North'
+    )
+    degrees_w = IntegerField(
+        'Degrees West'
+    )
+    minutes_w = IntegerField(
+        'Minutes West'
+    )
+    seconds_w = IntegerField(
+        'Seconds West'
+    )
+    latitute_decimal = FloatField(
+        'Latitude Decimal'
+    )
+    longitude_decimal = FloatField(
+        'Longitude Decimal'
+    )
+    georef_source = StringField(
+        'Source of Geographic Information',
+        validators=[validators.length(max=50)]
+    )
+    gps_datum = StringField(
+        'Datum',
+        validators=[validators.length(max=10)]
+    )
+    altitude = IntegerField(
+        'Altitude'
+    )
+    altitude_unit = SelectField(
+        'Unit',
+        choices=[('ft', 'Feet'), ('m', 'Meters')]
+    )
+    fo_name = StringField(
+        'Field Office Name',
+        validators=[validators.length(max=50)]
+    )
+    district_name = StringField(
+        'District Name',
+        validators=[validators.length(max=50)]
+    )
+    state = StringField(
+        'State',
+        validators=[validators.length(max=20)]
+    )
+    county = StringField(
+        'County',
+        validators=[validators.length(max=30)]
+    )
+    # Location Description Fields
+    land_owner = StringField(
+        'Land Owner',
+        validators=[validators.length(max=30)]
+    )
+    associated_taxa_full = TextAreaField(
+        'Associated Taxa'
+    )
+    mod = StringField(
+        'Modifying factors',
+        validators=[validators.length(max=200)]
+    )
+    mod2 = StringField(
+        'Additional Modifying Factors',
+        validators=[validators.length(max=200)]
+    )
+    geomorphology = StringField(
+        'Geomorphology',
+        validators=[validators.length(max=100)]
+    )
+    slope = StringField(
+        'Slope',
+        validators=[validators.length(max=30)]
+    )
+    aspect = StringField(
+        'Aspect',
+        validators=[validators.length(max=10)]
+    )
+    habitat = StringField(
+        'Habitat',
+        validators=[validators.length(max=100)]
+    )
+    geology = StringField(
+        'Geology',
+        validators=[validators.length(max=100)]
+    )
+    soil_type = StringField(
+        'Soil Type',
+        validators=[validators.length(max=100)]
+    )
+    population_size = IntegerField(
+        'Population Size'
+    )
+    occupancy = IntegerField(
+        'Occupancy'
+    )
+
+
+class InstitutionForm(FlaskForm):
     name = StringField(
         'Name',
-        validators=[InputRequired()]
+        validators=[validators.InputRequired()]
     )
     address = StringField(
         'Address',
-        validators=[InputRequired()]
+        validators=[validators.InputRequired()]
     )
     contact_name = StringField(
         'Contact Name'
@@ -41,64 +209,64 @@ class InstitutionForm(Form):
     )
     contact_email = StringField(
         'Contact Email',
-        validators=[Email()]
+        validators=[validators.Email()]
     )
     request_costs = StringField(
         'Request Costs?'
     )
 
 
-class ShipmentForm(Form):
+class ShipmentForm(FlaskForm):
     ship_date = DateField(
         'Shipment Date',
-        validators=[InputRequired()],
+        validators=[validators.InputRequired()],
         format='%m-%d-%Y')
     tracking_num = StringField(
         'Tracking Number',
         validators=[
-            InputRequired(),
+            validators.InputRequired(),
             shipment_exists
         ])
     tracking_num_comp = SelectField(
         'Company',
-        validators=[InputRequired()],
+        validators=[validators.InputRequired()],
         choices=COMPANIES)
     amount_gr = FloatField(
         'Amount in grams',
-        validators=[InputRequired()])
+        validators=[validators.InputRequired()])
     calc_by = SelectField(
         'Amount calculated by...',
-        validators=[InputRequired()],
+        validators=[validators.InputRequired()],
         choices=[('ct', 'Counting'), ('wt', 'Weighed')])
     origin_institute_id = SelectField('Origin', coerce=int)
     destination_institute_id = SelectField('Destination', coerce=int)
     accession = SelectField('Accession', coerce=int)
 
 
-class SpeciesForm(Form):
+class SpeciesForm(FlaskForm):
     symbol = StringField(
         'Symbol',
-        validators=[InputRequired()]
+        validators=[validators.InputRequired()]
     )
     name_full = StringField(
         'Full name',
-        validators=[InputRequired()]
+        validators=[validators.InputRequired()]
     )
     common = StringField(
         'Common name',
-        validators=[InputRequired()]
+        validators=[validators.InputRequired()]
     )
     family = StringField(
         'Family',
-        validators=[InputRequired()]
+        validators=[validators.InputRequired()]
     )
     genus = StringField(
         'Genus',
-        validators=[InputRequired()]
+        validators=[validators.InputRequired()]
     )
     species = StringField(
         'Species',
-        validators=[InputRequired()]
+        validators=[validators.InputRequired()]
     )
     var_ssp1 = SelectField(
         'ssp / var',
