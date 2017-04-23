@@ -22,6 +22,11 @@ def shipment_exists(field):
 
 
 class AvailabilityForm(FlaskForm):
+    accession = SelectField(
+        'Accession',
+        validators=[validators.input_required()],
+        coerce=int
+    )
     grin_avail = FloatField(
         'GRIN Availability in Grams'
     )
@@ -34,23 +39,19 @@ class AvailabilityForm(FlaskForm):
     meeker_avail = FloatField(
         'Meeker Availability in Grams'
     )
-    
-    """
-        grin_avail = db.Column(db.Float)
-    bend_avail = db.Column(db.Float)
-    cbg_avail = db.Column(db.Float)
-    meeker_avail = db.Column(db.Float)
-    misc_avail = db.Column(db.Float)
-    ephraim_avail = db.Column(db.Float)
-    nau_avail = db.Column(db.Float)
-    avail_any = db.Column(db.Boolean)
-    gr_avail = db.Column(db.Float)
-    lb_avail = db.Column(db.Float)
-    est_pls_avail = db.Column(db.Float)
-    avail_no_grin = db.Column(db.Boolean)
-    sum_gr_no_grin = db.Column(db.Float)
-    sum_lb_no_grin = db.Column(db.Float)
-    """
+    misc_avail = FloatField(
+        'Miscellaneous Availability in Grams'
+    )
+    misc_inst_id = SelectField(
+        'Miscellaneous Institute',
+        coerce=int
+    )
+    ephraim_avail = FloatField(
+        'Ephraim Availability in Grams'
+    )
+    nau_avail = FloatField(
+        'Northern Arizona University Availability in Grams'
+    )
 
 
 class AccessionForm(FlaskForm):

@@ -115,6 +115,41 @@ def accessions():
     return render_template('accessions.html', form=form)
 
 
+@app.route('/availability', methods=('GET', 'POST'))
+def availability():
+    form = forms.AvailabilityForm()
+    form.accession.choices = [
+        (acc.id, acc.acc_num) for acc in models.Accession.query.order_by('acc_num')]
+    form.misc_inst_id.choices = [
+        (inst.id, inst.name) for inst in models.Institution.query.order_by('name')]
+    if form.validate_on_submit():
+        acc = models.Accession.query.get(form.accession.data)
+        misc_inst = models.Institution.query.get(form.misc_inst_id.data)
+        grin = form.grin_avail.data
+        bend = form.bend_avail.data
+        cbg = form.cbg_avail.data
+        meeker = form.meeker_avail.data
+        misc = form.misc_avail.data
+        ephraim = form.ephraim_avail.data
+        nau = form.nau_avail.data
+        avail = models.Availability(
+            grin_avail=grin,
+            bend_avail=bend,
+            cbg_avail=cbg,
+            meeker_avail=meeker,
+            misc_avail=misc,
+            ephraim_avail=ephraim,
+            nau_avail=nau,
+            accession=acc,
+            misc_avail_inst=misc_inst,
+        )
+        models.db.session.add(avail)
+        models.db.session.commit()
+        flash('Yay, availability added for {}'.format(acc.species.name_full), 'success')
+        return redirect('/success')
+    return render_template('availability.html', form=form)
+
+
 @app.route('/institutions', methods=('GET', 'POST'))
 def institutions():
     form = forms.InstitutionForm()
