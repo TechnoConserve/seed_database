@@ -206,7 +206,8 @@ class Accession(db.Model):
 
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
-    species = db.relationship('Species', backref=db.backref('accessions', lazy='dynamic'))
+
+    species = db.relationship('Species', backref=db.backref('accessions', lazy='dynamic'), uselist=False)
     location = db.relationship('Location', backref='accession', uselist=False)
 
     def __init__(
@@ -399,6 +400,10 @@ class LocationDescription(db.Model):
 
 
 class Testing(db.Model):
+    """
+    The Testing table has a Many-to-One relationship with the 
+    Accession table.
+    """
     __tablename__ = 'tests'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -413,9 +418,13 @@ class Testing(db.Model):
     tz = db.Column(db.Integer)
     fill = db.Column(db.Integer)
 
+    accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+
+    accession = db.relationship('Accession', backref=db.backref('tests', lazy='dynamic'), uselist=False)
+
     def __init__(
             self, amt_rcvd_lbs, clean_wt_lbs, est_seed_lb, est_pls_lb, est_pls_collected,
-            test_type, test_date, purity, tz, fill):
+            test_type, test_date, purity, tz, fill, accession):
 
         self.amt_rcvd_lbs = amt_rcvd_lbs
         self.clean_wt_lbs = clean_wt_lbs
@@ -427,12 +436,13 @@ class Testing(db.Model):
         self.purity = purity
         self.tz = tz
         self.fill = fill
+        self.accession = accession
 
     def __repr__(self):
-        return ("<Testing(amt_rcvd_lbs={}, clean_wt_lbs={}, est_seed_lb={}, "
+        return ("<Testing(accession={}, amt_rcvd_lbs={}, clean_wt_lbs={}, est_seed_lb={}, "
                 "est_pls_lb={}, est_pls_collected={}, purity={}, tz={})>".format(
-            self.amt_rcvd_lbs, self.clean_wt_lbs, self.est_seed_lb,
-            self.est_pls_lb, self.est_pls_collected, self.purity, self.tz))
+                    self.accession, self.amt_rcvd_lbs, self.clean_wt_lbs, self.est_seed_lb,
+                    self.est_pls_lb, self.est_pls_collected, self.purity, self.tz))
 
 
 class Availability(db.Model):
