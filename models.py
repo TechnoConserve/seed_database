@@ -592,6 +592,13 @@ class Use(db.Model):
 
 
 class Release(db.Model):
+    """
+    Release table has a Many-to-One relationship with the
+    Accession table.
+
+    Release table has a Many-to-One relationship with the
+    Species table.
+    """
     __tablename__ = 'releases'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -619,12 +626,18 @@ class Release(db.Model):
     release_brochure = db.Column(db.String(200))
     comments = db.Column(db.String(1000))
 
+    accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+    species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
+
+    accession = db.relationship('Accession', backref='releases', uselist=False)
+    species = db.relationship('Species', backref=db.backref('releases', lazy='dynamic'), uselist=False)
+
     def __init__(
             self, loc_desc, germ_origin, name, year, release_type, plant_origin,
             used_for, select_criteria, special_character, adaptation, prime_pmc,
             primary_releasing, secondary_releasing, cp_adapted, cp_sourced,
             source_num, lb_acre_sow, lb_acre_yield, soil_adap, precip_adap,
-            evel_adap, release_brochure, comments):
+            evel_adap, release_brochure, comments, accession, species):
 
         self.loc_desc = loc_desc
         self.germ_origin = germ_origin
@@ -649,6 +662,8 @@ class Release(db.Model):
         self.evel_adap = evel_adap
         self.release_brochure = release_brochure
         self.comments = comments
+        self.accession = accession
+        self.species = species
 
     def __repr__(self):
         return ("<Release(loc_desc={}, germ_origin={}, name={}, year={}, release_type={}, "
