@@ -139,8 +139,8 @@ class Shipping(db.Model):
     def __repr__(self):
         return ("<Shipping(ship_date={}, tracking_num={}, amount_gr={}, "
                 "amount_perc={}, calc_by={})>".format(
-            self.ship_date, self.tracking_num, self.amount_gr,
-            self.amount_perc, self.calc_by))
+                    self.ship_date, self.tracking_num, self.amount_gr,
+                    self.amount_perc, self.calc_by))
 
 
 class Institution(db.Model):
@@ -500,8 +500,8 @@ class Availability(db.Model):
     def __repr__(self):
         return ("<Availability(avail_any={}, est_pls_avail={}, avail_no_grin={}, "
                 "grin_avail={}, bend_avail={}, cbg_avail={}, meeker_avail={})>".format(
-            self.avail_any, self.est_pls_avail, self.avail_no_grin,
-            self.grin_avail, self.bend_avail, self.cbg_avail, self.meeker_avail))
+                    self.avail_any, self.est_pls_avail, self.avail_no_grin,
+                    self.grin_avail, self.bend_avail, self.cbg_avail, self.meeker_avail))
 
     def check_avail_any(self):
         if self.gr_avail > 0:
@@ -554,8 +554,8 @@ class Use(db.Model):
     def __repr__(self):
         return ("<Use(amount_gr={}, amount_lb={}, amount_perc={}, "
                 "purpose={}, date_start={}, date_end={})>".format(
-            self.amount_gr, self.amount_lb, self.amount_perc,
-            self.purpose, self.date_start, self.date_end))
+                    self.amount_gr, self.amount_lb, self.amount_perc,
+                    self.purpose, self.date_start, self.date_end))
 
 
 class Release(db.Model):
