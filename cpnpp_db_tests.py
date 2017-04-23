@@ -8,12 +8,14 @@ from app import app
 from models import (db, Species, Shipping, Institution, Accession,
                     Location, Zone, LocationDescription, Testing, Availability, Use, Release)
 
+
 def create_app():
     app.config['TESTING'] = True
     app.config['WTF_CSRF_ENABLED'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
     db.init_app(app)
     return app
+
 
 class CPNPPDatabaseTests(unittest.TestCase):
     def setUp(self):

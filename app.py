@@ -29,6 +29,7 @@ def accessions():
         models.db.session.query(models.Species).distinct(models.Species.name_full).group_by(models.Species.name_full)
     ]
     if form.validate_on_submit():
+        species = models.Species.query.get(form.species.data)
         # Need to create the LocationDescription object first
         desc = models.LocationDescription(
             land_owner=form.land_owner.data,
@@ -102,7 +103,7 @@ def accessions():
             description=form.description.data,
             notes=form.notes.data,
             increase=0,
-            species=form.species.data,
+            species=species,
             location=loc,
         )
         models.db.session.add(desc)
@@ -144,15 +145,18 @@ def shipments():
     form.accession.choices = [
         (acc.id, acc.acc_num) for acc in models.Accession.query.order_by('acc_num')]
     if form.validate_on_submit():
+        origin_institute = models.Institution.query.get(form.origin_institute_id.data)
+        destination_institute = models.Institution.query.get(form.destination_institute_id.data)
+        accession = models.Accession.query.get(form.accession.data)
         shipment = models.Shipping(
             ship_date=form.ship_date.data,
             tracking_num=form.tracking_num.data,
             tracking_num_comp=form.tracking_num_comp.data,
             amount_gr=form.amount_gr.data,
             calc_by=form.calc_by.data,
-            origin_institute=form.origin_instiute.data,
-            destination_institute=form.destination_institute.data,
-            accession=form.accession.data,
+            origin_institute=origin_institute,
+            destination_institute=destination_institute,
+            accession=accession,
         )
         models.db.session.add(shipment)
         models.db.session.commit()
@@ -189,7 +193,7 @@ def success():
     return 'Success!'
 
 
-@app.route('/synonyms')
+@app.route('/synonyms', methods=('GET', 'POST'))
 def synonyms():
     form = forms.SynonymsForm()
     form.species.choices = [
@@ -201,13 +205,40 @@ def synonyms():
         models.db.session.query(models.Species).distinct(models.Species.name_full).group_by(models.Species.name_full)
     ]
     if form.validate_on_submit():
-        plant = models.Species.get(form.species.data)
-        synonym = models.Species.get(form.synonym.data)
+        plant = models.Species.query.get(form.species.data)
+        synonym = models.Species.query.get(form.synonym.data)
         plant.add_synonym(synonym)
         models.db.session.commit()
         flash('Yay, {} successfully added as a synonym of {}'.format(synonym.name_full, plant.name_full), 'success')
         return redirect('/success')
     return render_template('synonyms.html', form=form)
+
+
+@app.route('/testing', methods=('GET', 'POST'))
+def testing():
+    form = forms.TestingForm()
+    form.accession.choices = [
+        (acc.id, acc.acc_num) for acc in models.Accession.query.order_by('acc_num')]
+    if form.validate_on_submit():
+        accession = models.Accession.query.get(form.accession.data)
+        test = models.Testing(
+            amt_rcvd_lbs=form.amt_rcvd_lbs.data,
+            clean_wt_lbs=form.clean_wt_lbs.data,
+            est_seed_lb=form.est_seed_lb.data,
+            est_pls_lb=form.est_pls_lb.data,
+            est_pls_collected=form.est_pls_collected,
+            test_type=form.test_type.data,
+            test_date=form.test_date.data,
+            purity=form.purity.data,
+            tz=form.tz.data,
+            fill=form.fill.data,
+            accession=accession
+        )
+        models.db.session.add(test)
+        models.db.session.commit()
+        flash('Yay, test added for {}'.format(form.accession.data))
+        return redirect('/success')
+    return render_template('testing.html', form=form)
 
 
 if __name__ == '__main__':

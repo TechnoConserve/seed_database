@@ -30,7 +30,6 @@ class AccessionForm(FlaskForm):
     )
     species = SelectField(
         'Species',
-        coerce=int
     )
     data_source = StringField(
         'Data Source',
@@ -289,10 +288,52 @@ class SynonymsForm(FlaskForm):
     species = SelectField(
         'Species',
         validators=[validators.input_required()],
-        coerce=int,
+        coerce=int
     )
     synonym = SelectField(
         'Synonym',
         validators=[validators.input_required()],
-        coerce=int,
+        coerce=int
+    )
+
+
+class TestingForm(FlaskForm):
+    accession = SelectField(
+        'Accession',
+        validators=[validators.input_required()],
+        coerce=int
+    )
+    amt_rcvd_lbs = FloatField(
+        'Amount Received (Lbs)'
+    )
+    clean_wt_lbs = FloatField(
+        'Cleaned Weight (Lbs)'
+    )
+    est_seed_lb = FloatField(
+        'Estimated Seed Per Pound'
+    )
+    est_pls_lb = FloatField(
+        'Estimated Pure Live Seed Per Pound'
+    )
+    est_pls_collected = FloatField(
+        'Estimated Pure Live Seed Collected'
+    )
+    test_type = SelectField(
+        'Test Type',
+        choices=[('XPC', 'XPC'), ('TZ', 'TZ'), ('XPMC', 'XPMC'), ('XRY', 'XRY')],
+    )
+    test_date = DateField(
+        'Test Date'
+    )
+    purity = IntegerField(
+        'Purity %',
+        validators=[validators.number_range(min=0, max=100)]
+    )
+    tz = IntegerField(
+        'TZ %',
+        validators=[validators.number_range(min=0, max=100)]
+    )
+    fill = IntegerField(
+        'Fill %',
+        validators=[validators.number_range(min=0, max=100)]
     )
