@@ -283,3 +283,16 @@ class SpeciesForm(FlaskForm):
         'Duration',
         choices=DURATION_CHOICES
     )
+
+
+class SynonymsForm(FlaskForm):
+    species = SelectField(
+        'Species',
+        validators=[validators.input_required()],
+        coerce=int,
+    )
+    synonym = SelectField(
+        'Synonym',
+        validators=[validators.input_required()],
+        coerce=int,
+    )

@@ -189,6 +189,27 @@ def success():
     return 'Success!'
 
 
+@app.route('/synonyms')
+def synonyms():
+    form = forms.SynonymsForm()
+    form.species.choices = [
+        (species.id, species.name_full) for species in
+        models.db.session.query(models.Species).distinct(models.Species.name_full).group_by(models.Species.name_full)
+    ]
+    form.synonym.choices = [
+        (species.id, species.name_full) for species in
+        models.db.session.query(models.Species).distinct(models.Species.name_full).group_by(models.Species.name_full)
+    ]
+    if form.validate_on_submit():
+        plant = models.Species.get(form.species.data)
+        synonym = models.Species.get(form.synonym.data)
+        plant.add_synonym(synonym)
+        models.db.session.commit()
+        flash('Yay, {} successfully added as a synonym of {}'.format(synonym.name_full, plant.name_full), 'success')
+        return redirect('/success')
+    return render_template('synonyms.html', form=form)
+
+
 if __name__ == '__main__':
     models.db.init_app(app)
     models.db.create_all()
