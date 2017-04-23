@@ -2,7 +2,7 @@
 CPNPP Database
 
 Created:  4/13/2017
-Updated:  4/22/2017
+Updated:  4/23/2017
 Author:   Avery Uslaner
 """
 from flask_sqlalchemy import SQLAlchemy
@@ -446,6 +446,10 @@ class Testing(db.Model):
 
 
 class Availability(db.Model):
+    """
+    The Availability table has a One-to-One relationship with the
+    Accession table.
+    """
     __tablename__ = 'availability'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -464,9 +468,13 @@ class Availability(db.Model):
     sum_gr_no_grin = db.Column(db.Float)
     sum_lb_no_grin = db.Column(db.Float)
 
+    accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+
+    accession = db.relationship('Accession', backref=db.backref('availability', uselist=False), uselist=False)
+
     def __init__(
             self, grin_avail, bend_avail, cbg_avail, meeker_avail, misc_avail, ephraim_avail,
-            nau_avail):
+            nau_avail, accession):
 
         self.grin_avail = grin_avail
         self.bend_avail = bend_avail
@@ -475,6 +483,7 @@ class Availability(db.Model):
         self.misc_avail = misc_avail
         self.ephraim_avail = ephraim_avail
         self.nau_avail = nau_avail
+        self.accession = accession
 
         self.gr_avail = self.compute_gr_avail()
 
@@ -498,9 +507,9 @@ class Availability(db.Model):
         self.sum_lb_no_grin = compute_gr_to_lb(self.sum_gr_no_grin)
 
     def __repr__(self):
-        return ("<Availability(avail_any={}, est_pls_avail={}, avail_no_grin={}, "
+        return ("<Availability(accession={}, avail_any={}, est_pls_avail={}, avail_no_grin={}, "
                 "grin_avail={}, bend_avail={}, cbg_avail={}, meeker_avail={})>".format(
-                    self.avail_any, self.est_pls_avail, self.avail_no_grin,
+                    self.accession, self.avail_any, self.est_pls_avail, self.avail_no_grin,
                     self.grin_avail, self.bend_avail, self.cbg_avail, self.meeker_avail))
 
     def check_avail_any(self):

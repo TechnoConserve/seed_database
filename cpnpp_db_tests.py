@@ -390,16 +390,72 @@ class CPNPPDatabaseTests(unittest.TestCase):
         self.assertIn(test, accession.tests)
 
     def test_availability_creation(self):
+        plant = Species(symbol='ABAB', name_full='Abutilon abutiloides', common='shrubby Indian mallow',
+                        family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
+                        plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
+                        poll_val=0, research_val=0)
+        desc = LocationDescription(land_owner='BLM',
+                                   associated_taxa_full=('Quercus gambelii:'
+                                                         'Ericameria nauseosa ssp. consimilis var. '
+                                                         'nitida:Artemisia tridentata ssp. '
+                                                         'wyomingensis:Lepidium sp.:Rosa woodsii:'
+                                                         'Heterotheca villosa var. villosa:Carex '
+                                                         'geyeri:Koeleria macrantha'),
+                                   mod='grazed, trampled', mod2='recreation', geomorphology=None,
+                                   slope='5-25 degrees', aspect='varied',
+                                   habitat='Mountain Brush; meadow along road',
+                                   geology='Quaternary, alluvial deposits',
+                                   soil_type='Asphalt and sand, tan/red',
+                                   population_size=200, occupancy=1500)
+        zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
+                    us_l4_name='Semiarid Benchlands and Canyonlands',
+                    us_l3_code='20', us_l3_name='Colorado Plateaus',
+                    achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
+                    avail_strict=0, usgs_zone=0)
+        location = Location(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
+                            locality='Grand Staircase Escalante National Monument',
+                            geog_area='Big Cottonwood Canyon',
+                            directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+                                        'county road 243. Continue on 243 for 8.3 miles then turn '
+                                        'left onto county toad 126A. Continue on 126A for 12 miles '
+                                        'then turn right. Continue for approximately 1.1 miles to '
+                                        'reach collection site.'),
+                            degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
+                            seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
+                            georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
+                            altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
+                            district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
+                            location_description=desc, zone=zone)
+        accession = Accession(data_source='UP', plant_habit='Forb/herb',
+                              coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
+                              acc_num1='UP', acc_num2='76', acc_num3=None,
+                              collected_with='GVR, CH, SP',
+                              collection_misc=('Hand-pick ripe seeds, all stages still on plants.'
+                                               'This Aster glaucodes is in a nice loamy field (not rocky cliff '
+                                               'like other Aster glaucodes)'), seed_source='P',
+                              description='Height: 0.15-0.45 m',
+                              notes=('Official SOS collection number is NM930N-69: details '
+                                     'submitted to SOS National Office by Farmington BLM Botanist.  '
+                                     'Germination and competition trials for early seral species '
+                                     '(Chicago Botanic Garden).  Photos of habitat, plant and seed'),
+                              increase=0, species=plant, location=location)
         avail = Availability(grin_avail=1.47, bend_avail=17.690088, cbg_avail=0, meeker_avail=0,
-                             misc_avail=0, ephraim_avail=0, nau_avail=0.512592)
-        print(avail)
-        self.assertIsNot(avail, None)
+                             misc_avail=0, ephraim_avail=0, nau_avail=0.512592, accession=accession)
+        db.session.add(plant)
+        db.session.add(desc)
+        db.session.add(zone)
+        db.session.add(location)
+        db.session.add(accession)
+        db.session.add(avail)
+        db.session.commit()
         self.assertTrue(avail.avail_any)
         self.assertEqual(avail.gr_avail, (1.47 + 17.690088 + 0.512592))
         self.assertEqual(avail.lb_avail, ((1.47 + 17.690088 + 0.512592) * 0.00220462))
         self.assertEqual(avail.sum_gr_no_grin, 17.690088 + 0.512592)
         self.assertTrue(avail.avail_no_grin, True)
         self.assertEqual(avail.sum_lb_no_grin, ((17.690088 + 0.512592) * 0.00220462))
+        self.assertEqual(accession, avail.accession)
+        self.assertEqual(avail, accession.availability)
 
     def test_use_creation(self):
         use = Use(amount_gr=3.431, purpose=("We’re planning to set up a field study that is a "
