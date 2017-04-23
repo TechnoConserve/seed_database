@@ -181,10 +181,19 @@ class Accession(db.Model):
     The Accession table has a Many-to-One relationship with the Species 
     table.
     
-    The Accession table has a One-to-Many relationship with the Shipping
-    table.
+    The Accession table has a One-to-Many relationship with the 
+    Shipping table.
     
     The Accession table has a One-to-One relationship with the Location
+    table.
+    
+    The Accession table has a One-to-Many relationship with the Testing
+    table.
+    
+    The Accession table has a One-to-One relationship with the
+    Availability table.
+    
+    The Accession table has a One-to-Many relationship with the Use
     table.
     """
     __tablename__ = 'accession'
@@ -534,6 +543,13 @@ class Availability(db.Model):
 
 
 class Use(db.Model):
+    """
+    Use table has a Many-to-One relationship with the
+    Accession table.
+    
+    Use table has a Many-to-One relationship with the
+    Species table.
+    """
     __tablename__ = 'uses'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -546,7 +562,13 @@ class Use(db.Model):
     start_notes = db.Column(db.Text)
     end_notes = db.Column(db.Text)
 
-    def __init__(self, amount_gr, purpose, date_start, date_end, start_notes, end_notes):
+    accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+    species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
+
+    accession = db.relationship('Accession', backref='uses', uselist=False)
+    species = db.relationship('Species', backref=db.backref('uses', lazy='dynamic'), uselist=False)
+
+    def __init__(self, amount_gr, purpose, date_start, date_end, start_notes, end_notes, accession, species):
 
         self.amount_gr = amount_gr
         self.purpose = purpose
@@ -554,6 +576,8 @@ class Use(db.Model):
         self.date_end = date_end
         self.start_notes = start_notes
         self.end_notes = end_notes
+        self.accession = accession
+        self.species = species
 
         self.amount_lb = compute_gr_to_lb(amount_gr)
 
