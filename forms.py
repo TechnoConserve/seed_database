@@ -370,3 +370,30 @@ class TestingForm(FlaskForm):
         'Fill %',
         validators=[validators.number_range(min=0, max=100)]
     )
+
+
+class UseForm(FlaskForm):
+    accession = SelectField(
+        'Accession',
+        validators=[validators.input_required()],
+        coerce=int
+    )
+    amount_gr = FloatField(
+        'Amount in Grams'
+    )
+    purpose = TextAreaField(
+        'Purpose',
+        validators=[validators.input_required()]
+    )
+    date_start = DateField(
+        'Date Start'
+    )
+    date_end = DateField(
+        'Date End'
+    )
+    start_notes = TextAreaField(
+        'Start Notes'
+    )
+    end_notes = TextAreaField(
+        'End Notes'
+    )

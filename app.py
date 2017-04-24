@@ -276,6 +276,31 @@ def testing():
     return render_template('testing.html', form=form)
 
 
+@app.route('/uses', methods=('GET', 'POST'))
+def uses():
+    form = forms.UseForm()
+    form.accession.choices = [
+        (acc.id, acc.acc_num) for acc in models.Accession.query.order_by('acc_num')]
+    if form.validate_on_submit():
+        accession = models.Accession.query.get(form.accession.data)
+        species = accession.species
+        use = models.Use(
+            amount_gr=form.amount_gr.data,
+            purpose=form.purpose.data,
+            date_start=form.date_start.data,
+            date_end=form.date_end.data,
+            start_notes=form.start_notes.data,
+            end_notes=form.end_notes.data,
+            accession=accession,
+            species=species
+        )
+        models.db.session.add(use)
+        models.db.session.commit()
+        flash('Yay, Use created for {}.'.format(species.name_full), 'success')
+        return redirect('/success')
+    return render_template('use.html', form=form)
+
+
 if __name__ == '__main__':
     models.db.init_app(app)
     models.db.create_all()
