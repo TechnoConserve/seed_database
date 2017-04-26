@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import DateField, FloatField, IntegerField, SelectField, StringField, TextAreaField
+from wtforms import BooleanField, DateField, FloatField, IntegerField, SelectField, StringField, TextAreaField
 from wtforms import validators
 
 from models import Shipping
@@ -245,6 +245,102 @@ class InstitutionForm(FlaskForm):
     )
     request_costs = StringField(
         'Request Costs?'
+    )
+
+
+class ReleaseForm(FlaskForm):
+    species = SelectField(
+        'Species'
+    )
+    accession = SelectField(
+        'Accession'
+    )
+    loc_desc = TextAreaField(
+        'Location Description'
+    )
+    germ_origin = StringField(
+        'Germplasm origin',
+        validators=[validators.length(max=100)]
+    )
+    name = StringField(
+        'Release Name',
+        validators=[validators.length(max=100)]
+    )
+    # This program is not designed to run past the year 4000
+    year = IntegerField(
+        'Year',
+        validators=[validators.number_range(min=1800, max=4000)]
+    )
+    release_type = StringField(
+        'Release Type',
+        validators=[validators.length(max=100)]
+    )
+    plant_origin = StringField(
+        'Plant Origin',
+        validators=[validators.length(max=100)]
+    )
+    used_for = StringField(
+        'Used For...',
+        validators=[validators.length(max=300)]
+    )
+    select_criteria = StringField(
+        'Selection Criteria',
+        validators=[validators.length(max=200)]
+    )
+    special_character = StringField(
+        'Special Characteristics',
+        validators=[validators.length(max=200)]
+    )
+    adaptation = StringField(
+        'Adaptation',
+        validators=[validators.length(max=100)]
+    )
+    prime_pmc = StringField(
+        'Prime Plant Materials Center',
+        validators=[validators.length(max=100)]
+    )
+    primary_releasing = StringField(
+        'Primary Releasing',
+        validators=[validators.length(max=100)]
+    )
+    secondary_releasing = StringField(
+        'Secondary Releasing',
+        validators=[validators.length(max=100)]
+    )
+    cp_adapted = BooleanField(
+        'Colorado Plateau Adapted?'
+    )
+    cp_sourced = BooleanField(
+        'Colorado Plateau Sourced?'
+    )
+    source_num = StringField(
+        'Source Number',
+        validators=[validators.length(max=100)]
+    )
+    lb_acre_sow = FloatField(
+        'Lbs Per Acre Sow'
+    )
+    lb_acre_yield = FloatField(
+        'Lbs Per Acre Yield'
+    )
+    soil_adap = StringField(
+        'Soil Adaptation',
+        validators=[validators.length(max=100)]
+    )
+    precip_adap = StringField(
+        'Precipitation Adaptation',
+        validators=[validators.length(max=100)]
+    )
+    elev_adap = StringField(
+        'Elevation Adaptation',
+        validators=[validators.length(max=100)]
+    )
+    release_brochure = StringField(
+        'Release Brochure',
+        validators=[validators.url()]
+    )
+    comments = TextAreaField(
+        'Comments',
     )
 
 

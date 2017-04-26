@@ -18,16 +18,13 @@ def accessions():
     form = forms.AccessionForm()
     form.family.choices = [
         (species.family, species.family) for species in
-        models.db.session.query(models.Species).distinct(models.Species.family).group_by(models.Species.family)
-    ]
+        models.db.session.query(models.Species).distinct(models.Species.family).group_by(models.Species.family)]
     form.genus.choices = [
         (species.genus, species.genus) for species in
-        models.db.session.query(models.Species).distinct(models.Species.genus).group_by(models.Species.genus)
-    ]
+        models.db.session.query(models.Species).distinct(models.Species.genus).group_by(models.Species.genus)]
     form.species.choices = [
         (species.id, species.name_full) for species in
-        models.db.session.query(models.Species).distinct(models.Species.name_full).group_by(models.Species.name_full)
-    ]
+        models.db.session.query(models.Species).distinct(models.Species.name_full).group_by(models.Species.name_full)]
     if form.validate_on_submit():
         species = models.Species.query.get(form.species.data)
         # Need to create the LocationDescription object first
@@ -168,6 +165,51 @@ def institutions():
         flash('Yay, Institution created!', 'success')
         return redirect('/success')
     return render_template('institutions.html', form=form)
+
+
+@app.route('/releases', methods=('GET', 'POST'))
+def releases():
+    form = forms.ReleaseForm()
+    form.species.choices = [
+        (species.id, species.name_full) for species in
+        models.db.session.query(models.Species).distinct(models.Species.name_full).group_by(models.Species.name_full)]
+    form.accession.choices = [
+        (acc.id, acc.acc_num) for acc in models.Accession.query.order_by('acc_num')]
+    if form.validate_on_submit():
+        species = models.Species.query.get(form.species.data)
+        acc = models.Accession.query.get(form.accession.data)
+        release = models.Release(
+            loc_desc=form.loc_desc.data,
+            germ_origin=form.germ_origin.data,
+            name=form.name.data,
+            year=form.year.data,
+            release_type=form.release_type.data,
+            plant_origin=form.plant_origin.data,
+            used_for=form.used_for.data,
+            select_criteria=form.select_criteria.data,
+            special_character=form.special_character.data,
+            adaptation=form.adaptation.data,
+            prime_pmc=form.prime_pmc.data,
+            primary_releasing=form.primary_releasing.data,
+            secondary_releasing=form.secondary_releasing.data,
+            cp_adapted=form.cp_adapted.data,
+            cp_sourced=form.cp_sourced.data,
+            source_num=form.source_num.data,
+            lb_acre_sow=form.lb_acre_sow.data,
+            lb_acre_yield=form.lb_acre_yield.data,
+            soil_adap=form.soil_adap.data,
+            precip_adap=form.precip_adap.data,
+            elev_adap=form.elev_adap.data,
+            release_brochure=form.release_brochure.data,
+            comments=form.comments.data,
+            accession=acc,
+            species=species
+        )
+        models.db.session.add(release)
+        models.db.session.commit()
+        flash('Yay, release for {} created!'.format(species.name_full), 'success')
+        return redirect('/success')
+    return render_template('releases.html', form=form)
 
 
 @app.route('/shipments', methods=('GET', 'POST'))

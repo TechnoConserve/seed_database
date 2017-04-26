@@ -561,7 +561,6 @@ class Use(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amount_gr = db.Column(db.Float)
     amount_lb = db.Column(db.Float)
-    amount_perc = db.Column(db.Float)
     purpose = db.Column(db.Text)
     date_start = db.Column(db.DateTime)
     date_end = db.Column(db.DateTime)
@@ -586,9 +585,6 @@ class Use(db.Model):
         self.species = species
 
         self.amount_lb = compute_gr_to_lb(amount_gr)
-
-        # TODO
-        # Implement method to calculate amount_perc
 
     def __repr__(self):
         return ("<Use(amount_gr={}, amount_lb={}, amount_perc={}, "
@@ -628,9 +624,9 @@ class Release(db.Model):
     lb_acre_yield = db.Column(db.Float)
     soil_adap = db.Column(db.String(100))
     precip_adap = db.Column(db.String(100))
-    evel_adap = db.Column(db.String(100))
+    elev_adap = db.Column(db.String(100))
     release_brochure = db.Column(db.String(200))
-    comments = db.Column(db.String(1000))
+    comments = db.Column(db.Text)
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
@@ -643,7 +639,7 @@ class Release(db.Model):
             used_for, select_criteria, special_character, adaptation, prime_pmc,
             primary_releasing, secondary_releasing, cp_adapted, cp_sourced,
             source_num, lb_acre_sow, lb_acre_yield, soil_adap, precip_adap,
-            evel_adap, release_brochure, comments, accession, species):
+            elev_adap, release_brochure, comments, accession, species):
 
         self.loc_desc = loc_desc
         self.germ_origin = germ_origin
@@ -665,7 +661,7 @@ class Release(db.Model):
         self.lb_acre_yield = lb_acre_yield
         self.soil_adap = soil_adap
         self.precip_adap = precip_adap
-        self.evel_adap = evel_adap
+        self.elev_adap = elev_adap
         self.release_brochure = release_brochure
         self.comments = comments
         self.accession = accession
