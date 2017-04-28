@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Colorado Plateau Native Plants Program Database</title>
+		<meta charset='utf-8'>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="robots" content="noindex">
+		<!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+              integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+              crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                crossorigin="anonymous"></script>
+		{% block extra_head %}
+        {% endblock %}
+		{% block extra_scripts %}
+        {% endblock %}
+	</head>
+
+	<body>
+		<div class="navbar navbar-default navbar-static-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="{{ url_for('index') }}">Index</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+							<li><a href="{{ url_for('add') }}">Add to Database</a></li>
+					</ul>
+                    {% block extra_header %}{% endblock %}
+					{% block search_bar %}
+						<form action="{{ url_for('index') }}" class="navbar-form navbar-right" id="search-form" method="get" role="search">
+							<div class="form-group">
+								<input class="form-control" name="q" placeholder="Search" type="text" value="{% if search %}{{ search }}{% endif %}">
+							</div>
+						</form>
+					{% endblock %}
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			{% for category, message in get_flashed_messages(with_categories=true) %}
+				<div class="alert alert-{{ category }} alert-dismissable">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<p>{{ message }}</p>
+				</div>
+			{% endfor %}
+
+			{% block page_header %}
+				<div class="page-header">
+					<h1>{% block content_title %}{% endblock %}</h1>
+					<h5>{% block content_subtitle %}{% endblock %}</h5>
+				</div>
+			{% endblock %}
+
+			{% block content %}{% endblock %}
+		</div>
+
+		<footer class="footer">
+			<div class="container">
+				<p class="text-muted text-center">Colorado Plateau Native Plant Program | Avery Uslaner | The Great Basin Institute</p>
+			</div>
+		</footer>
+
+	</body>
+</html>

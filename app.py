@@ -9,8 +9,8 @@ app.app_context().push()
 
 
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
+def index():
+    return render_template('index.html')
 
 
 @app.route('/accessions')
@@ -110,6 +110,11 @@ def accessions():
         flash('Yay, Accession created!', 'success')
         return redirect('/success')
     return render_template('accessions.html', form=form)
+
+
+@app.route('/additions')
+def add():
+    return render_template('additions.html')
 
 
 @app.route('/availability', methods=('GET', 'POST'))

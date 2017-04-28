@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <p>Add to the database using the appropriate form below.</p>
+    <h1>Forms</h1>
+    <ul>
+        <li><a href="{{ url_for('availability') }}">Availability</a></li>
+        <li><a href="{{ url_for('accessions') }}">Accessions</a></li>
+        <li><a href="{{ url_for('institutions') }}">Institutions</a></li>
+        <li><a href="{{ url_for('releases') }}">Releases</a></li>
+        <li><a href="{{ url_for('shipments') }}">Shipments</a></li>
+        <li><a href="{{ url_for('species') }}">Species</a></li>
+        <li><a href="{{ url_for('synonyms') }}">Synonyms</a></li>
+        <li><a href="{{ url_for('testing') }}">Testing</a></li>
+        <li><a href="{{ url_for('uses') }}">Uses</a></li>
+    </ul>
+{% endblock content %}
