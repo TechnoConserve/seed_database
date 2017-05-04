@@ -2,9 +2,32 @@ import pandas as pd
 from sqlalchemy.exc import IntegrityError
 
 from app import app
-from models import db, Species
+from models import db, Species, Accession, Location, LocationDescription, Zone
 
 df = pd.read_excel('complete_plants_checklist_usda.xlsx')
+db_df = pd.read_excel('DB_export_updated123016_noGRINavail_with_SWSP_data.xlsx')
+
+
+def add_accessions(df):
+    for index, row in df.iterrows():
+        zone, desc, loc = get_zone_desc_loc(row)
+        species, acc = get_species_acc(row)
+
+        add_acc_to_db(zone, desc, loc, species, acc)
+
+
+def add_acc_to_db(zone, location_description, location, species, accession):
+    db.session.add(zone)
+    db.session.add(location_description)
+    db.session.add(location)
+    db.session.add(species)
+    db.session.add(accession)
+    try:
+        db.session.commit()
+        print('Successfully added {} to database!'.format(accession.acc_num))
+    except IntegrityError:
+        db.session.rollback()
+        print('[!] {} already exists in the database!'.format(accession.acc_num))
 
 
 def add_synonyms(df):
@@ -17,13 +40,127 @@ def add_species(df):
         get_plant(row)
 
 
-def add_to_db(plant):
+def add_plant_to_db(plant):
     db.session.add(plant)
     try:
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
         print('{} already exists in the database!'.format(plant.name_full))
+
+
+def convert_dd_dms(dd):
+    degrees = int(dd)
+    minute_dec = (dd - degrees) * 60
+    minutes = int(minute_dec)
+    seconds = (minute_dec - minutes) * 60
+
+    return degrees, minutes, seconds
+
+
+def get_species_acc(series):
+    data_source = series['DATA_SOURCE']
+    plant_habit = series['Habit_rev']
+    coll_date = series['COLL_DT']  # Sqlite expects YYYY-MM-DD format
+    acc_num = series['ACC_NUM']
+    acc_num1 = series['ACC_NUM_1']
+    acc_num2 = series['ACC_NUM_2']
+    acc_num3 = series['ACC_NUM_3']
+    collected_with = series['COLLECTED_WITH']
+    collection_misc = series['COLLECTION_MISC']
+    seed_source = series['SEED_SOURCE']
+    description = series['DESCRIPTION']
+    notes = series['notes']
+    increase = None  # Slated for increase?
+
+    species = get_species(series['NAME'])
+    location = get_zone_desc_loc(series)
+
+    acc = Accession(data_source=data_source, plant_habit=plant_habit, coll_date=coll_date, acc_num=acc_num,
+                    acc_num1=acc_num1, acc_num2=acc_num2, acc_num3=acc_num3, collected_with=collected_with,
+                    collection_misc=collection_misc, seed_source=seed_source, description=description, notes=notes,
+                    increase=increase, species=species, location=location)
+
+    return species, acc
+
+
+def get_zone_desc_loc(series):
+    phytoregion = series['PHYTOREGION']
+    phytoregion_full = series['PHYTOREGION_FULL']
+    locality = series['SUB_CNT3']
+    geog_area = series['GEOG_AREA']
+    directions = series['LOCALITY']
+    latitude_decimal = series['LATITUDE_DECIMAL']
+    longitude_decimal = series['LONGITUDE_DECIMAL']
+    degrees_n, minutes_n, seconds_n = convert_dd_dms(latitude_decimal)
+    degrees_w, minutes_w, seconds_w = convert_dd_dms(longitude_decimal)
+    georef_source = series['GEOREF_SOURCE']
+    gps_datum = series['GPS_DATUM']
+    altitude = series['ALTITUDE']
+    altitude_unit = series['ALTITUDE_UNIT']
+    altitude_in_m = series['ALTITUDE_IN_M']
+    fo_name = series['ADMU_NAME']
+    district_name = series['PARENT_NAM']
+    state = series['ADMIN_ST']
+    county = series['SUB_CNT2']
+
+    zone = get_zone(series)
+    location_description = get_location_desc(series)
+
+    loc = Location(phytoregion=phytoregion, phytoregion_full=phytoregion_full, locality=locality, geog_area=geog_area,
+                   directions=directions, latitude_decimal=latitude_decimal, longitude_decimal=longitude_decimal,
+                   degrees_n=degrees_n, minutes_n=minutes_n, seconds_n=seconds_n, degrees_w=degrees_w,
+                   minutes_w=minutes_w, seconds_w=seconds_w, georef_source=georef_source, gps_datum=gps_datum,
+                   altitude=altitude, altitude_unit=altitude_unit, altitude_in_m=altitude_in_m, fo_name=fo_name,
+                   district_name=district_name, state=state, county=county, zone=zone,
+                   location_description=location_description)
+
+    return zone, location_description, loc
+
+
+def get_location_desc(series):
+    land_owner = series['LAND_OWNER']
+    associated_taxa_full = series['ASSOCIATED_TAXA_FULL']
+    mod = series['USER2']   # modifying factors of collection site (grazed, etc.)
+    mod2 = series['USER1']  # additional modifying factors of collection site (roadside, etc.)
+    geomorphology = series['GEOMORPHOLOGY']
+    slope = series['SLOPE']
+    aspect = series['ASPECT']
+    habitat = series['HABITAT']
+    geology = series['GEOLOGY']
+    soil_type = series['SOIL_TYPE']
+    population_size = series['POPULATION_SIZE']
+    occupancy = series['OCCUPANCY']  # Number of plants collected from
+
+    loc_desc = LocationDescription(land_owner=land_owner, associated_taxa_full=associated_taxa_full, mod=mod, mod2=mod2,
+                                   geomorphology=geomorphology, slope=slope, aspect=aspect, habitat=habitat,
+                                   geology=geology, soil_type=soil_type, population_size=population_size,
+                                   occupancy=occupancy)
+    return loc_desc
+
+
+def get_species(name):
+    return db.session.query(Species).filter_by(name_full=name).first()
+
+
+def get_zone(series):
+    ptz = series['Pot_STZ']
+    us_l4_code = series['US_L4CODE']
+    us_l4_name = series['US_L4NAME']
+    us_l3_code = series['US_L3CODE']
+    us_l3_name = series['US_L3NAME']
+    achy_sz_gridcode = series['ACHY_SZ_GRIDCODE']
+    achy_sz_zone = series['ACHY_SZ_ZONE']
+    cp_buff = series['CPBuff']
+    cp_strict = series['CPStrict']
+    avail_buff = series['AVAIL_BUFF']
+    avail_strict = series['AVAIL_STRICT']
+    usgs_zone = series['USGS_ZONE']
+
+    zone = Zone(ptz=ptz, us_l4_code=us_l4_code, us_l4_name=us_l4_name, us_l3_code=us_l3_code, us_l3_name=us_l3_name,
+                achy_sz_gridcode=achy_sz_gridcode, achy_sz_zone=achy_sz_zone, cp_buff=cp_buff, cp_strict=cp_strict,
+                avail_buff=avail_buff, avail_strict=avail_strict, usgs_zone=usgs_zone)
+    return zone
 
 
 def get_plant(series):
@@ -61,7 +198,6 @@ def get_plant(series):
     else:
         name_full = name[0] + ' ' + name[1]
 
-    last = None
     if pd.isnull(series['Family']):
         last = Species.query.filter_by(symbol=series['Symbol']).first()
         if last is not None:
@@ -75,7 +211,7 @@ def get_plant(series):
                            genus=name[0], species=name[1], var_ssp1=var_ssp1, var_ssp2=var_ssp2,
                            plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
                            poll_val=0, research_val=0)
-    add_to_db(plant)
+    add_plant_to_db(plant)
 
 
 def check_synonym(series):
@@ -94,8 +230,8 @@ def check_synonym(series):
 
 if __name__ == '__main__':
     db.init_app(app)
-    print('[!] Adding species!')
-    add_species(df)
-    print('[!] Adding synonyms!')
-    add_synonyms(df)
-    print('[!] Done adding {} Species!'.format(len(Species.query.all())))
+    db.create_all()
+
+    # Already added to local database
+    #add_species(df)
+    #add_synonyms(df)

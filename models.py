@@ -2,7 +2,7 @@
 CPNPP Database
 
 Created:  4/13/2017
-Updated:  4/23/2017
+Updated:  4/28/2017
 Author:   Avery Uslaner
 """
 from flask_sqlalchemy import SQLAlchemy
@@ -200,7 +200,7 @@ class Accession(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     data_source = db.Column(db.String(30))
-    plant_habit = db.Column(db.String(30))
+    plant_habit = db.Column(db.String(30))  # Formerly Habit_rev
     coll_date = db.Column(db.DateTime)  # Sqlite expects YYYY-MM-DD format
     acc_num = db.Column(db.String(10))
     acc_num1 = db.Column(db.String(10))
@@ -260,9 +260,10 @@ class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     phytoregion = db.Column(db.String(30))
     phytoregion_full = db.Column(db.String(50))
-    locality = db.Column(db.String(50))  # locality of the collection site if applicable - i.e. National Forest/NCA's, etc.
+    # locality of the collection site if applicable - i.e. National Forest/NCA's, etc.
+    locality = db.Column(db.String(50))  # Formerly SUB_CNT3
     geog_area = db.Column(db.String(50))
-    directions = db.Column(db.Text)
+    directions = db.Column(db.Text)  # Formerly locality
     degrees_n = db.Column(db.Integer)
     minutes_n = db.Column(db.Integer)
     seconds_n = db.Column(db.Float)
