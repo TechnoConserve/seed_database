@@ -2,32 +2,20 @@ import pandas as pd
 from sqlalchemy.exc import IntegrityError
 
 from app import app
-from models import db, Species, Accession, Location, LocationDescription, Zone
+from models import db, Availability, Species, Accession, Location, LocationDescription, Testing, Zone
 
 df = pd.read_excel('complete_plants_checklist_usda.xlsx')
 db_df = pd.read_excel('DB_export_updated123016_noGRINavail_with_SWSP_data.xlsx')
 
 
-def add_accessions(df):
+def parse_excel(df):
     for index, row in df.iterrows():
         zone, desc, loc = get_zone_desc_loc(row)
         species, acc = get_species_acc(row)
 
-        add_acc_to_db(zone, desc, loc, species, acc)
-
-
-def add_acc_to_db(zone, location_description, location, species, accession):
-    db.session.add(zone)
-    db.session.add(location_description)
-    db.session.add(location)
-    db.session.add(species)
-    db.session.add(accession)
-    try:
-        db.session.commit()
-        print('Successfully added {} to database!'.format(accession.acc_num))
-    except IntegrityError:
-        db.session.rollback()
-        print('[!] {} already exists in the database!'.format(accession.acc_num))
+        if add_acc_to_db(zone, desc, loc, species, acc):
+            test = get_test(row, acc)
+            add_test_to_db(test)
 
 
 def add_synonyms(df):
@@ -40,6 +28,28 @@ def add_species(df):
         get_plant(row)
 
 
+# TODO
+"""
+Adding those singular model objects to the database could be refactored to be a little more DRY compliant.
+"""
+
+
+def add_acc_to_db(zone, location_description, location, species, accession):
+    db.session.add(zone)
+    db.session.add(location_description)
+    db.session.add(location)
+    db.session.add(species)
+    db.session.add(accession)
+    try:
+        db.session.commit()
+        print('Successfully added {} to database!'.format(accession.acc_num))
+        return True
+    except IntegrityError:
+        db.session.rollback()
+        print('[!] {} already exists in the database!'.format(accession.acc_num))
+        return False
+
+
 def add_plant_to_db(plant):
     db.session.add(plant)
     try:
@@ -47,6 +57,15 @@ def add_plant_to_db(plant):
     except IntegrityError:
         db.session.rollback()
         print('{} already exists in the database!'.format(plant.name_full))
+
+
+def add_test_to_db(test):
+    db.session.add(test)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        print('{} already exists in the database!'.format(test.name_full))
 
 
 def convert_dd_dms(dd):
@@ -82,6 +101,24 @@ def get_species_acc(series):
                     increase=increase, species=species, location=location)
 
     return species, acc
+
+
+def get_test(series, accession):
+    amt_rcvd_lbs = series['AMOUNT_RECVD__LBS_']
+    clean_wt_lbs = series['CLEAN_WEIGHT__LBS_']
+    est_seed_lb = series['SEED_LB']  # Estimated seeds per pound
+    est_pls_lb = series['EST_PLS_LB']  # Estimated Pure Live Seed per pound
+    est_pls_collected = series['EST_PLS_COLLECTED']
+    test_type = series['TEST_TYPE']
+    test_date = series['TEST_DATE']
+    purity = series['PURITY_']
+    tz = series['TZ_']
+    fill = series['FILL_']
+
+    test = Testing(amt_rcvd_lbs=amt_rcvd_lbs, clean_wt_lbs=clean_wt_lbs, est_seed_lb=est_seed_lb, est_pls_lb=est_pls_lb,
+                   est_pls_collected=est_pls_collected, test_type=test_type, test_date=test_date, purity=purity, tz=tz,
+                   fill=fill, accession=accession)
+    return test
 
 
 def get_zone_desc_loc(series):
