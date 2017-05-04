@@ -65,7 +65,7 @@ def add_test_to_db(test):
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        print('{} already exists in the database!'.format(test.name_full))
+        print('Test #{} already exists in the database!'.format(test.id))
 
 
 def convert_dd_dms(dd):
