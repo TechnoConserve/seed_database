@@ -237,7 +237,7 @@ class InstitutionForm(FlaskForm):
         'Contact Phone'
     )
     contact_phone_ext = IntegerField(
-        'Contact Phone Extension'
+        'Phone Extension'
     )
     contact_email = StringField(
         'Contact Email',
