@@ -243,8 +243,12 @@ class InstitutionForm(FlaskForm):
         'Contact Email',
         validators=[validators.Email()]
     )
-    request_costs = StringField(
+    request_costs = BooleanField(
         'Request Costs?'
+    )
+    cost = IntegerField(
+        'Cost',
+        validators=[validators.number_range(min=0.00, max=100.00)]
     )
 
 

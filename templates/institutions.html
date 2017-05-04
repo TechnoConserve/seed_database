@@ -2,6 +2,9 @@
 {% import 'macros.html' as macros %}
 
 {% block content %}
+    <div class="text-center">
+        <h1>Institution Creation Form</h1>
+    </div>
 <form method="POST" action="" class="form-horizontal">
     {{ form.hidden_tag() }}
     <div class="form-group">
@@ -41,9 +44,12 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="request_costs" class="col-sm-2 control-label">Request Costs</label>
-        <div class="col-sm-10">
-            {{ macros.with_errors(form.request_costs, class="form-control", type="number", placeholder=form.request_costs.label.text) }}
+        <label for="request_costs" class="col-sm-2 control-label">Request Costs?</label>
+        <div class="col-sm-1 checkbox-inline text-center">
+            {{ macros.with_errors(form.request_costs, type="checkbox") }}
+        </div>
+        <div class="col-sm-9">
+            {{ macros.with_errors(form.cost, class="collapse form-control", type="number", placeholder=form.cost.label.text) }}
         </div>
     </div>
     <div class="form-group">
@@ -53,3 +59,17 @@
     </div>
 </form>
 {% endblock content %}
+
+{% block extra_scripts %}
+    <script>
+        jQuery(document).ready(function() {
+            $("#request_costs").change(function() {
+                if (this.checked) {
+                    $('#cost').show();
+                } else {
+                    $('#cost').hide();
+                }
+            });
+        });
+    </script>
+{% endblock %}

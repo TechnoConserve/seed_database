@@ -157,7 +157,9 @@ class Institution(db.Model):
     contact_phone = db.Column(db.Integer)
     contact_phone_ext = db.Column(db.Integer)
     contact_email = db.Column(db.String(50))
-    request_costs = db.Column(db.String(50))  # Does this institution charge a fee for requesting seed?
+    request_costs = db.Column(db.Boolean)  # Does this institution charge a fee for requesting seed?
+    # If we need to calculate things by cost, store dollars and cents separately
+    cost = db.Column(db.Integer)  # How much?
 
     def __init__(
             self, name, address, contact_name, contact_phone, contact_phone_ext, contact_email,
