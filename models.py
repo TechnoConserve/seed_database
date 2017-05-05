@@ -11,6 +11,12 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
+def add_column(table_name, column):
+    column_name = column.compile(dialect=db.engine.dialect)
+    column_type = column.type.compile(db.engine.dialect)
+    db.session.execute('ALTER TABLE %s ADD COLUMN %s %s' % (table_name, column_name, column_type))
+
+
 def compute_gr_to_lb(grams):
     return grams * 0.00220462
 
@@ -159,11 +165,11 @@ class Institution(db.Model):
     contact_email = db.Column(db.String(50))
     request_costs = db.Column(db.Boolean)  # Does this institution charge a fee for requesting seed?
     # If we need to calculate things by cost, store dollars and cents separately
-    cost = db.Column(db.Integer)  # How much?
+    cost = db.Column(db.Float)  # How much?
 
     def __init__(
             self, name, address, contact_name, contact_phone, contact_phone_ext, contact_email,
-            request_costs):
+            request_costs, cost):
 
         self.name = name
         self.address = address
@@ -172,6 +178,7 @@ class Institution(db.Model):
         self.contact_phone_ext = contact_phone_ext
         self.contact_email = contact_email
         self.request_costs = request_costs
+        self.cost = cost
 
     def __repr__(self):
         return "<Institution(name={}, address={})>".format(

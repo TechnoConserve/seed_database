@@ -237,7 +237,8 @@ class InstitutionForm(FlaskForm):
         'Contact Phone'
     )
     contact_phone_ext = IntegerField(
-        'Phone Extension'
+        'Phone Extension',
+        validators=[validators.optional()]
     )
     contact_email = StringField(
         'Contact Email',
@@ -246,7 +247,7 @@ class InstitutionForm(FlaskForm):
     request_costs = BooleanField(
         'Request Costs?'
     )
-    cost = IntegerField(
+    cost = FloatField(
         'Cost',
         validators=[validators.number_range(min=0.00, max=100.00)]
     )

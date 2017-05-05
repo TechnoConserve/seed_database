@@ -163,7 +163,8 @@ def institutions():
             contact_phone=form.contact_phone.data,
             contact_phone_ext=form.contact_phone_ext.data,
             contact_email=form.contact_email.data,
-            request_costs=form.request_costs.data
+            request_costs=form.request_costs.data,
+            cost=form.cost.data
         )
         models.db.session.add(institute)
         models.db.session.commit()
