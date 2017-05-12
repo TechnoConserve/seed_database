@@ -58,15 +58,30 @@ class Contact(db.Model):
     last_name = db.Column(db.String(40))
     email = db.Column(db.String(50))
     telephone = db.Column(db.Integer)
-    tel_ext = db.Column(db.Integer)
-    title = db.Column(db.String(50))
-    agency = db.Column(db.String(50))
+    tel_ext = db.Column(db.Integer)  # Telephone extension
+    title = db.Column(db.String(50))  # Job title
+    agency = db.Column(db.String(50))  # Who do they work for?
 
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     institution_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
 
     address = db.relationship('Address', backref='contacts')
     institute = db.relationship('Institution', backref='contacts')
+
+    def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, institute):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.telephone = telephone
+        self.tel_ext = tel_ext
+        self.title = title
+        self.agency = agency
+        self.address = address
+        self.institute = institute
+
+    def __repr__(self):
+        return "<Contact(first_name={}, last_name={})>".format(
+            self.first_name, self.last_name)
 
 
 class Species(db.Model):
@@ -201,32 +216,41 @@ class Institution(db.Model):
     """
     The Institution table has a One-to-Many relationship with the
     Shipping table.
+    
+    The Institution table has a One-to-Many relationship with the
+    Address table.
+    
+    The Institution table has a One-to-Many relationship with the
+    Contact table.
     """
     __tablename__ = 'institution'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    address_one = db.Column(db.String(100))
-    address_two = db.Column(db.String(100))
-    state = db.Column(db.String(20))
-    city = db.Column(db.String(25))
-    zipcode = db.Column(db.Integer)
+    # General phone number that may or may not be related to particular contact
+    institute_phone = db.Column(db.Integer)
+    institute_phone_ext = db.Column(db.Integer)
+    # General email that may or may not be related to a particular contact
+    institute_email = db.Column(db.String(50))
     request_costs = db.Column(db.Boolean)  # Does this institution charge a fee for requesting seed?
     # If we need to calculate things by cost, store dollars and cents separately
     cost = db.Column(db.Float)  # How much?
 
+    address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
+
+    address = db.relationship('Address', backref='institute', uselist=False)
+
     def __init__(
-            self, name, address, contact_name, contact_phone, contact_phone_ext, contact_email,
-            request_costs, cost):
+            self, name, institute_phone, institute_phone_ext, institute_email,
+            request_costs, cost, address):
 
         self.name = name
-        self.address = address
-        self.contact_name = contact_name
-        self.contact_phone = contact_phone
-        self.contact_phone_ext = contact_phone_ext
-        self.contact_email = contact_email
+        self.institute_phone = institute_phone
+        self.institute_phone_ext = institute_phone_ext
+        self.institute_email = institute_email
         self.request_costs = request_costs
         self.cost = cost
+        self.address = address
 
     def __repr__(self):
         return "<Institution(name={}, address={})>".format(
