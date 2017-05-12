@@ -16,12 +16,6 @@ def index():
 @app.route('/accessions')
 def accessions():
     form = forms.AccessionForm()
-    form.family.choices = [
-        (species.family, species.family) for species in
-        models.db.session.query(models.Species).distinct(models.Species.family).group_by(models.Species.family)]
-    form.genus.choices = [
-        (species.genus, species.genus) for species in
-        models.db.session.query(models.Species).distinct(models.Species.genus).group_by(models.Species.genus)]
     form.species.choices = [
         (species.id, species.name_full) for species in
         models.db.session.query(models.Species).distinct(models.Species.name_full).group_by(models.Species.name_full)]
@@ -87,7 +81,8 @@ def accessions():
         if len(split) > 2:
             acc_num3 = split[2]
         acc = models.Accession(
-            data_source=form.data_source.data,
+            # Data source is CPNPP Web Entry if entered from this view
+            data_source='CPNPP Web Entry',
             plant_habit=form.plant_habit.data,
             coll_date=form.coll_date.data,
             acc_num=acc_num,
@@ -271,7 +266,7 @@ def species():
     return render_template('species.html', form=form)
 
 
-@app.route('/success')
+@app.route('/success', methods=('GET', 'POST'))
 def success():
     return 'Success!'
 

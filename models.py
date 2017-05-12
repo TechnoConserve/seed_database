@@ -2,8 +2,10 @@
 CPNPP Database
 
 Created:  4/13/2017
-Updated:  4/28/2017
+Updated:  5/12/2017
 Author:   Avery Uslaner
+
+This file holds the models for the database tables.
 """
 from flask_sqlalchemy import SQLAlchemy
 
@@ -21,9 +23,31 @@ def compute_gr_to_lb(grams):
     return grams * 0.00220462
 
 
+class Contacts(db.Model):
+    """
+    The Contacts table has a Many-to-One relationship with the
+    Institution table.
+    
+    A contact represents a person of significance related to a
+    particular institution. As an example, for each seed storage 
+    institution, the person responsible for managing seed shipments out 
+    of that institution should be added as a Contact record.
+    """
+    __tablename__ = 'contacts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(30))
+    last_name = db.Column(db.String(40))
+    email = db.Column(db.String(50))
+    telephone = db.Column(db.Integer)
+    tel_ext = db.Column(db.Integer)
+    title = db.Column(db.String(50))
+    agency = db.Column(db.String(50))
+
+
 class Species(db.Model):
     """
-    The Species table has a One-to-Many relationship with other objects 
+    The Species table has a One-to-Many relationship with other objects
     in the same table.
     
     [?] http://docs.sqlalchemy.org/en/rel_1_1/orm/self_referential.html#adjacency-list-relationships
@@ -158,11 +182,11 @@ class Institution(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    address = db.Column(db.Text)
-    contact_name = db.Column(db.String(50))
-    contact_phone = db.Column(db.Integer)
-    contact_phone_ext = db.Column(db.Integer)
-    contact_email = db.Column(db.String(50))
+    address_one = db.Column(db.String(100))
+    address_two = db.Column(db.String(100))
+    state = db.Column(db.String(20))
+    city = db.Column(db.String(25))
+    zipcode = db.Column(db.Integer)
     request_costs = db.Column(db.Boolean)  # Does this institution charge a fee for requesting seed?
     # If we need to calculate things by cost, store dollars and cents separately
     cost = db.Column(db.Float)  # How much?
@@ -215,7 +239,7 @@ class Accession(db.Model):
     acc_num1 = db.Column(db.String(10))
     acc_num2 = db.Column(db.String(10))
     acc_num3 = db.Column(db.String(10))
-    collected_with = db.Column(db.String(100))
+    collected_with = db.Column(db.String(300))
     collection_misc = db.Column(db.Text)
     seed_source = db.Column(db.String(100))
     description = db.Column(db.Text)

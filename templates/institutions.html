@@ -4,7 +4,7 @@
     <div class="text-center">
         <h1>Institution Creation Form</h1>
     </div>
-<form method="POST" action="" class="form-horizontal">
+<form method="POST" action="/institutions" class="form-horizontal">
     {{ form.hidden_tag() }}
     <div class="form-group {% if form.name.errors %}has-error{% endif %}">
         <label for="name" class="col-sm-2 control-label">Name</label>

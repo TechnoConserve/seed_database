@@ -5,7 +5,8 @@ from wtforms import validators
 from models import Shipping
 
 COMPANIES = [('FedEx', 'FedEx'), ('UPS', 'UPS'), ('USPS', 'USPS')]
-DURATION_CHOICES = [('Annual', 'Annual'), ('Perennial', 'Perennial'), ('Biennial', 'Biennial'), ('Monocarpic', 'Monocarpic')]
+DURATION_CHOICES = [
+    ('Annual', 'Annual'), ('Perennial', 'Perennial'), ('Biennial', 'Biennial'), ('Monocarpic', 'Monocarpic')]
 TYPE_CHOICES = [
     ('Graminoid', 'Graminoid'),
     ('Forb/Herb', 'Forb/Herb'),
@@ -14,6 +15,27 @@ TYPE_CHOICES = [
     ('Subshrub', 'Subshrub'),
     ('Vine', 'Vine'),
 ]
+PHYTOREGION_CODES = [
+    ('11E', 'Blue Mountains (Omernik)'),
+    ('12E', 'Snake River Plain (Omernik)'),
+    ('13E', 'Central Basin and Range (Omernik)'),
+    ('14E', 'Mojave Basin and Range (Omernik)'),
+    ('18E', 'Wyoming Basin (Omernik)'),
+    ('19E', 'Wasatch and Uinta Mountains (Omernik)'),
+    ('19N', 'Colorado Plateau (TNC)'),
+    ('20E', 'Colorado Plateau'),
+    ('20E', 'Colorado Plateau (Omernik)'),
+    ('21E', 'Southern Rockies (Omernik)'),
+    ('22E', 'Arizona/New Mexico Plateau (Omernik)'),
+    ('23E', 'Arizona/New Mexico Mountains (Omernik)'),
+    ('23N', 'Sonoran Desert (TNC)'),
+    ('24E', 'Chihuahuan Deserts (Omernik)'),
+    ('25E', 'Western High Plains (Omernik)'),
+    ('26E', 'Southwestern Tablelands (Omernik)'),
+    ('79E', 'Madrean Archipelago (Omernik)'),
+    ('80E', 'Northwestern Basin and Range (Omernik)'),
+    ('81E', 'Sonoran Basin and Range (Omernik)'),
+    ('9N', 'Utah-Wyoming Rocky Mountains (TNC)')]
 
 
 def shipment_exists(field):
@@ -55,18 +77,8 @@ class AvailabilityForm(FlaskForm):
 
 
 class AccessionForm(FlaskForm):
-    family = SelectField(
-        'Family'
-    )
-    genus = SelectField(
-        'Genus'
-    )
     species = SelectField(
         'Species',
-    )
-    data_source = StringField(
-        'Data Source',
-        validators=[validators.length(max=30)]
     )
     plant_habit = SelectField(
         'Plant Habit',
@@ -83,7 +95,7 @@ class AccessionForm(FlaskForm):
     )
     collected_with = StringField(
         'Collectors',
-        validators=[validators.InputRequired(), validators.length(max=100)]
+        validators=[validators.InputRequired(), validators.length(max=300)]
     )
     collection_misc = TextAreaField(
         'Collection Miscellaneous',
@@ -99,8 +111,9 @@ class AccessionForm(FlaskForm):
         'Notes'
     )
     # Location Fields
-    phytoregion = StringField(
+    phytoregion = SelectField(
         'Phytoregion Code',
+        choices=PHYTOREGION_CODES,
         validators=[validators.length(max=30)]
     )
     phytoregion_full = StringField(

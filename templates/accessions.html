@@ -1,13 +1,205 @@
-<form method="POST" action="" class="form">
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Accession Creation Form</h1>
+    </div>
+<form method="POST" action="" class="form-horizontal">
     {{ form.hidden_tag() }}
-    {% for field in form %}
-        <div class="field">
-            {% if field.errors %}
-                {% for error in field.errors %}
-                    <div class="notification error">{{ error }}</div>
-                {% endfor %}
-            {% endif %}
-            {{ field(placeholder=field.label.text) }}
+    <div class="form-group {% if form.species.errors %}has-error{% endif %}">
+        <label for="species" class="col-sm-2 control-label">Species</label>
+        <div class="col-sm-10">
+            {{ form.species(class="form-control") }}
         </div>
-    {% endfor %}
+    </div>
+    <div class="form-group {% if form.plant_habit.errors %}has-error{% endif %}">
+        <label for="plant_habit" class="col-sm-2 control-label">Plant Habit</label>
+        <div class="col-sm-10">
+            {{ form.plant_habit(class="form-control") }}
+        </div>
+    </div>
+    <div class="form-group {% if form.coll_date.errors %}has-error{% endif %}">
+        <label for="coll_date" class="col-sm-2 control-label">Collection Date</label>
+        <div class="col-sm-10">
+            {{ form.coll_date(class="form-control", type="date", placeholder=form.coll_date.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.acc_num.errors %}has-error{% endif %}">
+        <label for="acc_num" class="col-sm-2 control-label">Accession Number</label>
+        <div class="col-sm-10">
+            {{ form.acc_num(class="form-control", type="text", placeholder=form.acc_num.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.collected_with.errors %}has-error{% endif %}">
+        <label for="collected_with" class="col-sm-2 control-label">Collectors</label>
+        <div class="col-sm-10">
+            {{ form.collected_with(class="form-control", type="text", placeholder=form.collected_with.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.collection_misc.errors %}has-error{% endif %}">
+        <label for="collection_misc" class="col-sm-2 control-label">Miscellaneous Collection Info</label>
+        <div class="col-sm-10">
+            {{ form.collection_misc(class="form-control", type="text", placeholder=form.collection_misc.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.seed_source.errors %}has-error{% endif %}">
+        <label for="seed_source" class="col-sm-2 control-label">Seed Source</label>
+        <div class="col-sm-10">
+            {{ form.species(class="form-control", type="text", placeholder="e.g. ground, plants, both") }}
+        </div>
+    </div>
+    <div class="form-group {% if form.description.errors %}has-error{% endif %}">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+            {{ form.plant_habit(class="form-control", type="text", placeholder=form.description.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.notes.errors %}has-error{% endif %}">
+        <label for="notes" class="col-sm-2 control-label">Notes</label>
+        <div class="col-sm-10">
+            {{ form.notes(class="form-control", type="text", placeholder=form.notes.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.phytoregion.errors %}has-error{% endif %}">
+        <label for="phytoregion" class="col-sm-2 control-label">Phytoregion</label>
+        <div class="col-sm-7">
+            <!-- This field displays phytoregion names to the user but stores the phytoregion code -->
+            {{ form.phytoregion(class="form-control", type="text", placeholder=form.phytoregion.label.text) }}
+        </div>
+        <label for="phytoregion_full" class="col-sm-2 control-label">Phytoregion Code</label>
+        <div class="col-sm-1">
+            <!-- This field displays phytoregion codes to the user but stores the phytoregion name -->
+            {{ form.phytoregion_full(class="form-control", type="text", readonly=True) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.locality.errors %}has-error{% endif %}">
+        <label for="locality" class="col-sm-2 control-label">Locality</label>
+        <div class="col-sm-10">
+            {{ form.locality(class="form-control", type="text", placeholder=form.locality.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.geog_area.errors %}has-error{% endif %}">
+        <label for="geog_area" class="col-sm-2 control-label">Geographic Area</label>
+        <div class="col-sm-10">
+            {{ form.geog_area(class="form-control", type="text", placeholder=form.geog_area.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.directions.errors %}has-error{% endif %}">
+        <label for="directions" class="col-sm-2 control-label">Directions</label>
+        <div class="col-sm-10">
+            {{ form.directions(class="form-control", type="text", placeholder=form.directions.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.degrees_n.errors %}has-error{% endif %}">
+        <label for="degrees_n" class="col-sm-2 control-label">Degrees North</label>
+        <div class="col-sm-10">
+            {{ form.degrees_n(class="form-control", type="number", placeholder=form.degrees_n.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.minutes_n.errors %}has-error{% endif %}">
+        <label for="minutes_n" class="col-sm-2 control-label">Minutes North</label>
+        <div class="col-sm-10">
+            {{ form.minutes_n(class="form-control", type="number", placeholder=form.minutes_n.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.seconds_n.errors %}has-error{% endif %}">
+        <label for="seconds_n" class="col-sm-2 control-label">Seconds North</label>
+        <div class="col-sm-10">
+            {{ form.seconds_n(class="form-control", type="number", placeholder=form.seconds_n.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.degrees_w.errors %}has-error{% endif %}">
+        <label for="degrees_w" class="col-sm-2 control-label">Degrees West</label>
+        <div class="col-sm-10">
+            {{ form.degrees_w(class="form-control", type="number", placeholder=form.degrees_w.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.minutes_w.errors %}has-error{% endif %}">
+        <label for="minutes_w" class="col-sm-2 control-label">Minutes West</label>
+        <div class="col-sm-10">
+            {{ form.minutes_w(class="form-control", type="number", placeholder=form.minutes_w.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.seconds_w.errors %}has-error{% endif %}">
+        <label for="seconds_w" class="col-sm-2 control-label">Seconds West</label>
+        <div class="col-sm-10">
+            {{ form.seconds_w(class="form-control", type="number", placeholder=form.seconds_w.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.latitute_decimal.errors %}has-error{% endif %}">
+        <label for="latitude_decimal" class="col-sm-2 control-label">Latitude Decimal</label>
+        <div class="col-sm-10">
+            {{ form.latitute_decimal(class="form-control", type="number", placeholder=form.latitute_decimal.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.longitude_decimal.errors %}has-error{% endif %}">
+        <label for="longitude_decimal" class="col-sm-2 control-label">Longitude Decimal</label>
+        <div class="col-sm-10">
+            {{ form.longitude_decimal(class="form-control", type="number", placeholder=form.longitude_decimal.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.georef_source.errors %}has-error{% endif %}">
+        <label for="georef_source" class="col-sm-2 control-label">Geographic Reference Source</label>
+        <div class="col-sm-10">
+            {{ form.georef_source(class="form-control", type="text", placeholder=form.georef_source.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.gps_datum.errors %}has-error{% endif %}">
+        <label for="gps_datum" class="col-sm-2 control-label">GPS Datum</label>
+        <div class="col-sm-10">
+            {{ form.gps_datum(class="form-control", type="text", placeholder=form.gps_datum.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.altitude.errors %}has-error{% endif %}">
+        <label for="altitude" class="col-sm-2 control-label">Altitude</label>
+        <div class="col-sm-10">
+            {{ form.altitude(class="form-control", type="number", placeholder=form.altitude.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.altitude_unit.errors %}has-error{% endif %}">
+        <label for="altitude_unit" class="col-sm-2 control-label">Altitude Unit</label>
+        <div class="col-sm-10">
+            {{ form.altitude_unit(class="form-control") }}
+        </div>
+    </div>
+    <div class="form-group {% if form.fo_name.errors %}has-error{% endif %}">
+        <label for="fo_name" class="col-sm-2 control-label">Field Office Name</label>
+        <div class="col-sm-10">
+            {{ form.fo_name(class="form-control", type="text", placeholder=form.fo_name.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.district_name.errors %}has-error{% endif %}">
+        <label for="district_name" class="col-sm-2 control-label">District Name</label>
+        <div class="col-sm-10">
+            {{ form.district_name(class="form-control", type="text", placeholder=form.district_name.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.state.errors %}has-error{% endif %}">
+        <label for="state" class="col-sm-2 control-label">State</label>
+        <div class="col-sm-10">
+            {{ form.state(class="form-control", type="text", placeholder=form.state.label.text) }}
+        </div>
+    </div>
+    <div class="form-group {% if form.county.errors %}has-error{% endif %}">
+        <label for="county" class="col-sm-2 control-label">County</label>
+        <div class="col-sm-10">
+            {{ form.county(class="form-control", type="text", placeholder=form.county.label.text) }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+    </div>
 </form>
+{% endblock content %}
+
+{% block extra_scripts %}
+    <script>
+        jQuery(document).ready(function() {
+            $("#phytoregion").change(function() {
+                form.
+            });
+        });
+    </script>
+{% endblock %}
