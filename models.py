@@ -23,17 +23,35 @@ def compute_gr_to_lb(grams):
     return grams * 0.00220462
 
 
-class Contacts(db.Model):
+class Address(db.Model):
+    """
+    The Address table has a One-to-Many relationship with the
+    Contacts and the Institution tables.
+    """
+    __tablename__ = 'address'
+
+    id = db.Column(db.Integer, primary_key=True)
+    address_one = db.Column(db.String(100))
+    address_two = db.Column(db.String(100))
+    state = db.Column(db.String(20))
+    city = db.Column(db.String(25))
+    zipcode = db.Column(db.Integer)
+
+
+class Contact(db.Model):
     """
     The Contacts table has a Many-to-One relationship with the
     Institution table.
+    
+    The Contacts table has a Many-to-One relationship with the
+    Address table.
     
     A contact represents a person of significance related to a
     particular institution. As an example, for each seed storage 
     institution, the person responsible for managing seed shipments out 
     of that institution should be added as a Contact record.
     """
-    __tablename__ = 'contacts'
+    __tablename__ = 'contact'
 
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(30))
@@ -43,6 +61,12 @@ class Contacts(db.Model):
     tel_ext = db.Column(db.Integer)
     title = db.Column(db.String(50))
     agency = db.Column(db.String(50))
+
+    address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
+    institution_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
+
+    address = db.relationship('Address', backref='contacts')
+    institute = db.relationship('Institution', backref='contacts')
 
 
 class Species(db.Model):
@@ -245,6 +269,8 @@ class Accession(db.Model):
     description = db.Column(db.Text)
     notes = db.Column(db.Text)
     increase = db.Column(db.Boolean)  # Slated for increase?
+
+    # TODO: Link with storage locations
 
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
