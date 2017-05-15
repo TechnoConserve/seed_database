@@ -63,10 +63,10 @@ class Accession(db.Model):
     # TODO: Link with storage locations
 
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
-    location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
+    location_id = db.Column(db.Integer, db.ForeignKey('geo_location.id'))
 
     species = db.relationship('Species', backref=db.backref('accessions', lazy='dynamic'), uselist=False)
-    location = db.relationship('Location', backref='accession', uselist=False)
+    location = db.relationship('GeoLocation', backref='accession', uselist=False)
 
     def __init__(
             self, data_source, plant_habit, coll_date, acc_num, acc_num1, acc_num2, acc_num3,
@@ -285,7 +285,7 @@ class GeoLocation(db.Model):
     state = db.Column(db.String(20))
     county = db.Column(db.String(30))
 
-    location_description_id = db.Column(db.Integer, db.ForeignKey('location_description.id'))
+    location_description_id = db.Column(db.Integer, db.ForeignKey('geo_location_description.id'))
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
     zone = db.relationship('Zone', uselist=False)
@@ -322,7 +322,7 @@ class GeoLocation(db.Model):
         self.zone = zone
 
     def __repr__(self):
-        return "<Location(latitude_decimal={}, longitude_decimal={})>".format(
+        return "<GeoLocation(latitude_decimal={}, longitude_decimal={})>".format(
             self.latitude_decimal, self.longitude_decimal)
 
 
