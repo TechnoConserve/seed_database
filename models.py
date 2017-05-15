@@ -31,7 +31,7 @@ class Accession(db.Model):
     The Accession table has a One-to-Many relationship with the 
     Shipping table.
 
-    The Accession table has a One-to-Many relationship with the Visit
+    The Accession table has a One-to-Many relationship with the Location
     table.
 
     The Accession table has a One-to-Many relationship with the Testing
@@ -66,7 +66,7 @@ class Accession(db.Model):
     visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
 
     species = db.relationship('Species', backref=db.backref('accessions', lazy='dynamic'), uselist=False)
-    visits = db.relationship('Visit', backref='accession')
+    visits = db.relationship('Location', backref='accession')
 
     def __init__(
             self, data_source, plant_habit, coll_date, acc_num, acc_num1, acc_num2, acc_num3,
@@ -602,18 +602,18 @@ class Use(db.Model):
             self.purpose, self.date_start, self.date_end))
 
 
-class Visit(db.Model):
+class Location(db.Model):
     """
-    The Visit table has a One-to-One relationship with the Accession
+    The Location table has a One-to-One relationship with the Accession
     table.
 
-    The Visit table has a One-to-Many relationship with the 
-    VisitDescription table.
+    The Location table has a One-to-Many relationship with the 
+    Visit table.
 
-    The Visit table has a One-to-One relationship with the Zone
+    The Location table has a One-to-One relationship with the Zone
     table.
     """
-    __tablename__ = 'visit'
+    __tablename__ = 'location'
 
     id = db.Column(db.Integer, primary_key=True)
     land_owner = db.Column(db.String(30))
@@ -643,11 +643,11 @@ class Visit(db.Model):
     state = db.Column(db.String(20))
     county = db.Column(db.String(30))
 
-    visit_description_id = db.Column(db.Integer, db.ForeignKey('visit_description.id'))
+    visit_description_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
     zone = db.relationship('Zone', uselist=False)
-    visit_descriptions = db.relationship('VisitDescription')
+    visit_descriptions = db.relationship('Visit')
 
     def __init__(
             self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
@@ -683,16 +683,19 @@ class Visit(db.Model):
         self.zone = zone
 
     def __repr__(self):
-        return "<Visit(latitude_decimal={}, longitude_decimal={})>".format(
+        return "<Location(latitude_decimal={}, longitude_decimal={})>".format(
             self.latitude_decimal, self.longitude_decimal)
 
 
-class VisitDescription(db.Model):
+class Visit(db.Model):
     """
-    The VisitDescription table has a One-to-One relationship with the
-    Accession table.
+    The Visit table has a Many-to-One relationship with the Accession 
+    table.
+    
+    The Visit table has a Many-to-One relationship with the Location
+    table.
     """
-    __tablename__ = 'visit_description'
+    __tablename__ = 'visit'
 
     id = db.Column(db.Integer, primary_key=True)
     associated_taxa_full = db.Column(db.Text)
@@ -718,7 +721,7 @@ class VisitDescription(db.Model):
         self.occupancy = occupancy
 
     def __repr__(self):
-        return "<VisitDescription(land_owner={}, population_size={})>".format(
+        return "<Visit(land_owner={}, population_size={})>".format(
             self.land_owner, self.population_size)
 
 

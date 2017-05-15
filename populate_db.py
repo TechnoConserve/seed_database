@@ -2,7 +2,7 @@ import pandas as pd
 from sqlalchemy.exc import IntegrityError
 
 from app import app
-from models import db, Availability, Species, Accession, Visit, GeoLocationDescription, Testing, Zone
+from models import db, Availability, Species, Accession, Location, GeoLocationDescription, Testing, Zone
 
 df = pd.read_excel('complete_plants_checklist_usda.xlsx')
 db_df = pd.read_excel('DB_export_updated123016_noGRINavail_with_SWSP_data.xlsx')
@@ -144,13 +144,13 @@ def get_zone_desc_loc(series):
     zone = get_zone(series)
     location_description = get_location_desc(series)
 
-    loc = Visit(phytoregion=phytoregion, phytoregion_full=phytoregion_full, locality=locality, geog_area=geog_area,
-                directions=directions, latitude_decimal=latitude_decimal, longitude_decimal=longitude_decimal,
-                degrees_n=degrees_n, minutes_n=minutes_n, seconds_n=seconds_n, degrees_w=degrees_w,
-                minutes_w=minutes_w, seconds_w=seconds_w, georef_source=georef_source, gps_datum=gps_datum,
-                altitude=altitude, altitude_unit=altitude_unit, altitude_in_m=altitude_in_m, fo_name=fo_name,
-                district_name=district_name, state=state, county=county, zone=zone,
-                location_description=location_description)
+    loc = Location(phytoregion=phytoregion, phytoregion_full=phytoregion_full, locality=locality, geog_area=geog_area,
+                   directions=directions, latitude_decimal=latitude_decimal, longitude_decimal=longitude_decimal,
+                   degrees_n=degrees_n, minutes_n=minutes_n, seconds_n=seconds_n, degrees_w=degrees_w,
+                   minutes_w=minutes_w, seconds_w=seconds_w, georef_source=georef_source, gps_datum=gps_datum,
+                   altitude=altitude, altitude_unit=altitude_unit, altitude_in_m=altitude_in_m, fo_name=fo_name,
+                   district_name=district_name, state=state, county=county, zone=zone,
+                   location_description=location_description)
 
     return zone, location_description, loc
 
