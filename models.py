@@ -31,7 +31,7 @@ class Accession(db.Model):
     The Accession table has a One-to-Many relationship with the 
     Shipping table.
 
-    The Accession table has a One-to-One relationship with the Location
+    The Accession table has a One-to-Many relationship with the Visit
     table.
 
     The Accession table has a One-to-Many relationship with the Testing
@@ -63,10 +63,10 @@ class Accession(db.Model):
     # TODO: Link with storage locations
 
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
-    location_id = db.Column(db.Integer, db.ForeignKey('geo_location.id'))
+    visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
 
     species = db.relationship('Species', backref=db.backref('accessions', lazy='dynamic'), uselist=False)
-    location = db.relationship('GeoLocation', backref='accession', uselist=False)
+    visits = db.relationship('Visit', backref='accession')
 
     def __init__(
             self, data_source, plant_habit, coll_date, acc_num, acc_num1, acc_num2, acc_num3,
@@ -245,126 +245,6 @@ class Contact(db.Model):
     def __repr__(self):
         return "<Contact(first_name={}, last_name={})>".format(
             self.first_name, self.last_name)
-
-
-class GeoLocation(db.Model):
-    """
-    The Location table has a One-to-One relationship with the Accession
-    table.
-
-    The GeoLocation table has a One-to-Many relationship with the 
-    LocationDescription table.
-
-    The GeoLocation table has a One-to-One relationship with the Zone
-    table.
-    """
-    __tablename__ = 'geo_location'
-
-    id = db.Column(db.Integer, primary_key=True)
-    land_owner = db.Column(db.String(30))
-    geology = db.Column(db.String(100))
-    soil_type = db.Column(db.String(100))
-    phytoregion = db.Column(db.String(30))
-    phytoregion_full = db.Column(db.String(50))
-    # locality of the collection site if applicable - i.e. National Forest/NCA's, etc.
-    locality = db.Column(db.String(50))  # Formerly SUB_CNT3
-    geog_area = db.Column(db.String(50))
-    directions = db.Column(db.Text)  # Formerly locality
-    degrees_n = db.Column(db.Integer)
-    minutes_n = db.Column(db.Integer)
-    seconds_n = db.Column(db.Float)
-    degrees_w = db.Column(db.Integer)
-    minutes_w = db.Column(db.Integer)
-    seconds_w = db.Column(db.Float)
-    latitude_decimal = db.Column(db.Float)
-    longitude_decimal = db.Column(db.Float)
-    georef_source = db.Column(db.String(50))
-    gps_datum = db.Column(db.String(10))
-    altitude = db.Column(db.Integer)
-    altitude_unit = db.Column(db.String(10))
-    altitude_in_m = db.Column(db.Integer)
-    fo_name = db.Column(db.String(50))
-    district_name = db.Column(db.String(50))
-    state = db.Column(db.String(20))
-    county = db.Column(db.String(30))
-
-    location_description_id = db.Column(db.Integer, db.ForeignKey('geo_location_description.id'))
-    zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
-
-    zone = db.relationship('Zone', uselist=False)
-    location_descriptions = db.relationship('GeoLocationDescription')
-
-    def __init__(
-            self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
-            degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal,
-            longitude_decimal, georef_source, gps_datum, altitude, altitude_unit,
-            altitude_in_m, fo_name, district_name, state, county, location_descriptions, zone):
-        self.land_owner = land_owner
-        self.geology = geology
-        self.soil_type = soil_type
-        self.phytoregion = phytoregion
-        self.phytoregion_full = phytoregion_full
-        self.locality = locality
-        self.geog_area = geog_area
-        self.directions = directions
-        self.degrees_n = degrees_n
-        self.minutes_n = minutes_n
-        self.seconds_n = seconds_n
-        self.degrees_w = degrees_w
-        self.minutes_w = minutes_w
-        self.seconds_w = seconds_w
-        self.latitude_decimal = latitude_decimal
-        self.longitude_decimal = longitude_decimal
-        self.georef_source = georef_source
-        self.gps_datum = gps_datum
-        self.altitude = altitude
-        self.altitude_unit = altitude_unit
-        self.altitude_in_m = altitude_in_m
-        self.fo_name = fo_name
-        self.district_name = district_name
-        self.state = state
-        self.county = county
-        self.location_descriptions = location_descriptions
-        self.zone = zone
-
-    def __repr__(self):
-        return "<GeoLocation(latitude_decimal={}, longitude_decimal={})>".format(
-            self.latitude_decimal, self.longitude_decimal)
-
-
-class GeoLocationDescription(db.Model):
-    """
-    The LocationDescription table has a One-to-One relationship with the
-    Accession table.
-    """
-    __tablename__ = 'geo_location_description'
-
-    id = db.Column(db.Integer, primary_key=True)
-    associated_taxa_full = db.Column(db.Text)
-    mod = db.Column(db.String(200))   # modifying factors of collection site (grazed, etc.)
-    mod2 = db.Column(db.String(200))  # additional modifying factors of collection site (roadside, etc.)
-    geomorphology = db.Column(db.String(100))
-    slope = db.Column(db.String(30))
-    aspect = db.Column(db.String(10))
-    habitat = db.Column(db.String(100))
-    population_size = db.Column(db.Integer)
-    occupancy = db.Column(db.Integer)  # Number of plants collected from
-
-    def __init__(
-            self, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat, population_size, occupancy):
-        self.associated_taxa_full = associated_taxa_full
-        self.mod = mod
-        self.mod2 = mod2
-        self.geomorphology = geomorphology
-        self.slope = slope
-        self.aspect = aspect
-        self.habitat = habitat
-        self.population_size = population_size
-        self.occupancy = occupancy
-
-    def __repr__(self):
-        return "<GeoLocationDescription(land_owner={}, population_size={})>".format(
-            self.land_owner, self.population_size)
 
 
 class Institution(db.Model):
@@ -720,6 +600,126 @@ class Use(db.Model):
                 "purpose={}, date_start={}, date_end={})>".format(
             self.project_name, self.amount_gr, self.amount_lb, self.amount_perc,
             self.purpose, self.date_start, self.date_end))
+
+
+class Visit(db.Model):
+    """
+    The Visit table has a One-to-One relationship with the Accession
+    table.
+
+    The Visit table has a One-to-Many relationship with the 
+    VisitDescription table.
+
+    The Visit table has a One-to-One relationship with the Zone
+    table.
+    """
+    __tablename__ = 'visit'
+
+    id = db.Column(db.Integer, primary_key=True)
+    land_owner = db.Column(db.String(30))
+    geology = db.Column(db.String(100))
+    soil_type = db.Column(db.String(100))
+    phytoregion = db.Column(db.String(30))
+    phytoregion_full = db.Column(db.String(50))
+    # locality of the collection site if applicable - i.e. National Forest/NCA's, etc.
+    locality = db.Column(db.String(50))  # Formerly SUB_CNT3
+    geog_area = db.Column(db.String(50))
+    directions = db.Column(db.Text)  # Formerly locality
+    degrees_n = db.Column(db.Integer)
+    minutes_n = db.Column(db.Integer)
+    seconds_n = db.Column(db.Float)
+    degrees_w = db.Column(db.Integer)
+    minutes_w = db.Column(db.Integer)
+    seconds_w = db.Column(db.Float)
+    latitude_decimal = db.Column(db.Float)
+    longitude_decimal = db.Column(db.Float)
+    georef_source = db.Column(db.String(50))
+    gps_datum = db.Column(db.String(10))
+    altitude = db.Column(db.Integer)
+    altitude_unit = db.Column(db.String(10))
+    altitude_in_m = db.Column(db.Integer)
+    fo_name = db.Column(db.String(50))
+    district_name = db.Column(db.String(50))
+    state = db.Column(db.String(20))
+    county = db.Column(db.String(30))
+
+    visit_description_id = db.Column(db.Integer, db.ForeignKey('visit_description.id'))
+    zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
+
+    zone = db.relationship('Zone', uselist=False)
+    visit_descriptions = db.relationship('VisitDescription')
+
+    def __init__(
+            self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
+            degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal,
+            longitude_decimal, georef_source, gps_datum, altitude, altitude_unit,
+            altitude_in_m, fo_name, district_name, state, county, visit_descriptions, zone):
+        self.land_owner = land_owner
+        self.geology = geology
+        self.soil_type = soil_type
+        self.phytoregion = phytoregion
+        self.phytoregion_full = phytoregion_full
+        self.locality = locality
+        self.geog_area = geog_area
+        self.directions = directions
+        self.degrees_n = degrees_n
+        self.minutes_n = minutes_n
+        self.seconds_n = seconds_n
+        self.degrees_w = degrees_w
+        self.minutes_w = minutes_w
+        self.seconds_w = seconds_w
+        self.latitude_decimal = latitude_decimal
+        self.longitude_decimal = longitude_decimal
+        self.georef_source = georef_source
+        self.gps_datum = gps_datum
+        self.altitude = altitude
+        self.altitude_unit = altitude_unit
+        self.altitude_in_m = altitude_in_m
+        self.fo_name = fo_name
+        self.district_name = district_name
+        self.state = state
+        self.county = county
+        self.visit_descriptions = visit_descriptions
+        self.zone = zone
+
+    def __repr__(self):
+        return "<Visit(latitude_decimal={}, longitude_decimal={})>".format(
+            self.latitude_decimal, self.longitude_decimal)
+
+
+class VisitDescription(db.Model):
+    """
+    The VisitDescription table has a One-to-One relationship with the
+    Accession table.
+    """
+    __tablename__ = 'visit_description'
+
+    id = db.Column(db.Integer, primary_key=True)
+    associated_taxa_full = db.Column(db.Text)
+    mod = db.Column(db.String(200))   # modifying factors of collection site (grazed, etc.)
+    mod2 = db.Column(db.String(200))  # additional modifying factors of collection site (roadside, etc.)
+    geomorphology = db.Column(db.String(100))
+    slope = db.Column(db.String(30))
+    aspect = db.Column(db.String(10))
+    habitat = db.Column(db.String(100))
+    population_size = db.Column(db.Integer)
+    occupancy = db.Column(db.Integer)  # Number of plants collected from
+
+    def __init__(
+            self, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat, population_size, occupancy):
+        self.associated_taxa_full = associated_taxa_full
+        self.mod = mod
+        self.mod2 = mod2
+        self.geomorphology = geomorphology
+        self.slope = slope
+        self.aspect = aspect
+        self.habitat = habitat
+        self.population_size = population_size
+        self.occupancy = occupancy
+
+    def __repr__(self):
+        return "<VisitDescription(land_owner={}, population_size={})>".format(
+            self.land_owner, self.population_size)
 
 
 class Zone(db.Model):

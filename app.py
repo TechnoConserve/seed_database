@@ -44,7 +44,7 @@ def accessions():
             altitude_m = altitude
         else:
             altitude_m = int(altitude * 0.3048)
-        loc = models.GeoLocation(
+        loc = models.Visit(
             phytoregion=form.phytoregion.data,
             phytoregion_full=form.phytoregion_full.data,
             locality=form.locality.data,
