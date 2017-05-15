@@ -252,10 +252,10 @@ class GeoLocation(db.Model):
     The Location table has a One-to-One relationship with the Accession
     table.
 
-    The Location table has a One-to-One relationship with the 
+    The GeoLocation table has a One-to-Many relationship with the 
     LocationDescription table.
 
-    The Location table has a One-to-One relationship with the Zone
+    The GeoLocation table has a One-to-One relationship with the Zone
     table.
     """
     __tablename__ = 'geo_location'
@@ -292,13 +292,13 @@ class GeoLocation(db.Model):
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
     zone = db.relationship('Zone', uselist=False)
-    location_description = db.relationship('GeoLocationDescription', uselist=False)
+    location_descriptions = db.relationship('GeoLocationDescription')
 
     def __init__(
             self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
             degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal,
             longitude_decimal, georef_source, gps_datum, altitude, altitude_unit,
-            altitude_in_m, fo_name, district_name, state, county, location_description, zone):
+            altitude_in_m, fo_name, district_name, state, county, location_descriptions, zone):
         self.land_owner = land_owner
         self.geology = geology
         self.soil_type = soil_type
@@ -324,7 +324,7 @@ class GeoLocation(db.Model):
         self.district_name = district_name
         self.state = state
         self.county = county
-        self.location_description = location_description
+        self.location_descriptions = location_descriptions
         self.zone = zone
 
     def __repr__(self):
@@ -677,6 +677,7 @@ class Use(db.Model):
     __tablename__ = 'use'
 
     id = db.Column(db.Integer, primary_key=True)
+    project_name = db.Column(db.String(50))
     amount_gr = db.Column(db.Float)
     amount_lb = db.Column(db.Float)
     purpose = db.Column(db.Text)
@@ -691,7 +692,9 @@ class Use(db.Model):
     accession = db.relationship('Accession', backref='uses', uselist=False)
     species = db.relationship('Species', backref=db.backref('uses', lazy='dynamic'), uselist=False)
 
-    def __init__(self, amount_gr, purpose, date_start, date_end, start_notes, end_notes, accession, species):
+    def __init__(
+            self, project_name, amount_gr, purpose, date_start, date_end, start_notes, end_notes, accession, species):
+        self.project_name = project_name
         self.amount_gr = amount_gr
         self.purpose = purpose
         self.date_start = date_start
@@ -704,9 +707,9 @@ class Use(db.Model):
         self.amount_lb = compute_gr_to_lb(amount_gr)
 
     def __repr__(self):
-        return ("<Use(amount_gr={}, amount_lb={}, amount_perc={}, "
+        return ("<Use(project_name={}, amount_gr={}, amount_lb={}, amount_perc={}, "
                 "purpose={}, date_start={}, date_end={})>".format(
-            self.amount_gr, self.amount_lb, self.amount_perc,
+            self.project_name, self.amount_gr, self.amount_lb, self.amount_perc,
             self.purpose, self.date_start, self.date_end))
 
 
