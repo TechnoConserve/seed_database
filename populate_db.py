@@ -169,10 +169,9 @@ def get_location_desc(series):
     population_size = series['POPULATION_SIZE']
     occupancy = series['OCCUPANCY']  # Number of plants collected from
 
-    loc_desc = GeoLocationDescription(land_owner=land_owner, associated_taxa_full=associated_taxa_full, mod=mod, mod2=mod2,
+    loc_desc = GeoLocationDescription(associated_taxa_full=associated_taxa_full, mod=mod, mod2=mod2,
                                       geomorphology=geomorphology, slope=slope, aspect=aspect, habitat=habitat,
-                                      geology=geology, soil_type=soil_type, population_size=population_size,
-                                      occupancy=occupancy)
+                                      population_size=population_size, occupancy=occupancy)
     return loc_desc
 
 

@@ -2,10 +2,10 @@
 CPNPP Database
 
 Created:  4/13/2017
-Updated:  5/12/2017
+Updated:  5/15/2017
 Author:   Avery Uslaner
 
-This file holds the models for the database tables.
+This file holds the models and query logic for the database tables.
 """
 from flask_sqlalchemy import SQLAlchemy
 
@@ -735,8 +735,24 @@ class Zone(db.Model):
     us_l4_name = db.Column(db.String(30))
     us_l3_code = db.Column(db.String(10))
     us_l3_name = db.Column(db.String(30))
-    achy_sz_gridcode = db.Column(db.Integer)
+    achy_sz_gridcode = db.Column(db.Integer)  # Achnatherum hymenoides
     achy_sz_zone = db.Column(db.String(10))
+    aslo3_sz_gridcode = db.Column(db.Integer)  # Astragalus lonchocarpus
+    aslo3_sz_zone = db.Column(db.String(10))
+    bogr2_sz_gridcode = db.Column(db.Integer)  # Bouteloua gracilis
+    bogr2_sz_zone = db.Column(db.String(10))
+    cllu2_sz_gridcode = db.Column(db.Integer)  # Cleome lutea
+    cllu2_sz_zone = db.Column(db.String(10))
+    elel5_sz_gridcode = db.Column(db.Integer)  # Elymus elymoides
+    elel5_sz_zone = db.Column(db.String(10))
+    maca2_sz_gridcode = db.Column(db.Integer)  # Machaeranthera canescens
+    maca2_sz_zone = db.Column(db.String(10))
+    plja_sz_gridcode = db.Column(db.Integer)  # Pleuraphis jamesii
+    plja_sz_zone = db.Column(db.String(10))
+    sppa2_sz_gridcode = db.Column(db.Integer)  # Sphaeralcea parvifolia
+    sppa2_sz_zone = db.Column(db.String(10))
+    spcr_sz_gridcode = db.Column(db.Integer)  # Sporobolus cryptandrus
+    spcr_sz_zone = db.Column(db.String(10))
     cp_buff = db.Column(db.Boolean)
     cp_strict = db.Column(db.Boolean)
     avail_buff = db.Column(db.Boolean)
@@ -745,7 +761,9 @@ class Zone(db.Model):
 
     def __init__(
             self, ptz, us_l4_code, us_l4_name, us_l3_code, us_l3_name, achy_sz_gridcode,
-            achy_sz_zone, cp_buff, cp_strict, avail_buff, avail_strict, usgs_zone):
+            achy_sz_zone, aslo3_sz_gridcode, aslo3_sz_zone, bogr2_sz_gridecode, bogr2_sz_zone, cllu2_sz_gridcode,
+            cllu2_sz_zone, elel5_sz_gridcode, elel5_sz_zone, maca2_sz_gridcode, maca2_sz_zone, plja_sz_gridcode,
+            plja_sz_zone, sppa2_sz_gridcode, sppa2_sz_zone, cp_buff, cp_strict, avail_buff, avail_strict, usgs_zone):
 
         self.ptz = ptz
         self.us_l4_code = us_l4_code
@@ -754,6 +772,20 @@ class Zone(db.Model):
         self.us_l3_name = us_l3_name
         self.achy_sz_gridcode = achy_sz_gridcode
         self.achy_sz_zone = achy_sz_zone
+        self.aslo3_sz_gridcode = aslo3_sz_gridcode
+        self.aslo3_sz_zone = aslo3_sz_zone
+        self.bogr2_sz_gridcode = bogr2_sz_gridecode
+        self.bogr2_sz_zone = bogr2_sz_zone
+        self.cllu2_sz_gridcode = cllu2_sz_gridcode
+        self.cllu2_sz_zone = cllu2_sz_zone
+        self.elel5_sz_gridcode = elel5_sz_gridcode
+        self.elel5_sz_zone = elel5_sz_zone
+        self.maca2_sz_gridcode = maca2_sz_gridcode
+        self.maca2_sz_zone = maca2_sz_zone
+        self.plja_sz_gridcode = plja_sz_gridcode
+        self.plja_sz_zone = plja_sz_zone
+        self.sppa2_sz_gridcode = sppa2_sz_gridcode
+        self.sppa2_sz_zone = sppa2_sz_zone
         self.cp_buff = cp_buff
         self.cp_strict = cp_strict
         self.avail_buff = avail_buff
