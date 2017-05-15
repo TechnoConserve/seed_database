@@ -6,7 +6,7 @@ import unittest
 
 from app import app
 from models import (db, Species, Shipping, Institution, Accession,
-                    Location, Zone, GeoLocationDescription, Testing, Availability, Use, Release)
+                    Location, Zone, GeoLocationDescription, Testing, Availability, AmountUsed, Release)
 
 
 def create_app():
@@ -579,14 +579,14 @@ class CPNPPDatabaseTests(unittest.TestCase):
                                      'Germination and competition trials for early seral species '
                                      '(Chicago Botanic Garden).  Photos of habitat, plant and seed'),
                               increase=0, species=plant, location=location)
-        use = Use(amount_gr=3.431, purpose=("We’re planning to set up a field study that is a "
+        use = AmountUsed(amount_gr=3.431, purpose=("We’re planning to set up a field study that is a "
                                             "combination common garden and diversity trial (are "
                                             "there differences in functional traits between "
                                             "populations AND do we get a boost in productivity/seed "
                                             "production/etc when plants from different populations "
                                             "(of the same species) are grown together."),
-                  date_start=datetime.date(2017, 9, 1), date_end=None,
-                  start_notes=("I'm also interested in tackling the question Scott Jensen raised of "
+                         date_start=datetime.date(2017, 9, 1), date_end=None,
+                         start_notes=("I'm also interested in tackling the question Scott Jensen raised of "
                                "incorporating Colorado Plateau accessions in their Great Basin "
                                "production beds to produce diverse seed that can be used throughout "
                                "a provisional seed zone. I worked with the species they're thinking "
@@ -605,7 +605,7 @@ class CPNPPDatabaseTests(unittest.TestCase):
                                "where I think we can help tackle this question include Heliomeris "
                                "(but again the ssp issues comes up), Machaeranthera canescens, and "
                                "Linum lewisii, which is a key reason we’re focusing on them now."),
-                  end_notes=None, accession=accession, species=plant)
+                         end_notes=None, accession=accession, species=plant)
         db.session.add(plant)
         db.session.add(desc)
         db.session.add(zone)

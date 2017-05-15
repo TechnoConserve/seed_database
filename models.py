@@ -40,7 +40,10 @@ class Accession(db.Model):
     The Accession table has a One-to-One relationship with the
     Availability table.
 
-    The Accession table has a One-to-Many relationship with the Use
+    The Accession table has a One-to-Many relationship with the AmountUsed
+    table.
+    
+    The Accession table has a Many-to-Many relationship with the Project
     table.
     """
     __tablename__ = 'accession'
@@ -67,6 +70,7 @@ class Accession(db.Model):
 
     species = db.relationship('Species', backref=db.backref('accessions', lazy='dynamic'), uselist=False)
     visits = db.relationship('Location', backref='accession')
+    projects = db.relationship('Project', secondary=projects, backref=db.backref('accessions', lazy='dynamic'))
 
     def __init__(
             self, data_source, plant_habit, coll_date, acc_num, acc_num1, acc_num2, acc_num3,
@@ -105,6 +109,36 @@ class Address(db.Model):
     state = db.Column(db.String(20))
     city = db.Column(db.String(25))
     zipcode = db.Column(db.Integer)
+
+
+class AmountUsed(db.Model):
+    """
+    AmountUsed table has a Many-to-One relationship with the Accession table.
+
+    AmountUsed table has a Many-to-One relationship with the Species table.
+    """
+    __tablename__ = 'amount_used'
+
+    id = db.Column(db.Integer, primary_key=True)
+    amount_gr = db.Column(db.Float)
+    amount_lb = db.Column(db.Float)
+
+    accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+    species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
+
+    accession = db.relationship('Accession', uselist=False)
+    species = db.relationship('Species', uselist=False)
+
+    def __init__(self, amount_gr, species, accession=None):
+        self.amount_gr = amount_gr
+        self.species = species
+        self.accession = accession
+
+        self.amount_lb = compute_gr_to_lb(amount_gr)
+
+    def __repr__(self):
+        return "<AmountUsed(Species={}, Accession={}, amount_gr={}, amount_lb={})>".format(
+            self.species, self.accession, self.amount_gr, self.amount_lb)
 
 
 class Availability(db.Model):
@@ -291,13 +325,79 @@ class Institution(db.Model):
             self.name, self.address)
 
 
+projects = db.Table('projects',
+                    db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
+                    db.Column('accession_id', db.Integer, db.ForeignKey('accession.id'))
+                    )
+
+
+class Project(db.Model):
+    """
+    The Project table has a Many-to-Many relationship with the Accession 
+    table.
+
+    The Project table has a Many-to-One relationship with the Species
+    table.
+
+    The Project table has a One-to-One relationship with the Institution 
+    table.
+
+    The Project table has a One-to-Many relationship with the Contact 
+    table.
+    """
+    __tablename__ = 'project'
+
+    id = db.Column(db.Integer, primary_key=True)
+    project_name = db.Column(db.String(50))
+    purpose = db.Column(db.Text)
+    abstract = db.Column(db.Text)
+    date_start = db.Column(db.DateTime)
+    date_end = db.Column(db.DateTime)
+    start_notes = db.Column(db.Text)
+    end_notes = db.Column(db.Text)
+
+    species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
+    institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
+    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'))
+
+    species = db.relationship('Species', backref=db.backref('uses', lazy='dynamic'))
+    institute = db.relationship('Institution', backref=db.backref('uses', lazy='dynamic'))
+    contacts = db.relationship('Contact')
+
+    def __init__(
+            self, project_name, amount_gr, purpose, date_start, date_end, start_notes, end_notes, accession, species,
+            institute, contacts):
+        self.project_name = project_name
+        self.amount_gr = amount_gr
+        self.purpose = purpose
+        self.date_start = date_start
+        self.date_end = date_end
+        self.start_notes = start_notes
+        self.end_notes = end_notes
+        self.accession = accession
+        self.species = species
+        self.institute = institute
+        self.contacts = contacts
+
+        self.amount_lb = compute_gr_to_lb(amount_gr)
+
+    def __repr__(self):
+        return ("<AmountUsed(project_name={}, amount_gr={}, amount_lb={}, amount_perc={}, "
+                "purpose={}, date_start={}, date_end={})>".format(
+            self.project_name, self.amount_gr, self.amount_lb, self.amount_perc,
+            self.purpose, self.date_start, self.date_end))
+
+
 class Release(db.Model):
     """
-    Release table has a Many-to-One relationship with the
+    The Release table has a Many-to-One relationship with the
     Accession table.
 
-    Release table has a Many-to-One relationship with the
+    The Release table has a Many-to-One relationship with the
     Species table.
+    
+    The Release table has a One-to-Many relationship with the Zone
+    table.
     """
     __tablename__ = 'release'
 
@@ -328,9 +428,11 @@ class Release(db.Model):
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
+    zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
     accession = db.relationship('Accession', backref='releases', uselist=False)
     species = db.relationship('Species', backref=db.backref('releases', lazy='dynamic'), uselist=False)
+    zones = db.relationship('Zone')
 
     def __init__(
             self, loc_desc, germ_origin, name, year, release_type, plant_origin,
@@ -494,12 +596,6 @@ class Species(db.Model):
         self.synonyms.append(plant)
 
 
-storage_locations = db.Table(
-    'storage_locations',
-    db.Column('institute_id', db.Integer, db.ForeignKey('institution.id')),
-    db.Column('accession_id', db.Integer, db.ForeignKey('accession.id')))
-
-
 class Testing(db.Model):
     """
     The Testing table has a Many-to-One relationship with the 
@@ -546,62 +642,6 @@ class Testing(db.Model):
                     self.est_pls_lb, self.est_pls_collected, self.purity, self.tz))
 
 
-class Use(db.Model):
-    """
-    Use table has a Many-to-One relationship with the Accession table.
-
-    Use table has a Many-to-One relationship with the Species table.
-    
-    Use table has a One-to-One relationship with the Institution table.
-    
-    Use table has a One-to-Many relationship with the Contact table.
-    """
-    __tablename__ = 'use'
-
-    id = db.Column(db.Integer, primary_key=True)
-    project_name = db.Column(db.String(50))
-    amount_gr = db.Column(db.Float)
-    amount_lb = db.Column(db.Float)
-    purpose = db.Column(db.Text)
-    date_start = db.Column(db.DateTime)
-    date_end = db.Column(db.DateTime)
-    start_notes = db.Column(db.Text)
-    end_notes = db.Column(db.Text)
-
-    accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
-    species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
-    institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
-    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'))
-
-    accession = db.relationship('Accession', backref='uses', uselist=False)
-    species = db.relationship('Species', backref=db.backref('uses', lazy='dynamic'), uselist=False)
-    institute = db.relationship('Institution', backref=db.backref('uses', lazy='dynamic'), uselist=False)
-    contacts = db.relationship('Contact')
-
-    def __init__(
-            self, project_name, amount_gr, purpose, date_start, date_end, start_notes, end_notes, accession, species,
-            institute, contacts):
-        self.project_name = project_name
-        self.amount_gr = amount_gr
-        self.purpose = purpose
-        self.date_start = date_start
-        self.date_end = date_end
-        self.start_notes = start_notes
-        self.end_notes = end_notes
-        self.accession = accession
-        self.species = species
-        self.institute = institute
-        self.contacts = contacts
-
-        self.amount_lb = compute_gr_to_lb(amount_gr)
-
-    def __repr__(self):
-        return ("<Use(project_name={}, amount_gr={}, amount_lb={}, amount_perc={}, "
-                "purpose={}, date_start={}, date_end={})>".format(
-            self.project_name, self.amount_gr, self.amount_lb, self.amount_perc,
-            self.purpose, self.date_start, self.date_end))
-
-
 class Location(db.Model):
     """
     The Location table has a One-to-One relationship with the Accession
@@ -643,11 +683,11 @@ class Location(db.Model):
     state = db.Column(db.String(20))
     county = db.Column(db.String(30))
 
-    visit_description_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
+    visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
     zone = db.relationship('Zone', uselist=False)
-    visit_descriptions = db.relationship('Visit')
+    visits = db.relationship('Visit')
 
     def __init__(
             self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
@@ -727,7 +767,10 @@ class Visit(db.Model):
 
 class Zone(db.Model):
     """
-    The Zone table has a One-to-One relationship with the Accession
+    The Zone table has a One-to-One relationship with the Location
+    table.
+    
+    The Zone table has a Many-to-One relationship with the Release
     table.
     """
     __tablename__ = 'zone'

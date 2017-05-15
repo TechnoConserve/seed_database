@@ -327,7 +327,7 @@ def uses():
     if form.validate_on_submit():
         accession = models.Accession.query.get(form.accession.data)
         species = accession.species
-        use = models.Use(
+        use = models.AmountUsed(
             amount_gr=form.amount_gr.data,
             purpose=form.purpose.data,
             date_start=form.date_start.data,
@@ -339,7 +339,7 @@ def uses():
         )
         models.db.session.add(use)
         models.db.session.commit()
-        flash('Yay, Use created for {}.'.format(species.name_full), 'success')
+        flash('Yay, AmountUsed created for {}.'.format(species.name_full), 'success')
         return redirect('/success')
     return render_template('use.html', form=form)
 
