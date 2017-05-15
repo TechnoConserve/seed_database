@@ -22,7 +22,7 @@ def accessions():
     if form.validate_on_submit():
         species = models.Species.query.get(form.species.data)
         # Need to create the LocationDescription object first
-        desc = models.LocationDescription(
+        desc = models.GeoLocationDescription(
             land_owner=form.land_owner.data,
             associated_taxa_full=form.associated_taxa_full.data,
             mod=form.mod.data,
@@ -44,7 +44,7 @@ def accessions():
             altitude_m = altitude
         else:
             altitude_m = int(altitude * 0.3048)
-        loc = models.Location(
+        loc = models.GeoLocation(
             phytoregion=form.phytoregion.data,
             phytoregion_full=form.phytoregion_full.data,
             locality=form.locality.data,

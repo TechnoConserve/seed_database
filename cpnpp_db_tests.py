@@ -6,7 +6,7 @@ import unittest
 
 from app import app
 from models import (db, Species, Shipping, Institution, Accession,
-                    Location, Zone, LocationDescription, Testing, Availability, Use, Release)
+                    GeoLocation, Zone, GeoLocationDescription, Testing, Availability, Use, Release)
 
 
 def create_app():
@@ -68,38 +68,38 @@ class CPNPPDatabaseTests(unittest.TestCase):
                                  contact_phone=2084216904,
                                  contact_phone_ext=None, contact_email='tom@highmtnnursery.com',
                                  request_costs='No')
-        desc = LocationDescription(land_owner='BLM',
-                                   associated_taxa_full=('Quercus gambelii:'
+        desc = GeoLocationDescription(land_owner='BLM',
+                                      associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
                                                          'nitida:Artemisia tridentata ssp. '
                                                          'wyomingensis:Lepidium sp.:Rosa woodsii:'
                                                          'Heterotheca villosa var. villosa:Carex '
                                                          'geyeri:Koeleria macrantha'),
-                                   mod='grazed, trampled', mod2='recreation', geomorphology=None,
-                                   slope='5-25 degrees', aspect='varied',
-                                   habitat='Mountain Brush; meadow along road',
-                                   geology='Quaternary, alluvial deposits',
-                                   soil_type='Asphalt and sand, tan/red',
-                                   population_size=200, occupancy=1500)
+                                      mod='grazed, trampled', mod2='recreation', geomorphology=None,
+                                      slope='5-25 degrees', aspect='varied',
+                                      habitat='Mountain Brush; meadow along road',
+                                      geology='Quaternary, alluvial deposits',
+                                      soil_type='Asphalt and sand, tan/red',
+                                      population_size=200, occupancy=1500)
         zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
                     us_l4_name='Semiarid Benchlands and Canyonlands',
                     us_l3_code='20', us_l3_name='Colorado Plateaus',
                     achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
                     avail_strict=0, usgs_zone=0)
-        location = Location(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
-                            locality='Grand Staircase Escalante National Monument',
-                            geog_area='Big Cottonwood Canyon',
-                            directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+        location = GeoLocation(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
+                               locality='Grand Staircase Escalante National Monument',
+                               geog_area='Big Cottonwood Canyon',
+                               directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
                                         'county road 243. Continue on 243 for 8.3 miles then turn '
                                         'left onto county toad 126A. Continue on 126A for 12 miles '
                                         'then turn right. Continue for approximately 1.1 miles to '
                                         'reach collection site.'),
-                            degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
-                            seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
-                            georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
-                            altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
-                            district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
-                            location_description=desc, zone=zone)
+                               degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
+                               seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
+                               georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
+                               altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
+                               district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
+                               location_description=desc, zone=zone)
         plant = Species(symbol='ABAB', name_full='Abutilon abutiloides', common='shrubby Indian mallow',
                         family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
                         plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
@@ -146,38 +146,38 @@ class CPNPPDatabaseTests(unittest.TestCase):
                                  contact_phone=2084216904,
                                  contact_phone_ext=None, contact_email='tom@highmtnnursery.com',
                                  request_costs='No')
-        desc = LocationDescription(land_owner='BLM',
-                                   associated_taxa_full=('Quercus gambelii:'
+        desc = GeoLocationDescription(land_owner='BLM',
+                                      associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
                                                          'nitida:Artemisia tridentata ssp. '
                                                          'wyomingensis:Lepidium sp.:Rosa woodsii:'
                                                          'Heterotheca villosa var. villosa:Carex '
                                                          'geyeri:Koeleria macrantha'),
-                                   mod='grazed, trampled', mod2='recreation', geomorphology=None,
-                                   slope='5-25 degrees', aspect='varied',
-                                   habitat='Mountain Brush; meadow along road',
-                                   geology='Quaternary, alluvial deposits',
-                                   soil_type='Asphalt and sand, tan/red',
-                                   population_size=200, occupancy=1500)
+                                      mod='grazed, trampled', mod2='recreation', geomorphology=None,
+                                      slope='5-25 degrees', aspect='varied',
+                                      habitat='Mountain Brush; meadow along road',
+                                      geology='Quaternary, alluvial deposits',
+                                      soil_type='Asphalt and sand, tan/red',
+                                      population_size=200, occupancy=1500)
         zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
                     us_l4_name='Semiarid Benchlands and Canyonlands',
                     us_l3_code='20', us_l3_name='Colorado Plateaus',
                     achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
                     avail_strict=0, usgs_zone=0)
-        location = Location(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
-                            locality='Grand Staircase Escalante National Monument',
-                            geog_area='Big Cottonwood Canyon',
-                            directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+        location = GeoLocation(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
+                               locality='Grand Staircase Escalante National Monument',
+                               geog_area='Big Cottonwood Canyon',
+                               directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
                                         'county road 243. Continue on 243 for 8.3 miles then turn '
                                         'left onto county toad 126A. Continue on 126A for 12 miles '
                                         'then turn right. Continue for approximately 1.1 miles to '
                                         'reach collection site.'),
-                            degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
-                            seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
-                            georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
-                            altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
-                            district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
-                            location_description=desc, zone=zone)
+                               degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
+                               seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
+                               georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
+                               altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
+                               district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
+                               location_description=desc, zone=zone)
         plant = Species(symbol='ABAB', name_full='Abutilon abutiloides', common='shrubby Indian mallow',
                         family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
                         plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
@@ -217,38 +217,38 @@ class CPNPPDatabaseTests(unittest.TestCase):
                         family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
                         plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
                         poll_val=0, research_val=0)
-        desc = LocationDescription(land_owner='BLM',
-                                   associated_taxa_full=('Quercus gambelii:'
+        desc = GeoLocationDescription(land_owner='BLM',
+                                      associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
                                                          'nitida:Artemisia tridentata ssp. '
                                                          'wyomingensis:Lepidium sp.:Rosa woodsii:'
                                                          'Heterotheca villosa var. villosa:Carex '
                                                          'geyeri:Koeleria macrantha'),
-                                   mod='grazed, trampled', mod2='recreation', geomorphology=None,
-                                   slope='5-25 degrees', aspect='varied',
-                                   habitat='Mountain Brush; meadow along road',
-                                   geology='Quaternary, alluvial deposits',
-                                   soil_type='Asphalt and sand, tan/red',
-                                   population_size=200, occupancy=1500)
+                                      mod='grazed, trampled', mod2='recreation', geomorphology=None,
+                                      slope='5-25 degrees', aspect='varied',
+                                      habitat='Mountain Brush; meadow along road',
+                                      geology='Quaternary, alluvial deposits',
+                                      soil_type='Asphalt and sand, tan/red',
+                                      population_size=200, occupancy=1500)
         zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
                     us_l4_name='Semiarid Benchlands and Canyonlands',
                     us_l3_code='20', us_l3_name='Colorado Plateaus',
                     achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
                     avail_strict=0, usgs_zone=0)
-        location = Location(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
-                            locality='Grand Staircase Escalante National Monument',
-                            geog_area='Big Cottonwood Canyon',
-                            directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+        location = GeoLocation(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
+                               locality='Grand Staircase Escalante National Monument',
+                               geog_area='Big Cottonwood Canyon',
+                               directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
                                         'county road 243. Continue on 243 for 8.3 miles then turn '
                                         'left onto county toad 126A. Continue on 126A for 12 miles '
                                         'then turn right. Continue for approximately 1.1 miles to '
                                         'reach collection site.'),
-                            degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
-                            seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
-                            georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
-                            altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
-                            district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
-                            location_description=desc, zone=zone)
+                               degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
+                               seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
+                               georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
+                               altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
+                               district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
+                               location_description=desc, zone=zone)
         accession = Accession(data_source='UP', plant_habit='Forb/herb',
                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
                               acc_num1='UP', acc_num2='76', acc_num3=None,
@@ -274,38 +274,38 @@ class CPNPPDatabaseTests(unittest.TestCase):
                         family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
                         plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
                         poll_val=0, research_val=0)
-        desc = LocationDescription(land_owner='BLM',
-                                   associated_taxa_full=('Quercus gambelii:'
+        desc = GeoLocationDescription(land_owner='BLM',
+                                      associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
                                                          'nitida:Artemisia tridentata ssp. '
                                                          'wyomingensis:Lepidium sp.:Rosa woodsii:'
                                                          'Heterotheca villosa var. villosa:Carex '
                                                          'geyeri:Koeleria macrantha'),
-                                   mod='grazed, trampled', mod2='recreation', geomorphology=None,
-                                   slope='5-25 degrees', aspect='varied',
-                                   habitat='Mountain Brush; meadow along road',
-                                   geology='Quaternary, alluvial deposits',
-                                   soil_type='Asphalt and sand, tan/red',
-                                   population_size=200, occupancy=1500)
+                                      mod='grazed, trampled', mod2='recreation', geomorphology=None,
+                                      slope='5-25 degrees', aspect='varied',
+                                      habitat='Mountain Brush; meadow along road',
+                                      geology='Quaternary, alluvial deposits',
+                                      soil_type='Asphalt and sand, tan/red',
+                                      population_size=200, occupancy=1500)
         zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
                     us_l4_name='Semiarid Benchlands and Canyonlands',
                     us_l3_code='20', us_l3_name='Colorado Plateaus',
                     achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
                     avail_strict=0, usgs_zone=0)
-        location = Location(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
-                            locality='Grand Staircase Escalante National Monument',
-                            geog_area='Big Cottonwood Canyon',
-                            directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+        location = GeoLocation(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
+                               locality='Grand Staircase Escalante National Monument',
+                               geog_area='Big Cottonwood Canyon',
+                               directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
                                         'county road 243. Continue on 243 for 8.3 miles then turn '
                                         'left onto county toad 126A. Continue on 126A for 12 miles '
                                         'then turn right. Continue for approximately 1.1 miles to '
                                         'reach collection site.'),
-                            degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
-                            seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
-                            georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
-                            altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
-                            district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
-                            location_description=desc, zone=zone)
+                               degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
+                               seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
+                               georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
+                               altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
+                               district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
+                               location_description=desc, zone=zone)
         accession = Accession(data_source='UP', plant_habit='Forb/herb',
                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
                               acc_num1='UP', acc_num2='76', acc_num3=None,
@@ -333,38 +333,38 @@ class CPNPPDatabaseTests(unittest.TestCase):
                         family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
                         plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
                         poll_val=0, research_val=0)
-        desc = LocationDescription(land_owner='BLM',
-                                   associated_taxa_full=('Quercus gambelii:'
+        desc = GeoLocationDescription(land_owner='BLM',
+                                      associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
                                                          'nitida:Artemisia tridentata ssp. '
                                                          'wyomingensis:Lepidium sp.:Rosa woodsii:'
                                                          'Heterotheca villosa var. villosa:Carex '
                                                          'geyeri:Koeleria macrantha'),
-                                   mod='grazed, trampled', mod2='recreation', geomorphology=None,
-                                   slope='5-25 degrees', aspect='varied',
-                                   habitat='Mountain Brush; meadow along road',
-                                   geology='Quaternary, alluvial deposits',
-                                   soil_type='Asphalt and sand, tan/red',
-                                   population_size=200, occupancy=1500)
+                                      mod='grazed, trampled', mod2='recreation', geomorphology=None,
+                                      slope='5-25 degrees', aspect='varied',
+                                      habitat='Mountain Brush; meadow along road',
+                                      geology='Quaternary, alluvial deposits',
+                                      soil_type='Asphalt and sand, tan/red',
+                                      population_size=200, occupancy=1500)
         zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
                     us_l4_name='Semiarid Benchlands and Canyonlands',
                     us_l3_code='20', us_l3_name='Colorado Plateaus',
                     achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
                     avail_strict=0, usgs_zone=0)
-        location = Location(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
-                            locality='Grand Staircase Escalante National Monument',
-                            geog_area='Big Cottonwood Canyon',
-                            directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+        location = GeoLocation(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
+                               locality='Grand Staircase Escalante National Monument',
+                               geog_area='Big Cottonwood Canyon',
+                               directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
                                         'county road 243. Continue on 243 for 8.3 miles then turn '
                                         'left onto county toad 126A. Continue on 126A for 12 miles '
                                         'then turn right. Continue for approximately 1.1 miles to '
                                         'reach collection site.'),
-                            degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
-                            seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
-                            georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
-                            altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
-                            district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
-                            location_description=desc, zone=zone)
+                               degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
+                               seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
+                               georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
+                               altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
+                               district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
+                               location_description=desc, zone=zone)
         accession = Accession(data_source='UP', plant_habit='Forb/herb',
                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
                               acc_num1='UP', acc_num2='76', acc_num3=None,
@@ -396,38 +396,38 @@ class CPNPPDatabaseTests(unittest.TestCase):
                         family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
                         plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
                         poll_val=0, research_val=0)
-        desc = LocationDescription(land_owner='BLM',
-                                   associated_taxa_full=('Quercus gambelii:'
+        desc = GeoLocationDescription(land_owner='BLM',
+                                      associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
                                                          'nitida:Artemisia tridentata ssp. '
                                                          'wyomingensis:Lepidium sp.:Rosa woodsii:'
                                                          'Heterotheca villosa var. villosa:Carex '
                                                          'geyeri:Koeleria macrantha'),
-                                   mod='grazed, trampled', mod2='recreation', geomorphology=None,
-                                   slope='5-25 degrees', aspect='varied',
-                                   habitat='Mountain Brush; meadow along road',
-                                   geology='Quaternary, alluvial deposits',
-                                   soil_type='Asphalt and sand, tan/red',
-                                   population_size=200, occupancy=1500)
+                                      mod='grazed, trampled', mod2='recreation', geomorphology=None,
+                                      slope='5-25 degrees', aspect='varied',
+                                      habitat='Mountain Brush; meadow along road',
+                                      geology='Quaternary, alluvial deposits',
+                                      soil_type='Asphalt and sand, tan/red',
+                                      population_size=200, occupancy=1500)
         zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
                     us_l4_name='Semiarid Benchlands and Canyonlands',
                     us_l3_code='20', us_l3_name='Colorado Plateaus',
                     achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
                     avail_strict=0, usgs_zone=0)
-        location = Location(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
-                            locality='Grand Staircase Escalante National Monument',
-                            geog_area='Big Cottonwood Canyon',
-                            directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+        location = GeoLocation(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
+                               locality='Grand Staircase Escalante National Monument',
+                               geog_area='Big Cottonwood Canyon',
+                               directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
                                         'county road 243. Continue on 243 for 8.3 miles then turn '
                                         'left onto county toad 126A. Continue on 126A for 12 miles '
                                         'then turn right. Continue for approximately 1.1 miles to '
                                         'reach collection site.'),
-                            degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
-                            seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
-                            georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
-                            altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
-                            district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
-                            location_description=desc, zone=zone)
+                               degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
+                               seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
+                               georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
+                               altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
+                               district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
+                               location_description=desc, zone=zone)
         accession = Accession(data_source='UP', plant_habit='Forb/herb',
                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
                               acc_num1='UP', acc_num2='76', acc_num3=None,
@@ -465,38 +465,38 @@ class CPNPPDatabaseTests(unittest.TestCase):
                         family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
                         plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
                         poll_val=0, research_val=0)
-        desc = LocationDescription(land_owner='BLM',
-                                   associated_taxa_full=('Quercus gambelii:'
+        desc = GeoLocationDescription(land_owner='BLM',
+                                      associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
                                                          'nitida:Artemisia tridentata ssp. '
                                                          'wyomingensis:Lepidium sp.:Rosa woodsii:'
                                                          'Heterotheca villosa var. villosa:Carex '
                                                          'geyeri:Koeleria macrantha'),
-                                   mod='grazed, trampled', mod2='recreation', geomorphology=None,
-                                   slope='5-25 degrees', aspect='varied',
-                                   habitat='Mountain Brush; meadow along road',
-                                   geology='Quaternary, alluvial deposits',
-                                   soil_type='Asphalt and sand, tan/red',
-                                   population_size=200, occupancy=1500)
+                                      mod='grazed, trampled', mod2='recreation', geomorphology=None,
+                                      slope='5-25 degrees', aspect='varied',
+                                      habitat='Mountain Brush; meadow along road',
+                                      geology='Quaternary, alluvial deposits',
+                                      soil_type='Asphalt and sand, tan/red',
+                                      population_size=200, occupancy=1500)
         zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
                     us_l4_name='Semiarid Benchlands and Canyonlands',
                     us_l3_code='20', us_l3_name='Colorado Plateaus',
                     achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
                     avail_strict=0, usgs_zone=0)
-        location = Location(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
-                            locality='Grand Staircase Escalante National Monument',
-                            geog_area='Big Cottonwood Canyon',
-                            directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+        location = GeoLocation(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
+                               locality='Grand Staircase Escalante National Monument',
+                               geog_area='Big Cottonwood Canyon',
+                               directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
                                         'county road 243. Continue on 243 for 8.3 miles then turn '
                                         'left onto county toad 126A. Continue on 126A for 12 miles '
                                         'then turn right. Continue for approximately 1.1 miles to '
                                         'reach collection site.'),
-                            degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
-                            seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
-                            georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
-                            altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
-                            district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
-                            location_description=desc, zone=zone)
+                               degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
+                               seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
+                               georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
+                               altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
+                               district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
+                               location_description=desc, zone=zone)
         accession = Accession(data_source='UP', plant_habit='Forb/herb',
                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
                               acc_num1='UP', acc_num2='76', acc_num3=None,
@@ -534,38 +534,38 @@ class CPNPPDatabaseTests(unittest.TestCase):
                         family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
                         plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
                         poll_val=0, research_val=0)
-        desc = LocationDescription(land_owner='BLM',
-                                   associated_taxa_full=('Quercus gambelii:'
+        desc = GeoLocationDescription(land_owner='BLM',
+                                      associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
                                                          'nitida:Artemisia tridentata ssp. '
                                                          'wyomingensis:Lepidium sp.:Rosa woodsii:'
                                                          'Heterotheca villosa var. villosa:Carex '
                                                          'geyeri:Koeleria macrantha'),
-                                   mod='grazed, trampled', mod2='recreation', geomorphology=None,
-                                   slope='5-25 degrees', aspect='varied',
-                                   habitat='Mountain Brush; meadow along road',
-                                   geology='Quaternary, alluvial deposits',
-                                   soil_type='Asphalt and sand, tan/red',
-                                   population_size=200, occupancy=1500)
+                                      mod='grazed, trampled', mod2='recreation', geomorphology=None,
+                                      slope='5-25 degrees', aspect='varied',
+                                      habitat='Mountain Brush; meadow along road',
+                                      geology='Quaternary, alluvial deposits',
+                                      soil_type='Asphalt and sand, tan/red',
+                                      population_size=200, occupancy=1500)
         zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
                     us_l4_name='Semiarid Benchlands and Canyonlands',
                     us_l3_code='20', us_l3_name='Colorado Plateaus',
                     achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
                     avail_strict=0, usgs_zone=0)
-        location = Location(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
-                            locality='Grand Staircase Escalante National Monument',
-                            geog_area='Big Cottonwood Canyon',
-                            directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+        location = GeoLocation(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
+                               locality='Grand Staircase Escalante National Monument',
+                               geog_area='Big Cottonwood Canyon',
+                               directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
                                         'county road 243. Continue on 243 for 8.3 miles then turn '
                                         'left onto county toad 126A. Continue on 126A for 12 miles '
                                         'then turn right. Continue for approximately 1.1 miles to '
                                         'reach collection site.'),
-                            degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
-                            seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
-                            georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
-                            altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
-                            district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
-                            location_description=desc, zone=zone)
+                               degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
+                               seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
+                               georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
+                               altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
+                               district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
+                               location_description=desc, zone=zone)
         accession = Accession(data_source='UP', plant_habit='Forb/herb',
                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
                               acc_num1='UP', acc_num2='76', acc_num3=None,
@@ -624,38 +624,38 @@ class CPNPPDatabaseTests(unittest.TestCase):
                         family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
                         plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
                         poll_val=0, research_val=0)
-        desc = LocationDescription(land_owner='BLM',
-                                   associated_taxa_full=('Quercus gambelii:'
+        desc = GeoLocationDescription(land_owner='BLM',
+                                      associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
                                                          'nitida:Artemisia tridentata ssp. '
                                                          'wyomingensis:Lepidium sp.:Rosa woodsii:'
                                                          'Heterotheca villosa var. villosa:Carex '
                                                          'geyeri:Koeleria macrantha'),
-                                   mod='grazed, trampled', mod2='recreation', geomorphology=None,
-                                   slope='5-25 degrees', aspect='varied',
-                                   habitat='Mountain Brush; meadow along road',
-                                   geology='Quaternary, alluvial deposits',
-                                   soil_type='Asphalt and sand, tan/red',
-                                   population_size=200, occupancy=1500)
+                                      mod='grazed, trampled', mod2='recreation', geomorphology=None,
+                                      slope='5-25 degrees', aspect='varied',
+                                      habitat='Mountain Brush; meadow along road',
+                                      geology='Quaternary, alluvial deposits',
+                                      soil_type='Asphalt and sand, tan/red',
+                                      population_size=200, occupancy=1500)
         zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
                     us_l4_name='Semiarid Benchlands and Canyonlands',
                     us_l3_code='20', us_l3_name='Colorado Plateaus',
                     achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
                     avail_strict=0, usgs_zone=0)
-        location = Location(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
-                            locality='Grand Staircase Escalante National Monument',
-                            geog_area='Big Cottonwood Canyon',
-                            directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+        location = GeoLocation(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
+                               locality='Grand Staircase Escalante National Monument',
+                               geog_area='Big Cottonwood Canyon',
+                               directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
                                         'county road 243. Continue on 243 for 8.3 miles then turn '
                                         'left onto county toad 126A. Continue on 126A for 12 miles '
                                         'then turn right. Continue for approximately 1.1 miles to '
                                         'reach collection site.'),
-                            degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
-                            seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
-                            georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
-                            altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
-                            district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
-                            location_description=desc, zone=zone)
+                               degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
+                               seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
+                               georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
+                               altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
+                               district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
+                               location_description=desc, zone=zone)
         accession = Accession(data_source='UP', plant_habit='Forb/herb',
                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
                               acc_num1='UP', acc_num2='76', acc_num3=None,
