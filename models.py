@@ -690,12 +690,12 @@ class Use(db.Model):
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
-    institute_id = db.Column(db.Integer, db.ForeignKey('institute.id'))
+    institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
     contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'))
 
     accession = db.relationship('Accession', backref='uses', uselist=False)
     species = db.relationship('Species', backref=db.backref('uses', lazy='dynamic'), uselist=False)
-    institute = db.relationship('Institution', uselist=False)
+    institute = db.relationship('Institution', backref=db.backref('uses', lazy='dynamic'), uselist=False)
     contacts = db.relationship('Contact')
 
     def __init__(
