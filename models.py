@@ -29,9 +29,9 @@ class Accession(db.Model):
     table.
 
     The Accession table has a One-to-Many relationship with the 
-    Shipping table.
+    Shipment table.
 
-    The Accession table has a One-to-Many relationship with the Location
+    The Accession table has a One-to-Many relationship with the Visit
     table.
 
     The Accession table has a One-to-Many relationship with the Testing
@@ -69,7 +69,7 @@ class Accession(db.Model):
     visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
 
     species = db.relationship('Species', backref=db.backref('accessions', lazy='dynamic'), uselist=False)
-    visits = db.relationship('Location', backref='accession')
+    visits = db.relationship('Visit', backref='accession')
     projects = db.relationship('Project', secondary=projects, backref=db.backref('accessions', lazy='dynamic'))
 
     def __init__(
@@ -284,7 +284,7 @@ class Contact(db.Model):
 class Institution(db.Model):
     """
     The Institution table has a One-to-Many relationship with the
-    Shipping table.
+    Shipment table.
 
     The Institution table has a One-to-Many relationship with the
     Address table.
@@ -323,6 +323,91 @@ class Institution(db.Model):
     def __repr__(self):
         return "<Institution(name={}, address={})>".format(
             self.name, self.address)
+
+
+class Location(db.Model):
+    """
+    The Location table has a One-to-One relationship with the Accession
+    table.
+
+    The Location table has a One-to-Many relationship with the 
+    Visit table.
+
+    The Location table has a One-to-One relationship with the Zone
+    table.
+    """
+    __tablename__ = 'location'
+
+    id = db.Column(db.Integer, primary_key=True)
+    land_owner = db.Column(db.String(30))
+    geology = db.Column(db.String(100))
+    soil_type = db.Column(db.String(100))
+    phytoregion = db.Column(db.String(30))
+    phytoregion_full = db.Column(db.String(50))
+    # locality of the collection site if applicable - i.e. National Forest/NCA's, etc.
+    locality = db.Column(db.String(50))  # Formerly SUB_CNT3
+    geog_area = db.Column(db.String(50))
+    directions = db.Column(db.Text)  # Formerly locality
+    degrees_n = db.Column(db.Integer)
+    minutes_n = db.Column(db.Integer)
+    seconds_n = db.Column(db.Float)
+    degrees_w = db.Column(db.Integer)
+    minutes_w = db.Column(db.Integer)
+    seconds_w = db.Column(db.Float)
+    latitude_decimal = db.Column(db.Float)
+    longitude_decimal = db.Column(db.Float)
+    georef_source = db.Column(db.String(50))
+    gps_datum = db.Column(db.String(10))
+    altitude = db.Column(db.Integer)
+    altitude_unit = db.Column(db.String(10))
+    altitude_in_m = db.Column(db.Integer)
+    fo_name = db.Column(db.String(50))
+    district_name = db.Column(db.String(50))
+    state = db.Column(db.String(20))
+    county = db.Column(db.String(30))
+
+    visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
+    zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
+
+    zone = db.relationship('Zone', uselist=False)
+    visits = db.relationship('Visit')
+
+    def __init__(
+            self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
+            degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal,
+            longitude_decimal, georef_source, gps_datum, altitude, altitude_unit,
+            altitude_in_m, fo_name, district_name, state, county, visit_descriptions, zone):
+        self.land_owner = land_owner
+        self.geology = geology
+        self.soil_type = soil_type
+        self.phytoregion = phytoregion
+        self.phytoregion_full = phytoregion_full
+        self.locality = locality
+        self.geog_area = geog_area
+        self.directions = directions
+        self.degrees_n = degrees_n
+        self.minutes_n = minutes_n
+        self.seconds_n = seconds_n
+        self.degrees_w = degrees_w
+        self.minutes_w = minutes_w
+        self.seconds_w = seconds_w
+        self.latitude_decimal = latitude_decimal
+        self.longitude_decimal = longitude_decimal
+        self.georef_source = georef_source
+        self.gps_datum = gps_datum
+        self.altitude = altitude
+        self.altitude_unit = altitude_unit
+        self.altitude_in_m = altitude_in_m
+        self.fo_name = fo_name
+        self.district_name = district_name
+        self.state = state
+        self.county = county
+        self.visit_descriptions = visit_descriptions
+        self.zone = zone
+
+    def __repr__(self):
+        return "<Location(latitude_decimal={}, longitude_decimal={})>".format(
+            self.latitude_decimal, self.longitude_decimal)
 
 
 projects = db.Table('projects',
@@ -475,12 +560,12 @@ class Release(db.Model):
                                                             self.lb_acre_yield))
 
 
-class Shipping(db.Model):
+class Shipment(db.Model):
     """
-    The Shipping table has a Many-to-One relationship with the 
+    The Shipment table has a Many-to-Many relationship with the 
     Institution table.
 
-    The Shipping table has a Many-to-One relationship with the Accession
+    The Shipment table has a Many-to-One relationship with the Accession
     table.
 
     A shipment also maintains multiple ForeignKey fields to the 
@@ -489,46 +574,38 @@ class Shipping(db.Model):
 
     [?] http://docs.sqlalchemy.org/en/rel_0_9/orm/join_conditions.html#handling-multiple-join-paths
     """
-    __tablename__ = 'shipping'
+    __tablename__ = 'shipment'
 
     id = db.Column(db.Integer, primary_key=True)
+    order_date = db.Column(db.DateTime)
     ship_date = db.Column(db.DateTime)
     tracking_num = db.Column(db.String(25), unique=True)
-    tracking_num_comp = db.Column(db.String(30))  # E.g. Fedex
-    amount_gr = db.Column(db.Float)
-    amount_lb = db.Column(db.Float)
-    amount_perc = db.Column(db.Float)
-    calc_by = db.Column(db.String(30))  # Was amount calculated by counting or weight?
+    shipper = db.Column(db.String(30))  # E.g. Fedex
 
     origin_institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
     destination_institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
-    accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+    amount_used_id = db.Column(db.Integer, db.ForeignKey('amount_used.id'))
 
     origin_institute = db.relationship('Institution', foreign_keys=[origin_institute_id])
     destination_institute = db.relationship('Institution', foreign_keys=[destination_institute_id])
-    accession = db.relationship('Accession', backref='shipments')
+    amounts_sent = db.relationship('AmountUsed')
 
     def __init__(
-            self, ship_date, tracking_num, tracking_num_comp, amount_gr, calc_by, origin_institute,
-            destination_institute, accession):
+            self, ship_date, tracking_num, shipper, amount_gr, calc_by, origin_institute,
+            destination_institute):
         self.ship_date = ship_date
         self.tracking_num = tracking_num
-        self.tracking_num_comp = tracking_num_comp
+        self.shipper = shipper
         self.amount_gr = amount_gr
         self.calc_by = calc_by
         self.origin_institute = origin_institute
         self.destination_institute = destination_institute
-        self.accession = accession
-
-        # TODO Create method to calculate amount_perc
 
         self.amount_lb = compute_gr_to_lb(amount_gr)
 
     def __repr__(self):
-        return ("<Shipping(ship_date={}, tracking_num={}, amount_gr={}, "
-                "amount_perc={}, calc_by={})>".format(
-            self.ship_date, self.tracking_num, self.amount_gr,
-            self.amount_perc, self.calc_by))
+        return "<Shipment(ship_date={}, shipper={}, tracking_num={})>".format(
+            self.ship_date, self.shipper, self.tracking_num)
 
 
 class Species(db.Model):
@@ -640,91 +717,6 @@ class Testing(db.Model):
                 "est_pls_lb={}, est_pls_collected={}, purity={}, tz={})>".format(
                     self.accession, self.amt_rcvd_lbs, self.clean_wt_lbs, self.est_seed_lb,
                     self.est_pls_lb, self.est_pls_collected, self.purity, self.tz))
-
-
-class Location(db.Model):
-    """
-    The Location table has a One-to-One relationship with the Accession
-    table.
-
-    The Location table has a One-to-Many relationship with the 
-    Visit table.
-
-    The Location table has a One-to-One relationship with the Zone
-    table.
-    """
-    __tablename__ = 'location'
-
-    id = db.Column(db.Integer, primary_key=True)
-    land_owner = db.Column(db.String(30))
-    geology = db.Column(db.String(100))
-    soil_type = db.Column(db.String(100))
-    phytoregion = db.Column(db.String(30))
-    phytoregion_full = db.Column(db.String(50))
-    # locality of the collection site if applicable - i.e. National Forest/NCA's, etc.
-    locality = db.Column(db.String(50))  # Formerly SUB_CNT3
-    geog_area = db.Column(db.String(50))
-    directions = db.Column(db.Text)  # Formerly locality
-    degrees_n = db.Column(db.Integer)
-    minutes_n = db.Column(db.Integer)
-    seconds_n = db.Column(db.Float)
-    degrees_w = db.Column(db.Integer)
-    minutes_w = db.Column(db.Integer)
-    seconds_w = db.Column(db.Float)
-    latitude_decimal = db.Column(db.Float)
-    longitude_decimal = db.Column(db.Float)
-    georef_source = db.Column(db.String(50))
-    gps_datum = db.Column(db.String(10))
-    altitude = db.Column(db.Integer)
-    altitude_unit = db.Column(db.String(10))
-    altitude_in_m = db.Column(db.Integer)
-    fo_name = db.Column(db.String(50))
-    district_name = db.Column(db.String(50))
-    state = db.Column(db.String(20))
-    county = db.Column(db.String(30))
-
-    visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
-    zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
-
-    zone = db.relationship('Zone', uselist=False)
-    visits = db.relationship('Visit')
-
-    def __init__(
-            self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
-            degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal,
-            longitude_decimal, georef_source, gps_datum, altitude, altitude_unit,
-            altitude_in_m, fo_name, district_name, state, county, visit_descriptions, zone):
-        self.land_owner = land_owner
-        self.geology = geology
-        self.soil_type = soil_type
-        self.phytoregion = phytoregion
-        self.phytoregion_full = phytoregion_full
-        self.locality = locality
-        self.geog_area = geog_area
-        self.directions = directions
-        self.degrees_n = degrees_n
-        self.minutes_n = minutes_n
-        self.seconds_n = seconds_n
-        self.degrees_w = degrees_w
-        self.minutes_w = minutes_w
-        self.seconds_w = seconds_w
-        self.latitude_decimal = latitude_decimal
-        self.longitude_decimal = longitude_decimal
-        self.georef_source = georef_source
-        self.gps_datum = gps_datum
-        self.altitude = altitude
-        self.altitude_unit = altitude_unit
-        self.altitude_in_m = altitude_in_m
-        self.fo_name = fo_name
-        self.district_name = district_name
-        self.state = state
-        self.county = county
-        self.visit_descriptions = visit_descriptions
-        self.zone = zone
-
-    def __repr__(self):
-        return "<Location(latitude_decimal={}, longitude_decimal={})>".format(
-            self.latitude_decimal, self.longitude_decimal)
 
 
 class Visit(db.Model):

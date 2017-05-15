@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField, DateField, FloatField, IntegerField, SelectField, StringField, TextAreaField
 from wtforms import validators
 
-from models import Shipping
+from models import Shipment
 
 COMPANIES = [('FedEx', 'FedEx'), ('UPS', 'UPS'), ('USPS', 'USPS')]
 DURATION_CHOICES = [
@@ -39,7 +39,7 @@ PHYTOREGION_CODES = [
 
 
 def shipment_exists(field):
-    if Shipping.select().where(Shipping.tracking_num == field.data).exists():
+    if Shipment.select().where(Shipment.tracking_num == field.data).exists():
         raise validators.ValidationError('Shipment with that tracking number already exists.')
 
 

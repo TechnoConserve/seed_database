@@ -226,7 +226,7 @@ def shipments():
         origin_institute = models.Institution.query.get(form.origin_institute_id.data)
         destination_institute = models.Institution.query.get(form.destination_institute_id.data)
         accession = models.Accession.query.get(form.accession.data)
-        shipment = models.Shipping(
+        shipment = models.Shipment(
             ship_date=form.ship_date.data,
             tracking_num=form.tracking_num.data,
             tracking_num_comp=form.tracking_num_comp.data,

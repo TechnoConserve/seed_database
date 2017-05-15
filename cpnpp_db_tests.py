@@ -5,7 +5,7 @@ import datetime
 import unittest
 
 from app import app
-from models import (db, Species, Shipping, Institution, Accession,
+from models import (db, Species, Shipment, Institution, Accession,
                     Location, Zone, GeoLocationDescription, Testing, Availability, AmountUsed, Release)
 
 
@@ -124,7 +124,7 @@ class CPNPPDatabaseTests(unittest.TestCase):
         db.session.add(zone)
         db.session.add(location)
         db.session.add(accession)
-        shipment = Shipping(ship_date=datetime.datetime.now(), tracking_num='40012345678',
+        shipment = Shipment(ship_date=datetime.datetime.now(), tracking_num='40012345678',
                             tracking_num_comp='FedEx', amount_gr=0.60847634, calc_by='counting',
                             origin_institute=institute1, destination_institute=institute2,
                             accession=accession)
@@ -202,7 +202,7 @@ class CPNPPDatabaseTests(unittest.TestCase):
         db.session.add(zone)
         db.session.add(location)
         db.session.add(accession)
-        shipment = Shipping(ship_date=datetime.datetime.now(), tracking_num='40012345678',
+        shipment = Shipment(ship_date=datetime.datetime.now(), tracking_num='40012345678',
                             tracking_num_comp='FedEx', amount_gr=0.60847634, calc_by='counting',
                             origin_institute=institute1, destination_institute=institute2,
                             accession=accession)
