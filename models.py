@@ -261,6 +261,9 @@ class GeoLocation(db.Model):
     __tablename__ = 'geo_location'
 
     id = db.Column(db.Integer, primary_key=True)
+    land_owner = db.Column(db.String(30))
+    geology = db.Column(db.String(100))
+    soil_type = db.Column(db.String(100))
     phytoregion = db.Column(db.String(30))
     phytoregion_full = db.Column(db.String(50))
     # locality of the collection site if applicable - i.e. National Forest/NCA's, etc.
@@ -292,10 +295,13 @@ class GeoLocation(db.Model):
     location_description = db.relationship('GeoLocationDescription', uselist=False)
 
     def __init__(
-            self, phytoregion, phytoregion_full, locality, geog_area, directions, degrees_n,
-            minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal,
+            self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
+            degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal,
             longitude_decimal, georef_source, gps_datum, altitude, altitude_unit,
             altitude_in_m, fo_name, district_name, state, county, location_description, zone):
+        self.land_owner = land_owner
+        self.geology = geology
+        self.soil_type = soil_type
         self.phytoregion = phytoregion
         self.phytoregion_full = phytoregion_full
         self.locality = locality
@@ -334,7 +340,6 @@ class GeoLocationDescription(db.Model):
     __tablename__ = 'geo_location_description'
 
     id = db.Column(db.Integer, primary_key=True)
-    land_owner = db.Column(db.String(30))
     associated_taxa_full = db.Column(db.Text)
     mod = db.Column(db.String(200))   # modifying factors of collection site (grazed, etc.)
     mod2 = db.Column(db.String(200))  # additional modifying factors of collection site (roadside, etc.)
@@ -342,16 +347,11 @@ class GeoLocationDescription(db.Model):
     slope = db.Column(db.String(30))
     aspect = db.Column(db.String(10))
     habitat = db.Column(db.String(100))
-    geology = db.Column(db.String(100))
-    soil_type = db.Column(db.String(100))
     population_size = db.Column(db.Integer)
     occupancy = db.Column(db.Integer)  # Number of plants collected from
 
     def __init__(
-            self, land_owner, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat,
-            geology, soil_type, population_size, occupancy):
-
-        self.land_owner = land_owner
+            self, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat, population_size, occupancy):
         self.associated_taxa_full = associated_taxa_full
         self.mod = mod
         self.mod2 = mod2
@@ -359,8 +359,6 @@ class GeoLocationDescription(db.Model):
         self.slope = slope
         self.aspect = aspect
         self.habitat = habitat
-        self.geology = geology
-        self.soil_type = soil_type
         self.population_size = population_size
         self.occupancy = occupancy
 
