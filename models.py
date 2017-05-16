@@ -263,10 +263,11 @@ class Contact(db.Model):
 
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     institution_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
+
     projects = db.relationship('Project', secondary=project_contacts,
                                backref=db.backref('contacts', lazy='dynamic'))
 
-    def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, institute):
+    def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, institute=None):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
