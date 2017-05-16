@@ -310,6 +310,8 @@ class Institution(db.Model):
     contacts = db.relationship('Contact', backref='institute')
     projects = db.relationship('Project', secondary=project_institutions,
                                backref=db.backref('institutions', lazy='dynamic'))
+    tests = db.relationship('Testing')
+    releases = db.relationship('Release')
 
     def __init__(
             self, name, institute_phone, institute_phone_ext, institute_email,
@@ -522,6 +524,7 @@ class Release(db.Model):
     comments = db.Column(db.Text)
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+    institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
@@ -705,6 +708,7 @@ class Testing(db.Model):
     fill = db.Column(db.Integer)
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+    institution_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
 
     def __init__(
             self, amt_rcvd_lbs, clean_wt_lbs, est_seed_lb, est_pls_lb, est_pls_collected,
