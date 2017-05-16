@@ -67,7 +67,9 @@ class Accession(db.Model):
     visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
 
     visits = db.relationship('Visit', backref='accession')
-    project_accessions = db.relationship('Project', secondary=project_accessions, backref=db.backref('accessions', lazy='dynamic'))
+    project_accessions = db.relationship(
+        'Project', secondary=project_accessions, backref=db.backref('accessions', lazy='dynamic'))
+    releases = db.relationship('Release')
     tests = db.relationship('Testing')
 
     def __init__(
@@ -528,7 +530,6 @@ class Release(db.Model):
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
-    accession = db.relationship('Accession', backref='releases', uselist=False)
     zones = db.relationship('Zone')
 
     def __init__(
