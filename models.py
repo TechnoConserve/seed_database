@@ -528,9 +528,9 @@ class Release(db.Model):
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
     institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
-    zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
-    zones = db.relationship('Zone')
+    priority_zones = db.relationship('Zone', backref='priority_releases')
+    zones = db.relationship('Zone', backref='priority_releases')
 
     def __init__(
             self, loc_desc, germ_origin, name, year, release_type, plant_origin,
