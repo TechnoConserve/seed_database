@@ -63,14 +63,12 @@ class Accession(db.Model):
     notes = db.Column(db.Text)
     increase = db.Column(db.Boolean)  # Slated for increase?
 
-    # TODO: Link with storage locations
-
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
     visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
 
     species = db.relationship('Species', backref=db.backref('accessions', lazy='dynamic'), uselist=False)
     visits = db.relationship('Visit', backref='accession')
-    projects = db.relationship('Project', secondary=projects, backref=db.backref('accessions', lazy='dynamic'))
+    project_accessions = db.relationship('Project', secondary=project_accessions, backref=db.backref('accessions', lazy='dynamic'))
 
     def __init__(
             self, data_source, plant_habit, coll_date, acc_num, acc_num1, acc_num2, acc_num3,
@@ -109,6 +107,8 @@ class Address(db.Model):
     state = db.Column(db.String(20))
     city = db.Column(db.String(25))
     zipcode = db.Column(db.Integer)
+
+    contacts = db.relationship('Contact', backref='address')
 
 
 class AmountUsed(db.Model):
@@ -261,9 +261,8 @@ class Contact(db.Model):
 
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     institution_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
-
-    address = db.relationship('Address', backref='contacts')
-    institute = db.relationship('Institution', backref='contacts')
+    project_contacts = db.relationship('Project', secondary=project_contacts,
+                                       backref=db.backref('contacts', lazy='dynamic'))
 
     def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, institute):
         self.first_name = first_name
@@ -308,6 +307,7 @@ class Institution(db.Model):
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
 
     address = db.relationship('Address', backref='institute', uselist=False)
+    contacts = db.relationship('Contact', backref='institute')
 
     def __init__(
             self, name, institute_phone, institute_phone_ext, institute_email,
@@ -410,10 +410,16 @@ class Location(db.Model):
             self.latitude_decimal, self.longitude_decimal)
 
 
-projects = db.Table('projects',
-                    db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
-                    db.Column('accession_id', db.Integer, db.ForeignKey('accession.id'))
-                    )
+project_accessions = db.Table('project_accessions',
+                              db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
+                              db.Column('accession_id', db.Integer, db.ForeignKey('accession.id'))
+                              )
+
+
+project_contacts = db.Table('project_contacts',
+                            db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
+                            db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'))
+                            )
 
 
 class Project(db.Model):
@@ -441,13 +447,11 @@ class Project(db.Model):
     start_notes = db.Column(db.Text)
     end_notes = db.Column(db.Text)
 
-    species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
+    amount_used_id = db.Column(db.Integer, db.ForeignKey('amount_used.id'))
     institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
-    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'))
 
-    species = db.relationship('Species', backref=db.backref('uses', lazy='dynamic'))
-    institute = db.relationship('Institution', backref=db.backref('uses', lazy='dynamic'))
-    contacts = db.relationship('Contact')
+    amounts_used = db.relationship('AmountUsed')
+    institute = db.relationship('Institution')
 
     def __init__(
             self, project_name, amount_gr, purpose, date_start, date_end, start_notes, end_notes, accession, species,
