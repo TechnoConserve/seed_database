@@ -529,7 +529,6 @@ class Release(db.Model):
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
     accession = db.relationship('Accession', backref='releases', uselist=False)
-    species = db.relationship('Species', backref=db.backref('releases', lazy='dynamic'), uselist=False)
     zones = db.relationship('Zone')
 
     def __init__(
@@ -652,6 +651,7 @@ class Species(db.Model):
     parent_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 
     accessions = db.relationship('Accession', backref='species', lazy='dynamic')
+    releases = db.relationship('Release')
     synonyms = db.relationship('Species', backref=db.backref('usda_name', remote_side=[id]))
 
     def __init__(
