@@ -23,10 +23,10 @@ def compute_gr_to_lb(grams):
     return grams * 0.00220462
 
 
-project_accessions = db.Table('project_accessions',
-                              db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
-                              db.Column('accession_id', db.Integer, db.ForeignKey('accession.id'))
-                              )
+seed_use_accessions = db.Table('project_accessions',
+                               db.Column('seed_use_id', db.Integer, db.ForeignKey('seed_use.id')),
+                               db.Column('accession_id', db.Integer, db.ForeignKey('accession.id'))
+                               )
 
 
 class Accession(db.Model):
@@ -74,7 +74,7 @@ class Accession(db.Model):
     amounts_used = db.relationship('AmountUsed', backref='accession')
     visits = db.relationship('Visit', backref='accession')
     projects = db.relationship(
-        'SeedUse', secondary=project_accessions, backref=db.backref('accessions', lazy='dynamic'))
+        'SeedUse', secondary=seed_use_accessions, backref=db.backref('accessions', lazy='dynamic'))
     releases = db.relationship('Release')
     tests = db.relationship('Testing')
 
@@ -276,10 +276,10 @@ class Availability(db.Model):
                 self.ephraim_avail + self.nau_avail)
 
 
-project_contacts = db.Table('project_contacts',
-                            db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
-                            db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'))
-                            )
+seed_use_contacts = db.Table('seed_use_contacts',
+                             db.Column('seed_use_id', db.Integer, db.ForeignKey('seed_use.id')),
+                             db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'))
+                             )
 
 
 class Contact(db.Model):
@@ -312,7 +312,7 @@ class Contact(db.Model):
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     institution_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
 
-    projects = db.relationship('SeedUse', secondary=project_contacts,
+    projects = db.relationship('SeedUse', secondary=seed_use_contacts,
                                backref=db.backref('contacts', lazy='dynamic'))
 
     def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, institute=None,
@@ -337,10 +337,10 @@ class Contact(db.Model):
             self.first_name, self.last_name)
 
 
-project_institutions = db.Table('project_institutions',
-                                db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
-                                db.Column('institution_id', db.Integer, db.ForeignKey('institution.id'))
-                                )
+seed_use_institutions = db.Table('seed_use_institutions',
+                                 db.Column('seed_use_id', db.Integer, db.ForeignKey('seed_use.id')),
+                                 db.Column('institution_id', db.Integer, db.ForeignKey('institution.id'))
+                                 )
 
 
 class Institution(db.Model):
@@ -383,7 +383,7 @@ class Institution(db.Model):
 
     address = db.relationship('Address', backref='institute', uselist=False)
     contacts = db.relationship('Contact', backref='institute')
-    projects = db.relationship('SeedUse', secondary=project_institutions,
+    projects = db.relationship('SeedUse', secondary=seed_use_institutions,
                                backref=db.backref('institutions', lazy='dynamic'))
     tests = db.relationship('Testing')
     releases = db.relationship('Release')
