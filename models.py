@@ -418,14 +418,11 @@ class Institution(db.Model):
 
 class Location(db.Model):
     """
-    The Location table has a One-to-One relationship with the Accession
+    The Location table has a One-to-One relationship with the Zone
     table.
 
     The Location table has a One-to-Many relationship with the 
     Visit table.
-
-    The Location table has a One-to-One relationship with the Zone
-    table.
     """
     __tablename__ = 'location'
 
@@ -457,7 +454,6 @@ class Location(db.Model):
     state = db.Column(db.String(20))
     county = db.Column(db.String(30))
 
-    visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
     zone = db.relationship('Zone', uselist=False)
@@ -465,9 +461,9 @@ class Location(db.Model):
 
     def __init__(
             self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
-            degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal,
-            longitude_decimal, georef_source, gps_datum, altitude, altitude_unit,
-            altitude_in_m, fo_name, district_name, state, county, visit_descriptions, zone):
+            degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal, longitude_decimal,
+            georef_source, gps_datum, altitude, altitude_unit, altitude_in_m, fo_name, district_name, state, county,
+            visit_descriptions, zone, visits):
         self.land_owner = land_owner
         self.geology = geology
         self.soil_type = soil_type
@@ -495,6 +491,7 @@ class Location(db.Model):
         self.county = county
         self.visit_descriptions = visit_descriptions
         self.zone = zone
+        self.visits = visits
 
     def __repr__(self):
         return "<Location(latitude_decimal={}, longitude_decimal={})>".format(
