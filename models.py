@@ -23,6 +23,12 @@ def compute_gr_to_lb(grams):
     return grams * 0.00220462
 
 
+project_accessions = db.Table('project_accessions',
+                              db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
+                              db.Column('accession_id', db.Integer, db.ForeignKey('accession.id'))
+                              )
+
+
 class Accession(db.Model):
     """
     The Accession table has a Many-to-One relationship with the Species 
@@ -270,6 +276,12 @@ class Availability(db.Model):
                 self.ephraim_avail + self.nau_avail)
 
 
+project_contacts = db.Table('project_contacts',
+                            db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
+                            db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'))
+                            )
+
+
 class Contact(db.Model):
     """
     The Contacts table has a Many-to-One relationship with the
@@ -314,6 +326,12 @@ class Contact(db.Model):
     def __repr__(self):
         return "<Contact(first_name={}, last_name={})>".format(
             self.first_name, self.last_name)
+
+
+project_institutions = db.Table('project_institutions',
+                                db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
+                                db.Column('institution_id', db.Integer, db.ForeignKey('institution.id'))
+                                )
 
 
 class Institution(db.Model):
@@ -448,24 +466,6 @@ class Location(db.Model):
     def __repr__(self):
         return "<Location(latitude_decimal={}, longitude_decimal={})>".format(
             self.latitude_decimal, self.longitude_decimal)
-
-
-project_accessions = db.Table('project_accessions',
-                              db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
-                              db.Column('accession_id', db.Integer, db.ForeignKey('accession.id'))
-                              )
-
-
-project_contacts = db.Table('project_contacts',
-                            db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
-                            db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'))
-                            )
-
-
-project_institutions = db.Table('project_institutions',
-                                db.Column('project_id', db.Integer, db.ForeignKey('project.id')),
-                                db.Column('institution_id', db.Integer, db.ForeignKey('institution.id'))
-                                )
 
 
 class Project(db.Model):
