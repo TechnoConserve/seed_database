@@ -866,8 +866,8 @@ class Visit(db.Model):
         self.species = species
 
     def __repr__(self):
-        return "<Visit(land_owner={}, population_size={})>".format(
-            self.land_owner, self.population_size)
+        return "<Visit(date={}, species={}, accession={}, population_size={})>".format(
+            self.date, self.species, self.accession, self.population_size)
 
 
 class Zone(db.Model):
