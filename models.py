@@ -66,16 +66,16 @@ class Accession(db.Model):
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
     visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
 
-    visits = db.relationship('Visit', backref='accession')
-    project_accessions = db.relationship(
+    visits = db.relationship('Visit', backref='accessions')
+    projects = db.relationship(
         'Project', secondary=project_accessions, backref=db.backref('accessions', lazy='dynamic'))
     releases = db.relationship('Release')
     tests = db.relationship('Testing')
 
     def __init__(
-            self, data_source, plant_habit, coll_date, acc_num, acc_num1, acc_num2, acc_num3,
-            collected_with, collection_misc, seed_source, description, notes, increase, species,
-            location):
+            self, data_source, plant_habit, coll_date, acc_num, acc_num1, acc_num2, acc_num3, collected_with,
+            collection_misc, seed_source, description, notes, increase, species, visits, projects=None, releases=None,
+            tests=None):
         self.data_source = data_source
         self.plant_habit = plant_habit
         self.coll_date = coll_date
@@ -735,6 +735,12 @@ class Testing(db.Model):
                     self.est_pls_lb, self.est_pls_collected, self.purity, self.tz))
 
 
+scouting_visits = db.Table('scouting_visits',
+                           db.Column('species_id', db.Integer, db.ForeignKey('species.id')),
+                           db.Column('visit_id', db.Integer, db.ForeignKey('visit.id'))
+                           )
+
+
 class Visit(db.Model):
     """
     The Visit table has a Many-to-One relationship with the Accession 
@@ -755,6 +761,9 @@ class Visit(db.Model):
     habitat = db.Column(db.String(100))
     population_size = db.Column(db.Integer)
     occupancy = db.Column(db.Integer)  # Number of plants collected from
+
+    species = db.relationship('Species', secondary=scouting_visits,
+                              backref=db.backref('visits', lazy='dynamic'))
 
     def __init__(
             self, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat, population_size, occupancy):
