@@ -698,6 +698,9 @@ class Species(db.Model):
     
     The Species table has a One-to-Many relationship with the Release
     table.
+    
+    The Species table has a One-to-Many relationship with the 
+    AmountUsed table.
     """
     __tablename__ = 'species'
 
@@ -727,8 +730,8 @@ class Species(db.Model):
 
     def __init__(
             self, symbol, name_full, common, family, genus, species, var_ssp1, var_ssp2, plant_type,
-            plant_duration, priority_species, gsg_val, poll_val, research_val, parent_id=None,
-            synonyms=None, visits=None):
+            plant_duration, priority_species, gsg_val, poll_val, research_val, accessions=None, amounts_used=None,
+            releases=None, synonyms=None, visits=None):
 
         self.symbol = symbol
         self.name_full = name_full
@@ -745,8 +748,14 @@ class Species(db.Model):
         self.poll_val = poll_val
         self.research_val = research_val
 
-        if parent_id:
-            self.parent_id = parent_id
+        if accessions:
+            self.accessions = accessions
+
+        if amounts_used:
+            self.amounts_used = amounts_used
+
+        if releases:
+            self.releases = releases
 
         if synonyms:
             self.synonyms = synonyms
