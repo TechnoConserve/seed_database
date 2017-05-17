@@ -641,11 +641,11 @@ class Release(db.Model):
 
 class Shipment(db.Model):
     """
-    The Shipment table has a Many-to-Many relationship with the 
+    The Shipment table has a One-to-Many relationship with the 
     Entity table.
 
-    The Shipment table has a Many-to-One relationship with the Accession
-    table.
+    The Shipment table has a One-to-Many relationship with the 
+    AmountUsed table.
 
     A shipment also maintains multiple ForeignKey fields to the 
     Entity table for both the origin entity and the destination 
@@ -663,28 +663,24 @@ class Shipment(db.Model):
 
     origin_entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
     destination_entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
-    amount_used_id = db.Column(db.Integer, db.ForeignKey('amount_used.id'))
 
     origin_entity = db.relationship('Entity', foreign_keys=[origin_entity_id])
     destination_entity = db.relationship('Entity', foreign_keys=[destination_entity_id])
     amounts_sent = db.relationship('AmountUsed')
 
     def __init__(
-            self, ship_date, tracking_num, shipper, amount_gr, calc_by, origin_entity,
-            destination_entity):
+            self, order_date, ship_date, tracking_num, shipper, origin_entity, destination_entity, amounts_sent):
+        self.order_date = order_date
         self.ship_date = ship_date
         self.tracking_num = tracking_num
         self.shipper = shipper
-        self.amount_gr = amount_gr
-        self.calc_by = calc_by
         self.origin_entity = origin_entity
         self.destination_entity = destination_entity
-
-        self.amount_lb = compute_gr_to_lb(amount_gr)
+        self.amounts_sent = amounts_sent
 
     def __repr__(self):
-        return "<Shipment(ship_date={}, shipper={}, tracking_num={})>".format(
-            self.ship_date, self.shipper, self.tracking_num)
+        return "<Shipment(order_date={}, ship_date={}, shipper={}, tracking_num={})>".format(
+            self.order_date, self.ship_date, self.shipper, self.tracking_num)
 
 
 class Species(db.Model):
