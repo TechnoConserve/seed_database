@@ -110,7 +110,7 @@ class AccessionForm(FlaskForm):
     notes = TextAreaField(
         'Notes'
     )
-    # Location Fields
+    # GeoLocation Fields
     phytoregion = SelectField(
         'Phytoregion Code',
         choices=PHYTOREGION_CODES,
@@ -186,7 +186,7 @@ class AccessionForm(FlaskForm):
         'County',
         validators=[validators.length(max=30)]
     )
-    # Location Description Fields
+    # GeoLocation Description Fields
     land_owner = StringField(
         'Land Owner',
         validators=[validators.length(max=30)]
@@ -274,7 +274,7 @@ class ReleaseForm(FlaskForm):
         'Accession'
     )
     loc_desc = TextAreaField(
-        'Location Description'
+        'GeoLocation Description'
     )
     germ_origin = StringField(
         'Germplasm origin',

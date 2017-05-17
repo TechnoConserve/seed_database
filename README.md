@@ -275,7 +275,7 @@ object (AKA table row) that it is related to.
 **Many-to-Many**
 
 Each Contact might also be associated with multiple Projects. And each
-Project could be associated with multiple Contacts. This sort of
+SeedUse could be associated with multiple Contacts. This sort of
 relationship is called a Many-to-Many relationship and it necessitates
 what’s called a helper, or association, table. The helper table stores
 nothing except the foreign keys of the tables it is helping to relate,
@@ -293,13 +293,13 @@ project_contacts = db.Table('project_contacts',
 Now we can jump back to our Contact table to finish the relationship.
 Add the following to the bottom of the Contact table model:
 ```python
-    projects = db.relationship('Project', secondary=project_contacts,
+    projects = db.relationship(SSeedUse secondary=project_contacts,
                                backref=db.backref('contacts', lazy='dynamic'))
 ```
 
 This relationship is just a bit more complicated than the last ones.
 Like before, the first parameter is the name of the class we are linking
-to, which is the Project table. The next parameter, “secondary”, is
+to, which is the PrSeedUseable. The next parameter, “secondary”, is
 unique to Many-to-Many relationships and it requires the name of the
 helper table which we named “project\_contacts”. The “backref” parameter
 is also a little different this time. We could have simply passed this
@@ -307,7 +307,7 @@ parameter the string “’contacts’” and it would have worked. Instead,
 we’re passing it another function, “db.backref”, which allows gives use
 some additional functionality. The “db.backref” function takes two
 parameters of its own, the first being “’contacts’” which works the same
-way we’ve seen before. This gives instances of the Project table the
+way we’ve seen before. This gives instances of the PrSeedUseable the
 additional attribute “contacts” so each project can be queried for the
 contacts related to that project. The second parameter of “db.backref”,
 “lazy”, describes what [type of
@@ -354,7 +354,7 @@ class Contact(db.Model):
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     institution_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
 
-    projects = db.relationship('Project', secondary=project_contacts,
+    projects = db.relationship('PrSeedUse secondary=project_contacts,
                                backref=db.backref('contacts', lazy='dynamic'))
 ```
 

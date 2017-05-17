@@ -37,14 +37,14 @@ def accessions():
             occupancy=form.occupancy.data
         )
         # TODO Compute the data needed to create the Zone object
-        # Then we create the Location object
+        # Then we create the GeoLocation object
         altitude = form.altitude.data
         unit = form.altitude_unit.data
         if unit == 'm':
             altitude_m = altitude
         else:
             altitude_m = int(altitude * 0.3048)
-        loc = models.Location(
+        loc = models.GeoLocation(
             phytoregion=form.phytoregion.data,
             phytoregion_full=form.phytoregion_full.data,
             locality=form.locality.data,

@@ -49,7 +49,7 @@ class Accession(db.Model):
     The Accession table has a One-to-Many relationship with the AmountUsed
     table.
     
-    The Accession table has a Many-to-Many relationship with the Project
+    The Accession table has a Many-to-Many relationship with the SeedUse
     table.
     """
     __tablename__ = 'accession'
@@ -74,7 +74,7 @@ class Accession(db.Model):
     amounts_used = db.relationship('AmountUsed', backref='accession')
     visits = db.relationship('Visit', backref='accession')
     projects = db.relationship(
-        'Project', secondary=project_accessions, backref=db.backref('accessions', lazy='dynamic'))
+        'SeedUse', secondary=project_accessions, backref=db.backref('accessions', lazy='dynamic'))
     releases = db.relationship('Release')
     tests = db.relationship('Testing')
 
@@ -154,7 +154,7 @@ class AmountUsed(db.Model):
     Species table.
     
     The AmountUsed table has a Many-to-One relationship with the
-    Project table.
+    SeedUse table.
     
     The AmountUsed table has a Many-to-One relationship with the
     Shipment table.
@@ -291,7 +291,7 @@ class Contact(db.Model):
     Address table.
     
     The Contact table has a Many-to-Many relationship with the
-    Project table.
+    SeedUse table.
     
     A contact represents a person of significance related to a
     particular institution. As an example, for each seed storage 
@@ -312,7 +312,7 @@ class Contact(db.Model):
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     institution_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
 
-    projects = db.relationship('Project', secondary=project_contacts,
+    projects = db.relationship('SeedUse', secondary=project_contacts,
                                backref=db.backref('contacts', lazy='dynamic'))
 
     def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, institute=None,
@@ -361,7 +361,7 @@ class Institution(db.Model):
     Testing table.
     
     The Institution table has a Many-to-Many relationship with the
-    Project table.
+    SeedUse table.
     
     The Institution table has a One-to-One relationship with the
     Availability table.
@@ -383,7 +383,7 @@ class Institution(db.Model):
 
     address = db.relationship('Address', backref='institute', uselist=False)
     contacts = db.relationship('Contact', backref='institute')
-    projects = db.relationship('Project', secondary=project_institutions,
+    projects = db.relationship('SeedUse', secondary=project_institutions,
                                backref=db.backref('institutions', lazy='dynamic'))
     tests = db.relationship('Testing')
     releases = db.relationship('Release')
@@ -416,15 +416,15 @@ class Institution(db.Model):
             self.name, self.address)
 
 
-class Location(db.Model):
+class GeoLocation(db.Model):
     """
-    The Location table has a One-to-One relationship with the Zone
+    The GeoLocation table has a One-to-One relationship with the Zone
     table.
 
-    The Location table has a One-to-Many relationship with the 
+    The GeoLocation table has a One-to-Many relationship with the 
     Visit table.
     """
-    __tablename__ = 'location'
+    __tablename__ = 'geo_location'
 
     id = db.Column(db.Integer, primary_key=True)
     land_owner = db.Column(db.String(30))
@@ -494,25 +494,25 @@ class Location(db.Model):
         self.visits = visits
 
     def __repr__(self):
-        return "<Location(latitude_decimal={}, longitude_decimal={})>".format(
+        return "<GeoLocation(latitude_decimal={}, longitude_decimal={})>".format(
             self.latitude_decimal, self.longitude_decimal)
 
 
-class Project(db.Model):
+class SeedUse(db.Model):
     """
-    The Project table has a Many-to-Many relationship with the Accession 
+    The SeedUse table has a Many-to-Many relationship with the Accession 
     table.
 
-    The Project table has a Many-to-One relationship with the Species
+    The SeedUse table has a Many-to-One relationship with the Species
     table.
 
-    The Project table has a One-to-One relationship with the Institution 
+    The SeedUse table has a One-to-One relationship with the Institution 
     table.
 
-    The Project table has a One-to-Many relationship with the Contact 
+    The SeedUse table has a One-to-Many relationship with the Contact 
     table.
     """
-    __tablename__ = 'project'
+    __tablename__ = 'seed_use'
 
     id = db.Column(db.Integer, primary_key=True)
     project_name = db.Column(db.String(50))
@@ -814,7 +814,7 @@ class Visit(db.Model):
     The Visit table has a Many-to-One relationship with the Accession 
     table.
     
-    The Visit table has a Many-to-One relationship with the Location
+    The Visit table has a Many-to-One relationship with the GeoLocation
     table.
     """
     __tablename__ = 'visit'
@@ -853,7 +853,7 @@ class Visit(db.Model):
 
 class Zone(db.Model):
     """
-    The Zone table has a One-to-One relationship with the Location
+    The Zone table has a One-to-One relationship with the GeoLocation
     table.
     
     The Zone table has a Many-to-One relationship with the Release
