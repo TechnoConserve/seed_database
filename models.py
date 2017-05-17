@@ -312,11 +312,11 @@ class Contact(db.Model):
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
 
-    projects = db.relationship('SeedUse', secondary=seed_use_contacts,
-                               backref=db.backref('contacts', lazy='dynamic'))
+    seed_uses = db.relationship('SeedUse', secondary=seed_use_contacts,
+                                backref=db.backref('contacts', lazy='dynamic'))
 
     def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, entity=None,
-                 projects=None):
+                 seed_uses=None):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
@@ -329,8 +329,8 @@ class Contact(db.Model):
         if entity:
             self.entity = entity
 
-        if projects:
-            self.projects += projects
+        if seed_uses:
+            self.seed_uses = seed_uses
 
     def __repr__(self):
         return "<Contact(first_name={}, last_name={})>".format(
@@ -338,9 +338,9 @@ class Contact(db.Model):
 
 
 seed_use_entity = db.Table('seed_use_entity',
-                                 db.Column('seed_use_id', db.Integer, db.ForeignKey('seed_use.id')),
-                                 db.Column('entity_id', db.Integer, db.ForeignKey('entity.id'))
-                                 )
+                           db.Column('seed_use_id', db.Integer, db.ForeignKey('seed_use.id')),
+                           db.Column('entity_id', db.Integer, db.ForeignKey('entity.id'))
+                           )
 
 
 class Entity(db.Model):
@@ -383,14 +383,14 @@ class Entity(db.Model):
 
     address = db.relationship('Address', backref='entity', uselist=False)
     contacts = db.relationship('Contact', backref='entity')
-    projects = db.relationship('SeedUse', secondary=seed_use_entity,
-                               backref=db.backref('entities', lazy='dynamic'))
+    seed_uses = db.relationship('SeedUse', secondary=seed_use_entity,
+                                backref=db.backref('entities', lazy='dynamic'))
     tests = db.relationship('Testing')
     releases = db.relationship('Release')
 
     def __init__(
             self, name, entity_phone, entity_phone_ext, entity_email, request_costs, cost, address,
-            contacts=None, projects=None, tests=None, releases=None):
+            contacts=None, seed_uses=None, tests=None, releases=None):
         self.name = name
         self.entity_phone = entity_phone
         self.entity_phone_ext = entity_phone_ext
@@ -400,16 +400,16 @@ class Entity(db.Model):
         self.address = address
 
         if contacts:
-            self.contacts += contacts
+            self.contacts = contacts
 
-        if projects:
-            self.projects += projects
+        if seed_uses:
+            self.seed_uses = seed_uses
 
         if tests:
-            self.tests += tests
+            self.tests = tests
 
         if releases:
-            self.releases += releases
+            self.releases = releases
 
     def __repr__(self):
         return "<Entity(name={}, address={})>".format(
@@ -528,10 +528,9 @@ class SeedUse(db.Model):
     amounts_used = db.relationship('AmountUsed')
 
     def __init__(
-            self, project_name, amount_gr, purpose, date_start, date_end, start_notes, end_notes, accession, species,
-            entity, contacts):
+            self, project_name, purpose, date_start, date_end, start_notes, end_notes, accession, species,
+            entities, contacts):
         self.project_name = project_name
-        self.amount_gr = amount_gr
         self.purpose = purpose
         self.date_start = date_start
         self.date_end = date_end
@@ -539,16 +538,12 @@ class SeedUse(db.Model):
         self.end_notes = end_notes
         self.accession = accession
         self.species = species
-        self.entity = entity
+        self.entities = entities
         self.contacts = contacts
 
-        self.amount_lb = compute_gr_to_lb(amount_gr)
-
     def __repr__(self):
-        return ("<AmountUsed(project_name={}, amount_gr={}, amount_lb={}, amount_perc={}, "
-                "purpose={}, date_start={}, date_end={})>".format(
-            self.project_name, self.amount_gr, self.amount_lb, self.amount_perc,
-            self.purpose, self.date_start, self.date_end))
+        return "<AmountUsed(project_name={}, purpose={}, date_start={}, date_end={})>".format(
+                    self.project_name, self.purpose, self.date_start, self.date_end)
 
 
 class Release(db.Model):
