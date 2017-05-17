@@ -556,6 +556,9 @@ class Release(db.Model):
     
     The Release table has a One-to-Many relationship with the Zone
     table.
+    
+    The Release table has a Many-to-One relationship with the
+    Entity table.
     """
     __tablename__ = 'release'
 
@@ -588,15 +591,16 @@ class Release(db.Model):
     entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 
+    # Where does it do best?
     priority_zones = db.relationship('Zone', backref='priority_releases')
+    # Where can it grow?
     zones = db.relationship('Zone', backref='priority_releases')
 
     def __init__(
-            self, loc_desc, germ_origin, name, year, release_type, plant_origin,
-            used_for, select_criteria, special_character, adaptation, prime_pmc,
-            primary_releasing, secondary_releasing, cp_adapted, cp_sourced,
-            source_num, lb_acre_sow, lb_acre_yield, soil_adap, precip_adap,
-            elev_adap, release_brochure, comments, accession, species):
+            self, loc_desc, germ_origin, name, year, release_type, plant_origin, used_for, select_criteria,
+            special_character, adaptation, prime_pmc, primary_releasing, secondary_releasing, cp_adapted, cp_sourced,
+            source_num, lb_acre_sow, lb_acre_yield, soil_adap, precip_adap, elev_adap, release_brochure, comments,
+            accession, entity, species, priority_zones, zones):
 
         self.loc_desc = loc_desc
         self.germ_origin = germ_origin
@@ -622,7 +626,10 @@ class Release(db.Model):
         self.release_brochure = release_brochure
         self.comments = comments
         self.accession = accession
+        self.entity = entity
         self.species = species
+        self.priority_zones = priority_zones
+        self.zones = zones
 
     def __repr__(self):
         return ("<Release(loc_desc={}, germ_origin={}, name={}, year={}, release_type={}, "
