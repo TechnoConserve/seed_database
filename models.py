@@ -284,11 +284,14 @@ project_contacts = db.Table('project_contacts',
 
 class Contact(db.Model):
     """
-    The Contacts table has a Many-to-One relationship with the
+    The Contact table has a Many-to-One relationship with the
     Institution table.
     
-    The Contacts table has a Many-to-One relationship with the
+    The Contact table has a Many-to-One relationship with the
     Address table.
+    
+    The Contact table has a Many-to-Many relationship with the
+    Project table.
     
     A contact represents a person of significance related to a
     particular institution. As an example, for each seed storage 
@@ -312,7 +315,8 @@ class Contact(db.Model):
     projects = db.relationship('Project', secondary=project_contacts,
                                backref=db.backref('contacts', lazy='dynamic'))
 
-    def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, institute=None):
+    def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, institute=None,
+                 projects=None):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
@@ -321,7 +325,12 @@ class Contact(db.Model):
         self.title = title
         self.agency = agency
         self.address = address
-        self.institute = institute
+
+        if institute:
+            self.institute = institute
+
+        if projects:
+            self.projects += projects
 
     def __repr__(self):
         return "<Contact(first_name={}, last_name={})>".format(
@@ -336,14 +345,26 @@ project_institutions = db.Table('project_institutions',
 
 class Institution(db.Model):
     """
-    The Institution table has a One-to-Many relationship with the
+    The Institution table has a Many-to-One relationship with the
     Shipment table.
 
-    The Institution table has a One-to-Many relationship with the
+    The Institution table has a One-to-One relationship with the
     Address table.
 
     The Institution table has a One-to-Many relationship with the
     Contact table.
+    
+    The Institution table has a One-to-Many relationship with the
+    Release table.
+    
+    The Institution table has a One-to-Many relationship with the
+    Testing table.
+    
+    The Institution table has a Many-to-Many relationship with the
+    Project table.
+    
+    The Institution table has a One-to-One relationship with the
+    Availability table.
     """
     __tablename__ = 'institution'
 
@@ -368,8 +389,8 @@ class Institution(db.Model):
     releases = db.relationship('Release')
 
     def __init__(
-            self, name, institute_phone, institute_phone_ext, institute_email,
-            request_costs, cost, address):
+            self, name, institute_phone, institute_phone_ext, institute_email, request_costs, cost, address,
+            contacts=None, projects=None, tests=None, releases=None):
         self.name = name
         self.institute_phone = institute_phone
         self.institute_phone_ext = institute_phone_ext
@@ -377,6 +398,18 @@ class Institution(db.Model):
         self.request_costs = request_costs
         self.cost = cost
         self.address = address
+
+        if contacts:
+            self.contacts += contacts
+
+        if projects:
+            self.projects += projects
+
+        if tests:
+            self.tests += tests
+
+        if releases:
+            self.releases += releases
 
     def __repr__(self):
         return "<Institution(name={}, address={})>".format(
