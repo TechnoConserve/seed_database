@@ -108,7 +108,10 @@ class Accession(db.Model):
 class Address(db.Model):
     """
     The Address table has a One-to-Many relationship with the
-    Contacts and the Institution tables.
+    Contact table.
+    
+    The Address table has a One-to-One relationship with the
+    Institution table.
     """
     __tablename__ = 'address'
 
@@ -120,6 +123,19 @@ class Address(db.Model):
     zipcode = db.Column(db.Integer)
 
     contacts = db.relationship('Contact', backref='address')
+
+    def __init__(self, address_one, address_two, state, city, zipcode, contacts):
+        self.address_one = address_one
+        self.address_two = address_two
+        self.state = state
+        self.city = city
+        self.zipcode = zipcode
+        self.contacts = contacts
+
+    def __repr__(self):
+        return "<Address(address_one={}, address_two={}, city={}, state={}, zipcode={})>".format(
+            self.address_one, self.address_two, self.city, self.state, self.zipcode
+        )
 
 
 class AmountUsed(db.Model):
