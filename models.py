@@ -655,6 +655,7 @@ class Species(db.Model):
     accessions = db.relationship('Accession', backref='species', lazy='dynamic')
     releases = db.relationship('Release')
     synonyms = db.relationship('Species', backref=db.backref('usda_name', remote_side=[id]))
+    visits = db.relationship('Visit', backref='species')
 
     def __init__(
             self, symbol, name_full, common, family, genus, species, var_ssp1, var_ssp2, plant_type,
@@ -735,12 +736,6 @@ class Testing(db.Model):
                     self.est_pls_lb, self.est_pls_collected, self.purity, self.tz))
 
 
-scouting_visits = db.Table('scouting_visits',
-                           db.Column('species_id', db.Integer, db.ForeignKey('species.id')),
-                           db.Column('visit_id', db.Integer, db.ForeignKey('visit.id'))
-                           )
-
-
 class Visit(db.Model):
     """
     The Visit table has a Many-to-One relationship with the Accession 
@@ -762,11 +757,11 @@ class Visit(db.Model):
     population_size = db.Column(db.Integer)
     occupancy = db.Column(db.Integer)  # Number of plants collected from
 
-    species = db.relationship('Species', secondary=scouting_visits,
-                              backref=db.backref('visits', lazy='dynamic'))
+    species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 
     def __init__(
-            self, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat, population_size, occupancy):
+            self, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat, population_size, occupancy,
+            species):
         self.associated_taxa_full = associated_taxa_full
         self.mod = mod
         self.mod2 = mod2
@@ -776,6 +771,7 @@ class Visit(db.Model):
         self.habitat = habitat
         self.population_size = population_size
         self.occupancy = occupancy
+        self.species = species
 
     def __repr__(self):
         return "<Visit(land_owner={}, population_size={})>".format(
