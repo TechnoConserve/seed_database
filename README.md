@@ -56,7 +56,7 @@ The docstring I created for the Contact table looks like this:
 ```python
     """
     The Contacts table has a Many-to-One relationship with the
-    Institution table.
+    Entity table.
     
     The Contacts table has a Many-to-One relationship with the
     Address table.
@@ -199,17 +199,17 @@ should create relationships to those two tables.
 
 **Many-to-One**
 
-For both the Address and Institution table, the relationship will be
+For both the Address and Entity table, the relationship will be
 Many-to-One from the Contact table. In other words, there can be
 multiple contacts related to a single address and a single institution.
 
 The link between the tables is maintained by what is called a
 ForeignKey. We will give the Contact table one column for each
 ForeignKey we need it to hold, one for the Address table and one for the
-Institution table. Each ForeignKey column holds an integer value that
+Entity table. Each ForeignKey column holds an integer value that
 corresponds to one of the unique primary key values of the outside, or
 “foreign”, table. This will establish Many-to-One relationships between
-the Contact table and the Address and Institution tables.
+the Contact table and the Address and Entity tables.
 
 We start to link the tables like so:
 ```python
@@ -230,7 +230,7 @@ For reference, I’ve included the code of the Address table below:
 class Address(db.Model):
     """
     The Address table has a One-to-Many relationship with the
-    Contacts and the Institution tables.
+    Contacts and the Entity tables.
     """
     __tablename__ = 'address'
 
@@ -259,8 +259,8 @@ the “backref” parameter. Given this parameter, any instance of the
 Contact table will now have an attribute called “address” that will
 return the address associated with that Contact.
 
-Now to create the relationship between the Contact and Institution
-table. Add the following to the Institution table:
+Now to create the relationship between the Contact and Entity
+table. Add the following to the Entity table:
 ```python
     contacts = db.relationship('Contact', backref='institute')
 ```
@@ -269,7 +269,7 @@ Since it’s the same type of relationship, the code is very similar. The
 only difference is now we give the “backref” parameter the string value
 “’institute’” so that instances of the Contact table will can have an
 “institute” attribute. Just like the “address” attribute we added,
-accessing a Contact’s “institute” attribute would return the Institution
+accessing a Contact’s “institute” attribute would return the Entity
 object (AKA table row) that it is related to.
 
 **Many-to-Many**
@@ -330,7 +330,7 @@ all the code we just typed in one place:
 class Contact(db.Model):
     """
     The Contacts table has a Many-to-One relationship with the
-    Institution table.
+    Entity table.
     
     The Contacts table has a Many-to-One relationship with the
     Address table.

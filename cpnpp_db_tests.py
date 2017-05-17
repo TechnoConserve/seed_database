@@ -5,7 +5,7 @@ import datetime
 import unittest
 
 from app import app
-from models import (db, Species, Shipment, Institution, Accession,
+from models import (db, Species, Shipment, Entity, Accession,
                     GeoLocation, Zone, GeoLocationDescription, Testing, Availability, AmountUsed, Release)
 
 
@@ -57,17 +57,17 @@ class CPNPPDatabaseTests(unittest.TestCase):
         self.assertEqual(synonym3.usda_name, plant)
 
     def test_shipment_accession_relationship(self):
-        institute1 = Institution(name='Four Corners School of Outdoor Education',
-                                 address='P.O. Box 1029\n1117 N. Main Street\nMonticello, UT 84535',
-                                 contact_name='Mark Grover', contact_phone=4355872156,
-                                 contact_phone_ext=1024, contact_email='mgrover@fourcornersschol.org',
-                                 request_costs='No')
-        institute2 = Institution(name='High Mountain Nursery',
-                                 address=('271 W Bitterbrush Lane (aka Prison Road)\nGreen Building\n'
+        institute1 = Entity(name='Four Corners School of Outdoor Education',
+                            address='P.O. Box 1029\n1117 N. Main Street\nMonticello, UT 84535',
+                            contact_name='Mark Grover', contact_phone=4355872156,
+                            contact_phone_ext=1024, contact_email='mgrover@fourcornersschol.org',
+                            request_costs='No')
+        institute2 = Entity(name='High Mountain Nursery',
+                            address=('271 W Bitterbrush Lane (aka Prison Road)\nGreen Building\n'
                                           'Draper, UT 84020-9599'), contact_name='Tom Glass',
-                                 contact_phone=2084216904,
-                                 contact_phone_ext=None, contact_email='tom@highmtnnursery.com',
-                                 request_costs='No')
+                            contact_phone=2084216904,
+                            contact_phone_ext=None, contact_email='tom@highmtnnursery.com',
+                            request_costs='No')
         desc = GeoLocationDescription(land_owner='BLM',
                                       associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
@@ -135,17 +135,17 @@ class CPNPPDatabaseTests(unittest.TestCase):
         self.assertIn(shipment, accession.shipments)
 
     def test_shipment_institute_relationship(self):
-        institute1 = Institution(name='Four Corners School of Outdoor Education',
-                                 address='P.O. Box 1029\n1117 N. Main Street\nMonticello, UT 84535',
-                                 contact_name='Mark Grover', contact_phone=4355872156,
-                                 contact_phone_ext=1024, contact_email='mgrover@fourcornersschol.org',
-                                 request_costs='No')
-        institute2 = Institution(name='High Mountain Nursery',
-                                 address=('271 W Bitterbrush Lane (aka Prison Road)\nGreen Building\n'
+        institute1 = Entity(name='Four Corners School of Outdoor Education',
+                            address='P.O. Box 1029\n1117 N. Main Street\nMonticello, UT 84535',
+                            contact_name='Mark Grover', contact_phone=4355872156,
+                            contact_phone_ext=1024, contact_email='mgrover@fourcornersschol.org',
+                            request_costs='No')
+        institute2 = Entity(name='High Mountain Nursery',
+                            address=('271 W Bitterbrush Lane (aka Prison Road)\nGreen Building\n'
                                           'Draper, UT 84020-9599'), contact_name='Tom Glass',
-                                 contact_phone=2084216904,
-                                 contact_phone_ext=None, contact_email='tom@highmtnnursery.com',
-                                 request_costs='No')
+                            contact_phone=2084216904,
+                            contact_phone_ext=None, contact_email='tom@highmtnnursery.com',
+                            request_costs='No')
         desc = GeoLocationDescription(land_owner='BLM',
                                       associated_taxa_full=('Quercus gambelii:'
                                                          'Ericameria nauseosa ssp. consimilis var. '
@@ -510,11 +510,11 @@ class CPNPPDatabaseTests(unittest.TestCase):
                                      'Germination and competition trials for early seral species '
                                      '(Chicago Botanic Garden).  Photos of habitat, plant and seed'),
                               increase=0, species=plant, location=location)
-        institute1 = Institution(name='Four Corners School of Outdoor Education',
-                                 address='P.O. Box 1029\n1117 N. Main Street\nMonticello, UT 84535',
-                                 contact_name='Mark Grover', contact_phone=4355872156,
-                                 contact_phone_ext=1024, contact_email='mgrover@fourcornersschol.org',
-                                 request_costs='No')
+        institute1 = Entity(name='Four Corners School of Outdoor Education',
+                            address='P.O. Box 1029\n1117 N. Main Street\nMonticello, UT 84535',
+                            contact_name='Mark Grover', contact_phone=4355872156,
+                            contact_phone_ext=1024, contact_email='mgrover@fourcornersschol.org',
+                            request_costs='No')
         avail = Availability(grin_avail=1.47, bend_avail=17.690088, cbg_avail=0, meeker_avail=0,
                              misc_avail=0, ephraim_avail=0, nau_avail=0.512592, accession=accession,
                              misc_avail_inst=institute1)

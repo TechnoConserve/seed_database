@@ -118,7 +118,7 @@ class Address(db.Model):
     Contact table.
     
     The Address table has a One-to-One relationship with the
-    Institution table.
+    Entity table.
     """
     __tablename__ = 'address'
 
@@ -188,7 +188,7 @@ class Availability(db.Model):
     Accession table.
 
     The Availability table has a Many-to-One relationship with the
-    Institution table.
+    Entity table.
     """
     __tablename__ = 'availability'
 
@@ -209,10 +209,10 @@ class Availability(db.Model):
     sum_lb_no_grin = db.Column(db.Float)
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
-    misc_avail_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
+    misc_avail_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
 
     accession = db.relationship('Accession', backref=db.backref('availability', uselist=False), uselist=False)
-    misc_avail_inst = db.relationship('Institution', backref=db.backref('availability', lazy='dynamic'), uselist=False)
+    misc_avail_inst = db.relationship('Entity', backref=db.backref('availability', lazy='dynamic'), uselist=False)
 
     def __init__(
             self, grin_avail, bend_avail, cbg_avail, meeker_avail, misc_avail, ephraim_avail,
@@ -285,7 +285,7 @@ seed_use_contacts = db.Table('seed_use_contacts',
 class Contact(db.Model):
     """
     The Contact table has a Many-to-One relationship with the
-    Institution table.
+    Entity table.
     
     The Contact table has a Many-to-One relationship with the
     Address table.
@@ -294,9 +294,9 @@ class Contact(db.Model):
     SeedUse table.
     
     A contact represents a person of significance related to a
-    particular institution. As an example, for each seed storage 
-    institution, the person responsible for managing seed shipments out 
-    of that institution should be added as a Contact record.
+    particular entity. As an example, for each seed storage 
+    entity, the person responsible for managing seed shipments out 
+    of that entity should be added as a Contact record.
     """
     __tablename__ = 'contact'
 
@@ -310,12 +310,12 @@ class Contact(db.Model):
     agency = db.Column(db.String(50))  # Who do they work for?
 
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
-    institution_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
+    entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
 
     projects = db.relationship('SeedUse', secondary=seed_use_contacts,
                                backref=db.backref('contacts', lazy='dynamic'))
 
-    def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, institute=None,
+    def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, entity=None,
                  projects=None):
         self.first_name = first_name
         self.last_name = last_name
@@ -326,8 +326,8 @@ class Contact(db.Model):
         self.agency = agency
         self.address = address
 
-        if institute:
-            self.institute = institute
+        if entity:
+            self.entity = entity
 
         if projects:
             self.projects += projects
@@ -337,64 +337,64 @@ class Contact(db.Model):
             self.first_name, self.last_name)
 
 
-seed_use_institutions = db.Table('seed_use_institutions',
+seed_use_entity = db.Table('seed_use_entity',
                                  db.Column('seed_use_id', db.Integer, db.ForeignKey('seed_use.id')),
-                                 db.Column('institution_id', db.Integer, db.ForeignKey('institution.id'))
+                                 db.Column('entity_id', db.Integer, db.ForeignKey('entity.id'))
                                  )
 
 
-class Institution(db.Model):
+class Entity(db.Model):
     """
-    The Institution table has a Many-to-One relationship with the
+    The Entity table has a Many-to-One relationship with the
     Shipment table.
 
-    The Institution table has a One-to-One relationship with the
+    The Entity table has a One-to-One relationship with the
     Address table.
 
-    The Institution table has a One-to-Many relationship with the
+    The Entity table has a One-to-Many relationship with the
     Contact table.
     
-    The Institution table has a One-to-Many relationship with the
+    The Entity table has a One-to-Many relationship with the
     Release table.
     
-    The Institution table has a One-to-Many relationship with the
+    The Entity table has a One-to-Many relationship with the
     Testing table.
     
-    The Institution table has a Many-to-Many relationship with the
+    The Entity table has a Many-to-Many relationship with the
     SeedUse table.
     
-    The Institution table has a One-to-One relationship with the
+    The Entity table has a One-to-One relationship with the
     Availability table.
     """
-    __tablename__ = 'institution'
+    __tablename__ = 'entity'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     # General phone number that may or may not be related to particular contact
-    institute_phone = db.Column(db.Integer)
-    institute_phone_ext = db.Column(db.Integer)
+    entity_phone = db.Column(db.Integer)
+    entity_phone_ext = db.Column(db.Integer)
     # General email that may or may not be related to a particular contact
-    institute_email = db.Column(db.String(50))
-    request_costs = db.Column(db.Boolean)  # Does this institution charge a fee for requesting seed?
+    entity_email = db.Column(db.String(50))
+    request_costs = db.Column(db.Boolean)  # Does this entity charge a fee for requesting seed?
     # If we need to calculate things by cost, store dollars and cents separately
     cost = db.Column(db.Float)  # How much?
 
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
 
-    address = db.relationship('Address', backref='institute', uselist=False)
-    contacts = db.relationship('Contact', backref='institute')
-    projects = db.relationship('SeedUse', secondary=seed_use_institutions,
-                               backref=db.backref('institutions', lazy='dynamic'))
+    address = db.relationship('Address', backref='entity', uselist=False)
+    contacts = db.relationship('Contact', backref='entity')
+    projects = db.relationship('SeedUse', secondary=seed_use_entity,
+                               backref=db.backref('entities', lazy='dynamic'))
     tests = db.relationship('Testing')
     releases = db.relationship('Release')
 
     def __init__(
-            self, name, institute_phone, institute_phone_ext, institute_email, request_costs, cost, address,
+            self, name, entity_phone, entity_phone_ext, entity_email, request_costs, cost, address,
             contacts=None, projects=None, tests=None, releases=None):
         self.name = name
-        self.institute_phone = institute_phone
-        self.institute_phone_ext = institute_phone_ext
-        self.institute_email = institute_email
+        self.entity_phone = entity_phone
+        self.entity_phone_ext = entity_phone_ext
+        self.entity_email = entity_email
         self.request_costs = request_costs
         self.cost = cost
         self.address = address
@@ -412,7 +412,7 @@ class Institution(db.Model):
             self.releases += releases
 
     def __repr__(self):
-        return "<Institution(name={}, address={})>".format(
+        return "<Entity(name={}, address={})>".format(
             self.name, self.address)
 
 
@@ -506,7 +506,7 @@ class SeedUse(db.Model):
     The SeedUse table has a Many-to-One relationship with the Species
     table.
 
-    The SeedUse table has a One-to-One relationship with the Institution 
+    The SeedUse table has a One-to-One relationship with the Entity 
     table.
 
     The SeedUse table has a One-to-Many relationship with the Contact 
@@ -529,7 +529,7 @@ class SeedUse(db.Model):
 
     def __init__(
             self, project_name, amount_gr, purpose, date_start, date_end, start_notes, end_notes, accession, species,
-            institute, contacts):
+            entity, contacts):
         self.project_name = project_name
         self.amount_gr = amount_gr
         self.purpose = purpose
@@ -539,7 +539,7 @@ class SeedUse(db.Model):
         self.end_notes = end_notes
         self.accession = accession
         self.species = species
-        self.institute = institute
+        self.entity = entity
         self.contacts = contacts
 
         self.amount_lb = compute_gr_to_lb(amount_gr)
@@ -590,7 +590,7 @@ class Release(db.Model):
     comments = db.Column(db.Text)
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
-    institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
+    entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 
     priority_zones = db.relationship('Zone', backref='priority_releases')
@@ -640,14 +640,14 @@ class Release(db.Model):
 class Shipment(db.Model):
     """
     The Shipment table has a Many-to-Many relationship with the 
-    Institution table.
+    Entity table.
 
     The Shipment table has a Many-to-One relationship with the Accession
     table.
 
     A shipment also maintains multiple ForeignKey fields to the 
-    Institution table for both the origin institute and the destination 
-    institute.
+    Entity table for both the origin entity and the destination 
+    entity.
 
     [?] http://docs.sqlalchemy.org/en/rel_0_9/orm/join_conditions.html#handling-multiple-join-paths
     """
@@ -659,24 +659,24 @@ class Shipment(db.Model):
     tracking_num = db.Column(db.String(25), unique=True)
     shipper = db.Column(db.String(30))  # E.g. Fedex
 
-    origin_institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
-    destination_institute_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
+    origin_entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
+    destination_entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
     amount_used_id = db.Column(db.Integer, db.ForeignKey('amount_used.id'))
 
-    origin_institute = db.relationship('Institution', foreign_keys=[origin_institute_id])
-    destination_institute = db.relationship('Institution', foreign_keys=[destination_institute_id])
+    origin_entity = db.relationship('Entity', foreign_keys=[origin_entity_id])
+    destination_entity = db.relationship('Entity', foreign_keys=[destination_entity_id])
     amounts_sent = db.relationship('AmountUsed')
 
     def __init__(
-            self, ship_date, tracking_num, shipper, amount_gr, calc_by, origin_institute,
-            destination_institute):
+            self, ship_date, tracking_num, shipper, amount_gr, calc_by, origin_entity,
+            destination_entity):
         self.ship_date = ship_date
         self.tracking_num = tracking_num
         self.shipper = shipper
         self.amount_gr = amount_gr
         self.calc_by = calc_by
-        self.origin_institute = origin_institute
-        self.destination_institute = destination_institute
+        self.origin_entity = origin_entity
+        self.destination_entity = destination_entity
 
         self.amount_lb = compute_gr_to_lb(amount_gr)
 
@@ -784,7 +784,7 @@ class Testing(db.Model):
     fill = db.Column(db.Integer)
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
-    institution_id = db.Column(db.Integer, db.ForeignKey('institution.id'))
+    entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
 
     def __init__(
             self, amt_rcvd_lbs, clean_wt_lbs, est_seed_lb, est_pls_lb, est_pls_collected,

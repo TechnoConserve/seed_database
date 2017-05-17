@@ -118,10 +118,10 @@ def availability():
     form.accession.choices = [
         (acc.id, acc.acc_num) for acc in models.Accession.query.order_by('acc_num')]
     form.misc_inst_id.choices = [
-        (inst.id, inst.name) for inst in models.Institution.query.order_by('name')]
+        (inst.id, inst.name) for inst in models.Entity.query.order_by('name')]
     if form.validate_on_submit():
         acc = models.Accession.query.get(form.accession.data)
-        misc_inst = models.Institution.query.get(form.misc_inst_id.data)
+        misc_inst = models.Entity.query.get(form.misc_inst_id.data)
         grin = form.grin_avail.data
         bend = form.bend_avail.data
         cbg = form.cbg_avail.data
@@ -151,7 +151,7 @@ def availability():
 def institutions():
     form = forms.InstitutionForm()
     if form.validate_on_submit():
-        institute = models.Institution(
+        institute = models.Entity(
             name=form.name.data,
             address=form.address.data,
             contact_name=form.contact_name.data,
@@ -163,7 +163,7 @@ def institutions():
         )
         models.db.session.add(institute)
         models.db.session.commit()
-        flash('Yay, Institution created!', 'success')
+        flash('Yay, Entity created!', 'success')
         return redirect('/success')
     return render_template('institutions.html', form=form)
 
@@ -217,14 +217,14 @@ def releases():
 def shipments():
     form = forms.ShipmentForm()
     form.origin_institute_id.choices = [
-        (inst.id, inst.name) for inst in models.Institution.query.order_by('name')]
+        (inst.id, inst.name) for inst in models.Entity.query.order_by('name')]
     form.destination_institute_id.choices = [
-        (inst.id, inst.name) for inst in models.Institution.query.order_by('name')]
+        (inst.id, inst.name) for inst in models.Entity.query.order_by('name')]
     form.accession.choices = [
         (acc.id, acc.acc_num) for acc in models.Accession.query.order_by('acc_num')]
     if form.validate_on_submit():
-        origin_institute = models.Institution.query.get(form.origin_institute_id.data)
-        destination_institute = models.Institution.query.get(form.destination_institute_id.data)
+        origin_institute = models.Entity.query.get(form.origin_institute_id.data)
+        destination_institute = models.Entity.query.get(form.destination_institute_id.data)
         accession = models.Accession.query.get(form.accession.data)
         shipment = models.Shipment(
             ship_date=form.ship_date.data,
