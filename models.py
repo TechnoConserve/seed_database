@@ -141,9 +141,17 @@ class Address(db.Model):
 
 class AmountUsed(db.Model):
     """
-    AmountUsed table has a One-to-One relationship with the Accession table.
+    The AmountUsed table has a Many-to-One relationship with the 
+    Accession table.
 
-    AmountUsed table has a Many-to-One relationship with the Species table.
+    The AmountUsed table has a Many-to-One relationship with the 
+    Species table.
+    
+    The AmountUsed table has a Many-to-One relationship with the
+    Project table.
+    
+    The AmountUsed table has a Many-to-One relationship with the
+    Shipment table.
     """
     __tablename__ = 'amount_used'
 
@@ -157,7 +165,9 @@ class AmountUsed(db.Model):
     def __init__(self, amount_gr, species, accession=None):
         self.amount_gr = amount_gr
         self.species = species
-        self.accession = accession
+
+        if accession:
+            self.accession = accession
 
         self.amount_lb = compute_gr_to_lb(amount_gr)
 
