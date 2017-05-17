@@ -133,13 +133,15 @@ class Address(db.Model):
 
     contacts = db.relationship('Contact', backref='address')
 
-    def __init__(self, address_one, address_two, state, city, zipcode, contacts):
+    def __init__(self, address_one, address_two, state, city, zipcode, contacts=None):
         self.address_one = address_one
         self.address_two = address_two
         self.state = state
         self.city = city
         self.zipcode = zipcode
-        self.contacts = contacts
+
+        if contacts:
+            self.contacts = contacts
 
     def __repr__(self):
         return "<Address(address_one={}, address_two={}, city={}, state={}, zipcode={})>".format(
@@ -317,7 +319,7 @@ class Contact(db.Model):
     seed_uses = db.relationship('SeedUse', secondary=seed_use_contacts,
                                 backref=db.backref('contacts', lazy='dynamic'))
 
-    def __init__(self, first_name, last_name, email, telephone, tel_ext, title, agency, address, entity=None,
+    def __init__(self, first_name, last_name, email, telephone, tel_ext, title, address, agency=None, entity=None,
                  seed_uses=None):
         self.first_name = first_name
         self.last_name = last_name
@@ -325,8 +327,10 @@ class Contact(db.Model):
         self.telephone = telephone
         self.tel_ext = tel_ext
         self.title = title
-        self.agency = agency
         self.address = address
+
+        if agency:
+            self.agency = agency
 
         if entity:
             self.entity = entity

@@ -5,8 +5,8 @@ import datetime
 import unittest
 
 from app import app
-from models import (db, Species, Shipment, Entity, Accession,
-                    GeoLocation, Zone, GeoLocationDescription, Testing, Availability, AmountUsed, Release)
+from models import (db, Accession, Address, AmountUsed, Availability, Contact, Entity, GeoLocation, Release, SeedUse,
+                    Shipment, Species, Testing, Visit, Zone)
 
 
 def create_app():
@@ -57,10 +57,13 @@ class CPNPPDatabaseTests(unittest.TestCase):
         self.assertEqual(synonym3.usda_name, plant)
 
     def test_shipment_accession_relationship(self):
+        address = Address(address_one=, address_two=, state=, city=, zipcode=)
+        contact = Contact(first_name='Mark', last_name='Grover', email='mgrover@fourcornersschol.org',
+                          telephone=4355872156, tel_ext=1024, title='Conservation Coordinator', agency=None)
         institute1 = Entity(name='Four Corners School of Outdoor Education',
-                            address='P.O. Box 1029\n1117 N. Main Street\nMonticello, UT 84535',
-                            contact_name='Mark Grover', contact_phone=4355872156,
-                            contact_phone_ext=1024, contact_email='mgrover@fourcornersschol.org',
+                            address_one='P.O. Box 1029', \n1117 N. Main Street\nMonticello, UT 84535',
+                            contact_phone=,
+                            contact_phone_ext=1024, contact_email=,
                             request_costs='No')
         institute2 = Entity(name='High Mountain Nursery',
                             address=('271 W Bitterbrush Lane (aka Prison Road)\nGreen Building\n'
