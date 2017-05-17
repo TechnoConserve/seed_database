@@ -65,7 +65,8 @@ class Accession(db.Model):
 
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 
-    visits = db.relationship('Visit', backref='accessions')
+    amounts_used = db.relationship('AmountUsed', backref='accession')
+    visits = db.relationship('Visit', backref='accession')
     projects = db.relationship(
         'Project', secondary=project_accessions, backref=db.backref('accessions', lazy='dynamic'))
     releases = db.relationship('Release')
@@ -140,7 +141,7 @@ class Address(db.Model):
 
 class AmountUsed(db.Model):
     """
-    AmountUsed table has a Many-to-One relationship with the Accession table.
+    AmountUsed table has a One-to-One relationship with the Accession table.
 
     AmountUsed table has a Many-to-One relationship with the Species table.
     """
@@ -152,9 +153,6 @@ class AmountUsed(db.Model):
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
-
-    accession = db.relationship('Accession', uselist=False)
-    species = db.relationship('Species', uselist=False)
 
     def __init__(self, amount_gr, species, accession=None):
         self.amount_gr = amount_gr
@@ -684,6 +682,7 @@ class Species(db.Model):
     parent_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 
     accessions = db.relationship('Accession', backref='species', lazy='dynamic')
+    amounts_used = db.relationship('AmountUsed', backref='species')
     releases = db.relationship('Release')
     synonyms = db.relationship('Species', backref=db.backref('usda_name', remote_side=[id]))
     visits = db.relationship('Visit', backref='species')
