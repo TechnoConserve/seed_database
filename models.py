@@ -29,7 +29,7 @@ class Accession(db.Model):
     table.
 
     The Accession table has a One-to-Many relationship with the 
-    Shipment table.
+    Release table.
 
     The Accession table has a One-to-Many relationship with the Visit
     table.
@@ -64,7 +64,6 @@ class Accession(db.Model):
     increase = db.Column(db.Boolean)  # Slated for increase?
 
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
-    visit_id = db.Column(db.Integer, db.ForeignKey('visit.id'))
 
     visits = db.relationship('Visit', backref='accessions')
     projects = db.relationship(
@@ -90,7 +89,17 @@ class Accession(db.Model):
         self.notes = notes
         self.increase = increase
         self.species = species
-        self.location = location
+        self.visits = visits
+
+        # It is unlikely that the following will be known at the time of an Accession creation
+        if projects:
+            self.projects = projects
+
+        if releases:
+            self.releases = releases
+
+        if tests:
+            self.tests = tests
 
     def __repr__(self):
         return "<Accession(acc_num={})>".format(self.acc_num)
@@ -625,11 +634,17 @@ class Shipment(db.Model):
 class Species(db.Model):
     """
     The Species table has a One-to-Many relationship with other objects
-    in the same table.
+    in the same table for the purpose of Species synonyms.
     
     [?] http://docs.sqlalchemy.org/en/rel_1_1/orm/self_referential.html#adjacency-list-relationships
     
     The Species table has a One-to-Many relationship with the Accession
+    table.
+    
+    The Species table has a One-to-Many relationship with the Visit
+    table.
+    
+    The Species table has a One-to-Many relationship with the Release
     table.
     """
     __tablename__ = 'species'
@@ -660,7 +675,7 @@ class Species(db.Model):
     def __init__(
             self, symbol, name_full, common, family, genus, species, var_ssp1, var_ssp2, plant_type,
             plant_duration, priority_species, gsg_val, poll_val, research_val, parent_id=None,
-            synonyms=None):
+            synonyms=None, visits=None):
 
         self.symbol = symbol
         self.name_full = name_full
@@ -682,6 +697,9 @@ class Species(db.Model):
 
         if synonyms:
             self.synonyms = synonyms
+
+        if visits:
+            self.visits += visits
 
     def __repr__(self):
         return "<Species(symbol={}, name_full={})>".format(
