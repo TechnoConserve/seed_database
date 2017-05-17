@@ -64,6 +64,7 @@ class Accession(db.Model):
     acc_num3 = db.Column(db.String(10))
     collected_with = db.Column(db.String(300))
     collection_misc = db.Column(db.Text)
+    occupancy = db.Column(db.Integer)  # Number of plants collected from
     seed_source = db.Column(db.String(100))
     description = db.Column(db.Text)
     notes = db.Column(db.Text)
@@ -80,8 +81,8 @@ class Accession(db.Model):
 
     def __init__(
             self, data_source, plant_habit, coll_date, acc_num, acc_num1, acc_num2, acc_num3, collected_with,
-            collection_misc, seed_source, description, notes, increase, species, visits, projects=None, releases=None,
-            tests=None):
+            collection_misc, occupancy, seed_source, description, notes, increase, species, visits, projects=None,
+            releases=None, tests=None):
         self.data_source = data_source
         self.plant_habit = plant_habit
         self.coll_date = coll_date
@@ -91,6 +92,7 @@ class Accession(db.Model):
         self.acc_num3 = acc_num3
         self.collected_with = collected_with
         self.collection_misc = collection_misc
+        self.occupancy = occupancy
         self.seed_source = seed_source
         self.description = description
         self.notes = notes
@@ -457,7 +459,7 @@ class GeoLocation(db.Model):
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
     zone = db.relationship('Zone', uselist=False)
-    visits = db.relationship('Visit')
+    visits = db.relationship('Visit', backref='geo_location')
 
     def __init__(
             self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
@@ -826,10 +828,14 @@ class Visit(db.Model):
     
     The Visit table has a Many-to-One relationship with the GeoLocation
     table.
+    
+    The Visit table has a Many-to-One relationship with the Species
+    table.
     """
     __tablename__ = 'visit'
 
     id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
     associated_taxa_full = db.Column(db.Text)
     mod = db.Column(db.String(200))   # modifying factors of collection site (grazed, etc.)
     mod2 = db.Column(db.String(200))  # additional modifying factors of collection site (roadside, etc.)
@@ -838,13 +844,15 @@ class Visit(db.Model):
     aspect = db.Column(db.String(10))
     habitat = db.Column(db.String(100))
     population_size = db.Column(db.Integer)
-    occupancy = db.Column(db.Integer)  # Number of plants collected from
 
+    accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+    geo_location_id = db.Column(db.Integer, db.ForeignKey('geo_location.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 
     def __init__(
-            self, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat, population_size, occupancy,
-            species):
+            self, date, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat, population_size,
+            accession, geo_location, species):
+        self.date = date
         self.associated_taxa_full = associated_taxa_full
         self.mod = mod
         self.mod2 = mod2
@@ -853,7 +861,8 @@ class Visit(db.Model):
         self.aspect = aspect
         self.habitat = habitat
         self.population_size = population_size
-        self.occupancy = occupancy
+        self.accession = accession
+        self.geo_location = geo_location
         self.species = species
 
     def __repr__(self):
