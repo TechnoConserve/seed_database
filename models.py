@@ -76,7 +76,7 @@ class Accession(db.Model):
     projects = db.relationship(
         'SeedUse', secondary=seed_use_accessions, backref=db.backref('accessions', lazy='dynamic'))
     releases = db.relationship('Release')
-    tests = db.relationship('Testing')
+    tests = db.relationship('Testing', backref='accession')
 
     def __init__(
             self, data_source, plant_habit, coll_date, acc_num, acc_num1, acc_num2, acc_num3, collected_with,
@@ -385,7 +385,7 @@ class Entity(db.Model):
     contacts = db.relationship('Contact', backref='entity')
     seed_uses = db.relationship('SeedUse', secondary=seed_use_entity,
                                 backref=db.backref('entities', lazy='dynamic'))
-    tests = db.relationship('Testing')
+    tests = db.relationship('Testing', backref='entity')
     releases = db.relationship('Release')
 
     def __init__(
@@ -775,6 +775,9 @@ class Testing(db.Model):
     """
     The Testing table has a Many-to-One relationship with the 
     Accession table.
+    
+    The Testing table has a Many-to-One relationship with the
+    Entity table.
     """
     __tablename__ = 'test'
 
@@ -794,9 +797,8 @@ class Testing(db.Model):
     entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
 
     def __init__(
-            self, amt_rcvd_lbs, clean_wt_lbs, est_seed_lb, est_pls_lb, est_pls_collected,
-            test_type, test_date, purity, tz, fill, accession):
-
+            self, amt_rcvd_lbs, clean_wt_lbs, est_seed_lb, est_pls_lb, est_pls_collected, test_type, test_date, purity,
+            tz, fill, accession, entity):
         self.amt_rcvd_lbs = amt_rcvd_lbs
         self.clean_wt_lbs = clean_wt_lbs
         self.est_seed_lb = est_seed_lb
@@ -808,6 +810,7 @@ class Testing(db.Model):
         self.tz = tz
         self.fill = fill
         self.accession = accession
+        self.entity = entity
 
     def __repr__(self):
         return ("<Testing(accession={}, amt_rcvd_lbs={}, clean_wt_lbs={}, est_seed_lb={}, "
