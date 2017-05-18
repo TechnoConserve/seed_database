@@ -855,7 +855,7 @@ class Visit(db.Model):
 
     def __init__(
             self, date, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat, population_size,
-            accession, geo_location, species):
+            geo_location, species, accession=None):
         self.date = date
         self.associated_taxa_full = associated_taxa_full
         self.mod = mod
