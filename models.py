@@ -438,8 +438,10 @@ class GeoLocation(db.Model):
     soil_type = db.Column(db.String(100))
     phytoregion = db.Column(db.String(30))
     phytoregion_full = db.Column(db.String(50))
+
     # locality of the collection site if applicable - i.e. National Forest/NCA's, etc.
     locality = db.Column(db.String(50))  # Formerly SUB_CNT3
+
     geog_area = db.Column(db.String(50))
     directions = db.Column(db.Text)  # Formerly locality
     degrees_n = db.Column(db.Integer)
@@ -469,7 +471,7 @@ class GeoLocation(db.Model):
             self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
             degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal, longitude_decimal,
             georef_source, gps_datum, altitude, altitude_unit, altitude_in_m, fo_name, district_name, state, county,
-            visit_descriptions, zone, visits):
+            visit_descriptions, zone):
         self.land_owner = land_owner
         self.geology = geology
         self.soil_type = soil_type
@@ -497,7 +499,6 @@ class GeoLocation(db.Model):
         self.county = county
         self.visit_descriptions = visit_descriptions
         self.zone = zone
-        self.visits = visits
 
     def __repr__(self):
         return "<GeoLocation(latitude_decimal={}, longitude_decimal={})>".format(

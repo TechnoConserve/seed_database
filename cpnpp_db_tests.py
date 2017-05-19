@@ -22,35 +22,51 @@ class AccessionTests(unittest.TestCase):
         self.app = app.test_client()
         db.create_all()
         self.plant = Species(symbol='ABAB', name_full='Abutilon abutiloides', common='shrubby Indian mallow',
-                        family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
-                        plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
-                        poll_val=0, research_val=0)
+                             family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
+                             plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
+                             poll_val=0, research_val=0)
         self.synonym1 = Species(symbol='ABAM5', name_full='Abutilon americanum', common='shrubby Indian mallow',
-                           family='Malvaceae', genus='Abutilon', species='americanum', var_ssp1=None, var_ssp2=None,
-                           plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
-                           poll_val=0, research_val=0)
+                                family='Malvaceae', genus='Abutilon', species='americanum', var_ssp1=None,
+                                var_ssp2=None, plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
+                                poll_val=0, research_val=0)
         self.synonym2 = Species(symbol='ABJA', name_full='Abutilon jacquinii', common='shrubby Indian mallow',
-                           family='Malvaceae', genus='Abutilon', species='jacquinii', var_ssp1=None, var_ssp2=None,
-                           plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
-                           poll_val=0, research_val=0)
+                                family='Malvaceae', genus='Abutilon', species='jacquinii', var_ssp1=None, var_ssp2=None,
+                                plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
+                                poll_val=0, research_val=0)
         self.synonym3 = Species(symbol='ABLA', name_full='Abutilon lignosum', common='shrubby Indian mallow',
-                           family='Malvaceae', genus='Abutilon', species='lignosum', var_ssp1=None, var_ssp2=None,
-                           plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
-                           poll_val=0, research_val=0)
-        self.address1 = Address(address_one='P.O. Box 1029', address_two='1117 N. Main Street', state='UT', city='Monticello',
-                          zipcode=84535)
+                                family='Malvaceae', genus='Abutilon', species='lignosum', var_ssp1=None, var_ssp2=None,
+                                plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
+                                poll_val=0, research_val=0)
+        self.address1 = Address(address_one='P.O. Box 1029', address_two='1117 N. Main Street', state='UT',
+                                city='Monticello', zipcode=84535)
         self.address2 = Address(address_one='271 W Bitterbrush Lane (aka Prison Road)', address_two='Green Building',
-                           city='Draper', state='UT', zipcode=840209599)
+                                city='Draper', state='UT', zipcode=840209599)
         self.contact1 = Contact(first_name='Mark', last_name='Grover', email='mgrover@fourcornersschool.org',
-                          telephone=4355872156, tel_ext=1024, title='Conservation Coordinator', agency=None,
-                          address=address)
-        self.contact2 = Contact(first_name='Tom', last_name='Glass', email='tom@highmtnnursery.com', telephone=2084216904,
-                            tel_ext=None, title='Owner', address=address2)
-        self.entity1 = Entity(name='Four Corners School of Outdoor Education', address=address, contacts=contact,
-                         request_costs=1, cost=35.00, entity_email='info@fourcornersschool.org',
-                         entity_phone=4355872156, entity_phone_ext=1010)
-        self.entity2 = Entity(name='High Mountain Nursery', address=address2, contacts=contact_2, request_costs=0, cost=None,
-                         )
+                                telephone=4355872156, tel_ext=1024, title='Conservation Coordinator', agency=None,
+                                address=self.address1)
+        self.contact2 = Contact(first_name='Tom', last_name='Glass', email='tom@highmtnnursery.com',
+                                telephone=2084216904, tel_ext=None, title='Owner', address=self.address2)
+        self.entity1 = Entity(name='Four Corners School of Outdoor Education', address=self.address1,
+                              contacts=self.contact1, request_costs=1, cost=35.00,
+                              entity_email='info@fourcornersschool.org', entity_phone=4355872156, entity_phone_ext=1010)
+        self.entity2 = Entity(name='High Mountain Nursery', address=self.address2, contacts=self.contact2,
+                              request_costs=0, cost=None, entity_email='info@highmountainnursery.com',
+                              entity_phone='8010001111', entity_phone_ext=10)
+        self.geo_location1 = GeoLocation(land_owner='BLM', geology='Quarternary alluvial terrace deposits',
+                                         soil_type='brown-tan sand', phytoregion='25E',
+                                         phytoregion_full='Western High Plains (Omernik)',
+                                         locality='Grand Staircase Escalante National Monument',
+                                         geog_area='Big Cottonwood Canyon',
+                                         directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
+                                                     'county road 243. Continue on 243 for 8.3 miles then turn left '
+                                                     'onto county toad 126A. Continue on 126A for 12 miles then turn '
+                                                     'right. Continue for approximately 1.1 miles to reach collection '
+                                                     'site.'), degrees_n=38, minutes_n=20, seconds_n=16.32,
+                                         degrees_w=107, minutes_w=53, seconds_w=59.64, latitude_decimal=38.33786,
+                                         longitude_decimal=-107.8999, georef_source='GPS', gps_datum='NAD83',
+                                         altitude=7100, altitude_unit='ft', altitude_in_m=2164,
+                                         fo_name='UNCOMPAHGRE FIELD OFFICE', district_name='SOUTHWEST DISTRICT OFFICE',
+                                         state='CO', county='Montrose', zone=zone)
         self.visit1 = Visit(date=datetime.date.today(), associated_taxa_full=('Quercus gambelii, Ericameria nauseosa '
                                                                               'ssp. consimilis var. nitida, Artemisia '
                                                                               'tridentata ssp. wyomingensis, Lepidium '
@@ -59,26 +75,12 @@ class AccessionTests(unittest.TestCase):
                                                                               'macrantha'),
                             mod='grazed, trampled', mod2='recreation', geomorphology=None, slope='5-25 degrees',
                             aspect='varied', habitat='Mountain Brush; meadow along road', population_size=200,
-                            accession=None)
+                            accession=None, )
         self.zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
                     us_l4_name='Semiarid Benchlands and Canyonlands',
                     us_l3_code='20', us_l3_name='Colorado Plateaus',
                     achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
                     avail_strict=0, usgs_zone=0)
-        self.location = GeoLocation(phytoregion='25E', phytoregion_full='Western High Plains (Omernik)',
-                               locality='Grand Staircase Escalante National Monument',
-                               geog_area='Big Cottonwood Canyon',
-                               directions=('Head NE on HWY 62/180 for 30 miles and turn left on '
-                                           'county road 243. Continue on 243 for 8.3 miles then turn '
-                                           'left onto county toad 126A. Continue on 126A for 12 miles '
-                                           'then turn right. Continue for approximately 1.1 miles to '
-                                           'reach collection site.'),
-                               degrees_n=38, minutes_n=20, seconds_n=16.32, degrees_w=107, minutes_w=53,
-                               seconds_w=59.64, latitude_decimal=38.33786, longitude_decimal=-107.8999,
-                               georef_source='GPS', gps_datum='NAD83', altitude=7100, altitude_unit='ft',
-                               altitude_in_m=2164, fo_name='UNCOMPAHGRE FIELD OFFICE',
-                               district_name='SOUTHWEST DISTRICT OFFICE', state='CO', county='Montrose',
-                               location_description=desc, zone=zone)
         self.accession = Accession(data_source='UP', plant_habit='Forb/herb',
                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
                               acc_num1='UP', acc_num2='76', acc_num3=None,
