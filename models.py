@@ -534,10 +534,11 @@ class SeedUse(db.Model):
     amounts_used = db.relationship('AmountUsed')
 
     def __init__(
-            self, project_name, purpose, date_start, date_end, start_notes, end_notes, accession, species,
+            self, project_name, purpose, abstract, date_start, date_end, start_notes, end_notes, accession, species,
             entities, contacts):
         self.project_name = project_name
         self.purpose = purpose
+        self.abstract = abstract
         self.date_start = date_start
         self.date_end = date_end
         self.start_notes = start_notes
