@@ -71,6 +71,7 @@ class Accession(db.Model):
     increase = db.Column(db.Boolean)  # Slated for increase?
 
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
+    geo_location_id = db.Column(db.Integer, db.ForeignKey('geo_location.id'))
 
     amounts_used = db.relationship('AmountUsed', backref='accession')
     geo_location = db.relationship('GeoLocation', backref='accession', uselist=False)
@@ -691,7 +692,7 @@ class Shipment(db.Model):
             self.order_date, self.ship_date, self.shipper, self.tracking_num)
 
     def add_amount(self, amount):
-        self.amounts_sent += amount
+        self.amounts_sent.append(amount)
 
     def get_accessions(self):
         accessions = []

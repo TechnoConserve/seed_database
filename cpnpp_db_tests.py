@@ -47,9 +47,9 @@ class AccessionTests(unittest.TestCase):
         self.contact2 = Contact(first_name='Tom', last_name='Glass', email='tom@highmtnnursery.com',
                                 telephone=2084216904, tel_ext=None, title='Owner', address=self.address2)
         self.entity1 = Entity(name='Four Corners School of Outdoor Education', address=self.address1,
-                              contacts=self.contact1, request_costs=1, cost=35.00,
+                              contacts=[self.contact1], request_costs=1, cost=35.00,
                               entity_email='info@fourcornersschool.org', entity_phone=4355872156, entity_phone_ext=1010)
-        self.entity2 = Entity(name='High Mountain Nursery', address=self.address2, contacts=self.contact2,
+        self.entity2 = Entity(name='High Mountain Nursery', address=self.address2, contacts=[self.contact2],
                               request_costs=0, cost=None, entity_email='info@highmountainnursery.com',
                               entity_phone='8010001111', entity_phone_ext=10)
         self.zone1 = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
@@ -182,7 +182,7 @@ class AccessionTests(unittest.TestCase):
         db.session.add(amount)
         shipment = Shipment(order_date=datetime.datetime.today(), ship_date=datetime.datetime.now(),
                             tracking_num='40012345678', shipper='FedEx', origin_entity=self.entity1,
-                            destination_entity=self.entity2, amounts_sent=amount)
+                            destination_entity=self.entity2, amounts_sent=[amount])
         db.session.add(shipment)
         db.session.commit()
         accessions = shipment.get_accessions()
@@ -197,13 +197,13 @@ class AccessionTests(unittest.TestCase):
         db.session.add(self.zone1)
         db.session.add(self.visit1)
         db.session.add(self.accession1)
-        amount = AmountUsed(amount_gr=3.782, species=self.plant1.species, accession=self.accession1)
-        amount2 = AmountUsed(amount_gr=0.9923, species=self.synonym1.species, accession=self.accession2)
+        amount = AmountUsed(amount_gr=3.782, species=self.plant1, accession=self.accession1)
+        amount2 = AmountUsed(amount_gr=0.9923, species=self.synonym1, accession=self.accession2)
         db.session.add(amount)
         db.session.add(amount2)
         shipment = Shipment(order_date=datetime.datetime.today(), ship_date=datetime.datetime.now(),
                             tracking_num='40012345678', shipper='FedEx', origin_entity=self.entity1,
-                            destination_entity=self.entity2, amounts_sent=amount)
+                            destination_entity=self.entity2, amounts_sent=[amount, amount2])
         shipment.add_amount(amount2)
         db.session.add(shipment)
         db.session.commit()
@@ -349,6 +349,7 @@ class AccessionTests(unittest.TestCase):
         db.session.add(self.plant1)
         db.session.add(self.visit1)
         db.session.add(self.zone1)
+        db.session.add(self.zone2)
         db.session.add(self.location1)
         db.session.add(self.accession1)
         rel = Release(loc_desc='Western Colorado', germ_origin='NRCS', name="'Paloma'", year=1974,
@@ -364,7 +365,8 @@ class AccessionTests(unittest.TestCase):
                                         'tions/nmpmcrb12138.pdf'),
                       comments=('Steve Parr - collected in NW NM - Rio Arriba county - really good '
                                 'product'),
-                      accession=self.accession1, species=self.accession1.species)
+                      accession=self.accession1, species=self.accession1.species, entity=self.entity1,
+                      priority_zones=self.zone1, zones=[self.zone1, self.zone2])
         db.session.add(rel)
         db.session.commit()
         self.assertIn(rel, self.plant1.releases)
