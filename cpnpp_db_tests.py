@@ -119,9 +119,20 @@ class AccessionTests(unittest.TestCase):
                                     seed_source='P', description='Height: 0.15-0.45 m',
                                     notes=('Official SOS collection number is NM930N-69: details submitted to SOS '
                                            'National Office by Farmington BLM Botanist. Germination and competition '
-                                           'trials for early seral species (Chicago Botanic Garden).  Photos of habitat, '
-                                           'plant and seed'), increase=0, species=self.plant1,
-                                    location=self.geo_location1)
+                                           'trials for early seral species (Chicago Botanic Garden).  Photos of '
+                                           'habitat, plant and seed'), increase=0, species=self.plant1,
+                                    geo_location=self.geo_location1, occupancy=300)
+        self.accession2 = Accession(data_source='BGB', plant_habit='Forb/herb',
+                                    coll_date=datetime.date(year=2010, month=7, day=28), acc_num='WY040-42',
+                                    acc_num1='WY040', acc_num2='42', acc_num3=None,
+                                    collected_with='Giles, R., Lerer, A., Gray, T., Fouts, D., Kobelt, L.',
+                                    collection_misc='2000 plants sampled', seed_source='P',
+                                    description='Height: 0.15-0.45 m',
+                                    notes=('Official SOS collection number is NM930N-69: details submitted to SOS '
+                                           'National Office by Farmington BLM Botanist. Germination and competition '
+                                           'trials for early seral species (Chicago Botanic Garden).  Photos of '
+                                           'habitat, plant and seed'), increase=0, species=self.synonym1,
+                                    geo_location=self.geo_location2, occupancy=300)
 
     def tearDown(self):
         db.session.remove()
@@ -146,36 +157,36 @@ class AccessionTests(unittest.TestCase):
         self.accession2 = None
 
     def test_species_synonym_relationship(self):
-        self.plant.add_synonym(self.synonym1)
-        self.plant.add_synonym(self.synonym2)
-        self.plant.add_synonym(self.synonym3)
+        self.plant1.add_synonym(self.synonym1)
+        self.plant1.add_synonym(self.synonym2)
+        self.plant1.add_synonym(self.synonym3)
         db.session.add(self.synonym1)
         db.session.add(self.synonym2)
         db.session.add(self.synonym3)
-        db.session.add(self.plant)
+        db.session.add(self.plant1)
         db.session.commit()
         self.assertEqual(len(self.plant.synonyms), 3)
-        self.assertEqual(self.synonym1.usda_name, self.plant)
-        self.assertEqual(self.synonym2.usda_name, self.plant)
-        self.assertEqual(self.synonym3.usda_name, self.plant)
+        self.assertEqual(self.synonym1.usda_name, self.plant1)
+        self.assertEqual(self.synonym2.usda_name, self.plant1)
+        self.assertEqual(self.synonym3.usda_name, self.plant1)
 
-    def test_shipment_accession_relationship(self):
-        db.session.add(institute1)
-        db.session.add(institute2)
-        db.session.add(plant)
-        db.session.add(desc)
-        db.session.add(zone)
-        db.session.add(location)
-        db.session.add(accession)
-        shipment = Shipment(ship_date=datetime.datetime.now(), tracking_num='40012345678',
-                            tracking_num_comp='FedEx', amount_gr=0.60847634, calc_by='counting',
-                            origin_institute=institute1, destination_institute=institute2,
-                            accession=accession)
+    def test_single_shipment_accession_relationship(self):
+        db.session.add(self.entity1)
+        db.session.add(self.entity2)
+        db.session.add(self.plant1)
+        db.session.add(self.geo_location1)
+        db.session.add(self.zone1)
+        db.session.add(self.visit1)
+        db.session.add(self.accession1)
+        amount = AmountUsed(amount_gr=3.782, species=self.plant1.species, accession=self.accession1)
+        db.session.add(amount)
+        shipment = Shipment(order_date=datetime.datetime.today(), ship_date=datetime.datetime.now(),
+                            tracking_num='40012345678', shipper='FedEx', origin_entity=self.entity1,
+                            destination_entity=self.entity2, amounts_sent=amount)
         db.session.add(shipment)
         db.session.commit()
-        self.assertEqual(shipment.accession, accession)
-        self.assertEqual(shipment.accession_id, accession.id)
-        self.assertIn(shipment, accession.shipments)
+        self.assertEqual(shipment.accession, self.accession1)
+        self.assertEqual(shipment.accession_id, self.accession1.id)
 
     def test_shipment_institute_relationship(self):
         institute1 = Entity(name='Four Corners School of Outdoor Education',

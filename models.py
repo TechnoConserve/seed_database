@@ -37,7 +37,7 @@ class Accession(db.Model):
     The Accession table has a One-to-Many relationship with the 
     Release table.
 
-    The Accession table has a One-to-Many relationship with the Visit
+    The Accession table has a One-to-One relationship with the GeoLocation
     table.
 
     The Accession table has a One-to-Many relationship with the Testing
@@ -687,6 +687,9 @@ class Shipment(db.Model):
     def __repr__(self):
         return "<Shipment(order_date={}, ship_date={}, shipper={}, tracking_num={})>".format(
             self.order_date, self.ship_date, self.shipper, self.tracking_num)
+
+    def add_amount(self, amount):
+        self.amounts_sent += amount
 
 
 class Species(db.Model):
