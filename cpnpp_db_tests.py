@@ -165,7 +165,7 @@ class AccessionTests(unittest.TestCase):
         db.session.add(self.synonym3)
         db.session.add(self.plant1)
         db.session.commit()
-        self.assertEqual(len(self.plant.synonyms), 3)
+        self.assertEqual(len(self.plant1.synonyms), 3)
         self.assertEqual(self.synonym1.usda_name, self.plant1)
         self.assertEqual(self.synonym2.usda_name, self.plant1)
         self.assertEqual(self.synonym3.usda_name, self.plant1)
@@ -178,7 +178,7 @@ class AccessionTests(unittest.TestCase):
         db.session.add(self.zone1)
         db.session.add(self.visit1)
         db.session.add(self.accession1)
-        amount = AmountUsed(amount_gr=3.782, species=self.plant1.species, accession=self.accession1)
+        amount = AmountUsed(amount_gr=3.782, species=self.plant1, accession=self.accession1)
         db.session.add(amount)
         shipment = Shipment(order_date=datetime.datetime.today(), ship_date=datetime.datetime.now(),
                             tracking_num='40012345678', shipper='FedEx', origin_entity=self.entity1,
@@ -219,11 +219,11 @@ class AccessionTests(unittest.TestCase):
         db.session.add(self.geo_location1)
         db.session.add(self.plant1)
         db.session.add(self.accession1)
-        amount = AmountUsed(amount_gr=3.782, species=self.plant1.species, accession=self.accession1)
+        amount = AmountUsed(amount_gr=3.782, species=self.plant1, accession=self.accession1)
         db.session.add(amount)
         shipment = Shipment(order_date=datetime.datetime.today(), ship_date=datetime.datetime.now(),
                             tracking_num='40012345678', shipper='FedEx', origin_entity=self.entity1,
-                            destination_entity=self.entity2, amounts_sent=amount)
+                            destination_entity=self.entity2, amounts_sent=[amount])
         db.session.add(shipment)
         db.session.commit()
         self.assertEqual(shipment.origin_entity, self.entity1)
@@ -306,12 +306,7 @@ class AccessionTests(unittest.TestCase):
         db.session.add(self.zone1)
         db.session.add(self.geo_location1)
         db.session.add(self.accession1)
-        db.session.add(self.contact1)
-        db.session.add(self.contact2)
-        db.session.add(self.entity1)
-        db.session.add(self.entity2)
-        amount = AmountUsed(amount_gr=3.782, species=self.plant1.species, accession=self.accession1)
-        db.session.add(amount)
+        amount = AmountUsed(amount_gr=3.782, species=self.plant1, accession=self.accession1)
         use = SeedUse(project_name='Andrea\'s functional trait study',
                       purpose=("We’re planning to set up a field study that is a combination common garden and "
                                "diversity trial (are there differences in functional traits between populations AND do "
@@ -334,14 +329,23 @@ class AccessionTests(unittest.TestCase):
                                    "for species that occur in the CP. Other species that Scott mentioned where I think "
                                    "we can help tackle this question include Heliomeris (but again the ssp issues comes"
                                    " up), Machaeranthera canescens, and Linum lewisii, which is a key reason we’re "
-                                   "focusing on them now."), end_notes=None, accession=self.accession1,
-                      species=self.plant1, contacts=[self.contact1, self.contact2],
-                      entities=[self.entity1, self.entity2])
+                                   "focusing on them now."), end_notes=None, amounts_used=[amount])
         db.session.add(use)
+        self.contact1.seed_uses.append(use)
+        self.contact2.seed_uses.append(use)
+        self.entity1.seed_uses.append(use)
+        self.entity2.seed_uses.append(use)
+        db.session.add(self.contact1)
+        db.session.add(self.contact2)
+        db.session.add(self.entity1)
+        db.session.add(self.entity2)
         db.session.commit()
-        self.assertEqual(use.amount_lb, (3.431 * 0.00220462))
         self.assertIn(use, self.plant1.uses)
         self.assertIn(use, self.accession1.uses)
+        self.assertIn(use, self.contact1.seed_uses)
+        self.assertIn(use, self.contact2.seed_uses)
+        self.assertIn(use, self.entity1.seed_uses)
+        self.assertIn(use, self.entity2.seed_uses)
         self.assertEqual(self.plant1, use.species)
         self.assertEqual(self.accession1, use.accession)
 
@@ -350,7 +354,7 @@ class AccessionTests(unittest.TestCase):
         db.session.add(self.visit1)
         db.session.add(self.zone1)
         db.session.add(self.zone2)
-        db.session.add(self.location1)
+        db.session.add(self.geo_location1)
         db.session.add(self.accession1)
         rel = Release(loc_desc='Western Colorado', germ_origin='NRCS', name="'Paloma'", year=1974,
                       release_type='cultivar', plant_origin='native',
@@ -366,7 +370,7 @@ class AccessionTests(unittest.TestCase):
                       comments=('Steve Parr - collected in NW NM - Rio Arriba county - really good '
                                 'product'),
                       accession=self.accession1, species=self.accession1.species, entity=self.entity1,
-                      priority_zones=self.zone1, zones=[self.zone1, self.zone2])
+                      priority_zones=[self.zone1], zones=[self.zone1, self.zone2])
         db.session.add(rel)
         db.session.commit()
         self.assertIn(rel, self.plant1.releases)

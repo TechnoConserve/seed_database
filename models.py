@@ -171,6 +171,7 @@ class AmountUsed(db.Model):
     amount_lb = db.Column(db.Float)
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
+    seed_use_id = db.Column(db.Integer, db.ForeignKey('seed_use.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
     shipment_id = db.Column(db.Integer, db.ForeignKey('shipment.id'))
 
@@ -511,13 +512,13 @@ class SeedUse(db.Model):
     The SeedUse table has a Many-to-Many relationship with the Accession 
     table.
 
-    The SeedUse table has a Many-to-One relationship with the Species
+    The SeedUse table has a One-to-Many relationship with the AmoundUsed
     table.
 
-    The SeedUse table has a One-to-One relationship with the Entity 
+    The SeedUse table has a Many-to-Many relationship with the Entity 
     table.
 
-    The SeedUse table has a One-to-Many relationship with the Contact 
+    The SeedUse table has a Many-to-Many relationship with the Contact 
     table.
     """
     __tablename__ = 'seed_use'
@@ -531,13 +532,10 @@ class SeedUse(db.Model):
     start_notes = db.Column(db.Text)
     end_notes = db.Column(db.Text)
 
-    amount_used_id = db.Column(db.Integer, db.ForeignKey('amount_used.id'))
-
     amounts_used = db.relationship('AmountUsed')
 
     def __init__(
-            self, project_name, purpose, abstract, date_start, date_end, start_notes, end_notes, accession, species,
-            entities, contacts):
+            self, project_name, purpose, abstract, date_start, date_end, start_notes, end_notes, amounts_used):
         self.project_name = project_name
         self.purpose = purpose
         self.abstract = abstract
@@ -545,10 +543,7 @@ class SeedUse(db.Model):
         self.date_end = date_end
         self.start_notes = start_notes
         self.end_notes = end_notes
-        self.accession = accession
-        self.species = species
-        self.entities = entities
-        self.contacts = contacts
+        self.amounts_used = amounts_used
 
     def __repr__(self):
         return "<AmountUsed(project_name={}, purpose={}, date_start={}, date_end={})>".format(
