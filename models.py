@@ -750,7 +750,7 @@ class Species(db.Model):
 
     accessions = db.relationship('Accession', backref='species', lazy='dynamic')
     amounts_used = db.relationship('AmountUsed', backref='species')
-    releases = db.relationship('Release')
+    releases = db.relationship('Release', backref='species')
     synonyms = db.relationship('Species', backref=db.backref('usda_name', remote_side=[id]))
     uses = db.relationship('SeedUse', secondary=seed_use_species,
                            backref=(db.backref('species', lazy='dynamic')))
