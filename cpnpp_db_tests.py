@@ -21,10 +21,10 @@ class AccessionTests(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         db.create_all()
-        self.plant = Species(symbol='ABAB', name_full='Abutilon abutiloides', common='shrubby Indian mallow',
-                             family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
-                             plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
-                             poll_val=0, research_val=0)
+        self.plant1 = Species(symbol='ABAB', name_full='Abutilon abutiloides', common='shrubby Indian mallow',
+                              family='Malvaceae', genus='Abutilon', species='abutiloides', var_ssp1=None, var_ssp2=None,
+                              plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
+                              poll_val=0, research_val=0)
         self.synonym1 = Species(symbol='ABAM5', name_full='Abutilon americanum', common='shrubby Indian mallow',
                                 family='Malvaceae', genus='Abutilon', species='americanum', var_ssp1=None,
                                 var_ssp2=None, plant_type=None, plant_duration=None, priority_species=0, gsg_val=0,
@@ -96,15 +96,20 @@ class AccessionTests(unittest.TestCase):
                                          altitude_in_m=1207.007961, fo_name='LAS CRUCES DISTRICT OFFICE',
                                          district_name='NEW MEXICO STATE OFFICE', state='NM', county='Otero',
                                          zone=self.zone1)
-        self.visit1 = Visit(date=datetime.date.today(), associated_taxa_full=('Quercus gambelii, Ericameria nauseosa '
-                                                                              'ssp. consimilis var. nitida, Artemisia '
-                                                                              'tridentata ssp. wyomingensis, Lepidium '
-                                                                              'sp.:Rosa woodsii, Heterotheca villosa '
-                                                                              'var. villosa:Carex geyeri, Koeleria '
-                                                                              'macrantha'),
-                            mod='grazed, trampled', mod2='recreation', geomorphology=None, slope='5-25 degrees',
+        self.visit1 = Visit(date=datetime.date.today(),
+                            associated_taxa_full=('Quercus gambelii, Ericameria nauseosa ssp. consimilis var. nitida, '
+                                                  'Artemisia tridentata ssp. wyomingensis, Lepidium sp., Rosa woodsii, '
+                                                  'Heterotheca villosa var. villosa, Carex geyeri, Koeleria macrantha'),
+                            mod='grazed, trampled', mod2='recreation', slope='5-25 degrees',
                             aspect='varied', habitat='Mountain Brush; meadow along road', population_size=200,
-                            accession=None, )
+                            accession=None, geo_location=self.geo_location1, species=self.plant1)
+        self.visit2 = Visit(date=datetime.date.today(),
+                            associated_taxa_full=('Artemisia filigolia, Amsonia tomentosa var. stenophylla,'
+                                                  'Palafoxia sphacelata, Sporobolus giganteus, Prosopsis glandulosa,'
+                                                  'Baileya multiradiata, Atriplex canescens'),
+                            mod='Grazed', mod2='Livestock grazing, recreation', slope='5-25 degrees',
+                            aspect='varied', habitat='Mountain Brush; meadow along road', population_size=200,
+                            accession=None, geo_location=self.geo_location1, species=self.synonym1)
         self.accession = Accession(data_source='UP', plant_habit='Forb/herb',
                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
                               acc_num1='UP', acc_num2='76', acc_num3=None,

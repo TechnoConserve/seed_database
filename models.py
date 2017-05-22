@@ -841,9 +841,8 @@ class Visit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime)
     associated_taxa_full = db.Column(db.Text)
-    mod = db.Column(db.String(200))   # modifying factors of collection site (grazed, etc.)
-    mod2 = db.Column(db.String(200))  # additional modifying factors of collection site (roadside, etc.)
-    geomorphology = db.Column(db.String(100))
+    mod = db.Column(db.String(200))   # modifying factors of collection site (grazed, etc.); Formerly USER2
+    mod2 = db.Column(db.String(200))  # additional modifying factors of collection site (roadside, etc.); Formerly USER1
     slope = db.Column(db.String(30))
     aspect = db.Column(db.String(10))
     habitat = db.Column(db.String(100))
@@ -854,13 +853,12 @@ class Visit(db.Model):
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 
     def __init__(
-            self, date, associated_taxa_full, mod, mod2, geomorphology, slope, aspect, habitat, population_size,
+            self, date, associated_taxa_full, mod, mod2, slope, aspect, habitat, population_size,
             geo_location, species, accession=None):
         self.date = date
         self.associated_taxa_full = associated_taxa_full
         self.mod = mod
         self.mod2 = mod2
-        self.geomorphology = geomorphology
         self.slope = slope
         self.aspect = aspect
         self.habitat = habitat
