@@ -74,7 +74,7 @@ class Accession(db.Model):
     geo_location_id = db.Column(db.Integer, db.ForeignKey('geo_location.id'))
 
     amounts_used = db.relationship('AmountUsed', backref='accession')
-    geo_location = db.relationship('GeoLocation', backref='accession', uselist=False)
+    geo_location = db.relationship('GeoLocation', backref=db.backref('accession', uselist=False), uselist=False)
     projects = db.relationship(
         'SeedUse', secondary=seed_use_accessions, backref=db.backref('accessions', lazy='dynamic'))
     releases = db.relationship('Release')
@@ -507,49 +507,6 @@ class GeoLocation(db.Model):
             self.latitude_decimal, self.longitude_decimal)
 
 
-class SeedUse(db.Model):
-    """
-    The SeedUse table has a Many-to-Many relationship with the Accession 
-    table.
-
-    The SeedUse table has a One-to-Many relationship with the AmoundUsed
-    table.
-
-    The SeedUse table has a Many-to-Many relationship with the Entity 
-    table.
-
-    The SeedUse table has a Many-to-Many relationship with the Contact 
-    table.
-    """
-    __tablename__ = 'seed_use'
-
-    id = db.Column(db.Integer, primary_key=True)
-    project_name = db.Column(db.String(50))
-    purpose = db.Column(db.Text)
-    abstract = db.Column(db.Text)
-    date_start = db.Column(db.DateTime)
-    date_end = db.Column(db.DateTime)
-    start_notes = db.Column(db.Text)
-    end_notes = db.Column(db.Text)
-
-    amounts_used = db.relationship('AmountUsed')
-
-    def __init__(
-            self, project_name, purpose, abstract, date_start, date_end, start_notes, end_notes, amounts_used):
-        self.project_name = project_name
-        self.purpose = purpose
-        self.abstract = abstract
-        self.date_start = date_start
-        self.date_end = date_end
-        self.start_notes = start_notes
-        self.end_notes = end_notes
-        self.amounts_used = amounts_used
-
-    def __repr__(self):
-        return "<AmountUsed(project_name={}, purpose={}, date_start={}, date_end={})>".format(
-                    self.project_name, self.purpose, self.date_start, self.date_end)
-
-
 class Release(db.Model):
     """
     The Release table has a Many-to-One relationship with the
@@ -643,6 +600,52 @@ class Release(db.Model):
                                                             self.lb_acre_yield))
 
 
+class SeedUse(db.Model):
+    """
+    The SeedUse table has a Many-to-Many relationship with the Accession 
+    table.
+    
+    The SeedUse table has a Many-to-Many relationship with the Species
+    table.
+
+    The SeedUse table has a One-to-Many relationship with the AmoundUsed
+    table.
+
+    The SeedUse table has a Many-to-Many relationship with the Entity 
+    table.
+
+    The SeedUse table has a Many-to-Many relationship with the Contact 
+    table.
+    """
+    __tablename__ = 'seed_use'
+
+    id = db.Column(db.Integer, primary_key=True)
+    project_name = db.Column(db.String(50))
+    purpose = db.Column(db.Text)
+    abstract = db.Column(db.Text)
+    date_start = db.Column(db.DateTime)
+    date_end = db.Column(db.DateTime)
+    start_notes = db.Column(db.Text)
+    end_notes = db.Column(db.Text)
+
+    amounts_used = db.relationship('AmountUsed')
+
+    def __init__(
+            self, project_name, purpose, abstract, date_start, date_end, start_notes, end_notes, amounts_used):
+        self.project_name = project_name
+        self.purpose = purpose
+        self.abstract = abstract
+        self.date_start = date_start
+        self.date_end = date_end
+        self.start_notes = start_notes
+        self.end_notes = end_notes
+        self.amounts_used = amounts_used
+
+    def __repr__(self):
+        return "<AmountUsed(project_name={}, purpose={}, date_start={}, date_end={})>".format(
+                    self.project_name, self.purpose, self.date_start, self.date_end)
+
+
 class Shipment(db.Model):
     """
     The Shipment table has a One-to-Many relationship with the 
@@ -721,6 +724,9 @@ class Species(db.Model):
     
     The Species table has a One-to-Many relationship with the 
     AmountUsed table.
+    
+    The Species table has a Many-to-Many relationship with the SeedUse
+    table.
     """
     __tablename__ = 'species'
 
