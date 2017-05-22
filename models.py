@@ -171,6 +171,7 @@ class AmountUsed(db.Model):
 
     accession_id = db.Column(db.Integer, db.ForeignKey('accession.id'))
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
+    shipment_id = db.Column(db.Integer, db.ForeignKey('shipment.id'))
 
     def __init__(self, amount_gr, species, accession=None):
         self.amount_gr = amount_gr
