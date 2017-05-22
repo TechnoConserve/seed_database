@@ -52,7 +52,23 @@ class AccessionTests(unittest.TestCase):
         self.entity2 = Entity(name='High Mountain Nursery', address=self.address2, contacts=self.contact2,
                               request_costs=0, cost=None, entity_email='info@highmountainnursery.com',
                               entity_phone='8010001111', entity_phone_ext=10)
-        self.geo_location1 = GeoLocation(land_owner='BLM', geology='Quarternary alluvial terrace deposits',
+        self.zone1 = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
+                          us_l4_name='Semiarid Benchlands and Canyonlands', us_l3_code='20',
+                          us_l3_name='Colorado Plateaus', achy_sz_gridcode=11, achy_sz_zone='L1L2H3',
+                          aslo3_sz_gridcode=3, aslo3_sz_zone='H1L2H3', bogr2_sz_gridecode=1, bogr2_sz_zone='M1L2H3',
+                          cllu2_sz_gridcode=2, cllu2_sz_zone='L1H2H3', elel5_sz_gridcode=4, elel5_sz_zone='M1H2H3',
+                          maca2_sz_gridcode=5, maca2_sz_zone='H1H2H3', plja_sz_gridcode=6, plja_sz_zone='H2H3H3',
+                          sppa2_sz_gridcode=7, sppa2_sz_zone='H1H2H3', cp_buff=1, cp_strict=1, avail_buff=1,
+                          avail_strict=0, usgs_zone=0)
+        self.zone2 = Zone(ptz='10 - 15 Deg. F./3 - 6', us_l4_code='79c',
+                          us_l4_name='Madrean Pine-Oak and Mixed Conifer Forests', us_l3_code='79',
+                          us_l3_name='Madrean Archipelago', achy_sz_gridcode=0, achy_sz_zone='None',
+                          aslo3_sz_gridcode=3, aslo3_sz_zone='H1L2H3', bogr2_sz_gridecode=1, bogr2_sz_zone='M1L2H3',
+                          cllu2_sz_gridcode=2, cllu2_sz_zone='L1H2H3', elel5_sz_gridcode=4, elel5_sz_zone='M1H2H3',
+                          maca2_sz_gridcode=5, maca2_sz_zone='H1H2H3', plja_sz_gridcode=6, plja_sz_zone='H2H3H3',
+                          sppa2_sz_gridcode=7, sppa2_sz_zone='H1H2H3', cp_buff=0, cp_strict=0, avail_buff=None,
+                          avail_strict=None, usgs_zone=None)
+        self.geo_location1 = GeoLocation(land_owner='BLM', geology='Quaternary alluvial terrace deposits',
                                          soil_type='brown-tan sand', phytoregion='25E',
                                          phytoregion_full='Western High Plains (Omernik)',
                                          locality='Grand Staircase Escalante National Monument',
@@ -66,7 +82,20 @@ class AccessionTests(unittest.TestCase):
                                          longitude_decimal=-107.8999, georef_source='GPS', gps_datum='NAD83',
                                          altitude=7100, altitude_unit='ft', altitude_in_m=2164,
                                          fo_name='UNCOMPAHGRE FIELD OFFICE', district_name='SOUTHWEST DISTRICT OFFICE',
-                                         state='CO', county='Montrose', zone=zone)
+                                         state='CO', county='Montrose', zone=self.zone1)
+        self.geo_location2 = GeoLocation(land_owner='USFS', geology='Quaternary and tertiary upper Santa Fe group',
+                                         soil_type='Loamy fine sand, 7.5YR 5/6, strong brown', phytoregion='24E',
+                                         phytoregion_full='Chihuahuan Deserts (Omernik)', locality='Red Sands OHV area',
+                                         geog_area='None',
+                                         directions=('Going south on highway 54 from Alamagordo, drive 18 miles and '
+                                                     'make a right on dirt road. Proceed ca. 0.25 miles, make a left'
+                                                     'on 2-track road over sand dunes. Drive ca. 0.5 miles.'),
+                                         degrees_n=32, minutes_n=36, seconds_n=28.4, degrees_w=106, minutes_w=00,
+                                         seconds_w=46.4, latitude_decimal=32.60788, longitude_decimal=-106.01288,
+                                         georef_source='GPS', gps_datum='NAD83', altitude=3960, altitude_unit='ft',
+                                         altitude_in_m=1207.007961, fo_name='LAS CRUCES DISTRICT OFFICE',
+                                         district_name='NEW MEXICO STATE OFFICE', state='NM', county='Otero',
+                                         zone=self.zone1)
         self.visit1 = Visit(date=datetime.date.today(), associated_taxa_full=('Quercus gambelii, Ericameria nauseosa '
                                                                               'ssp. consimilis var. nitida, Artemisia '
                                                                               'tridentata ssp. wyomingensis, Lepidium '
@@ -76,11 +105,6 @@ class AccessionTests(unittest.TestCase):
                             mod='grazed, trampled', mod2='recreation', geomorphology=None, slope='5-25 degrees',
                             aspect='varied', habitat='Mountain Brush; meadow along road', population_size=200,
                             accession=None, )
-        self.zone = Zone(ptz='10 - 15 Deg. F./6 - 12', us_l4_code='20c',
-                    us_l4_name='Semiarid Benchlands and Canyonlands',
-                    us_l3_code='20', us_l3_name='Colorado Plateaus',
-                    achy_sz_gridcode=11, achy_sz_zone='L1L2H3', cp_buff=1, cp_strict=1, avail_buff=1,
-                    avail_strict=0, usgs_zone=0)
         self.accession = Accession(data_source='UP', plant_habit='Forb/herb',
                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
                               acc_num1='UP', acc_num2='76', acc_num3=None,

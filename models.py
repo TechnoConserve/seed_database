@@ -459,8 +459,8 @@ class GeoLocation(db.Model):
     altitude_in_m = db.Column(db.Integer)
     fo_name = db.Column(db.String(50))
     district_name = db.Column(db.String(50))
-    state = db.Column(db.String(20))
-    county = db.Column(db.String(30))
+    state = db.Column(db.String(20))  # Formerly SUB_CNT1
+    county = db.Column(db.String(30))  # Formerly SUB_CNT2
 
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
 
@@ -471,7 +471,7 @@ class GeoLocation(db.Model):
             self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
             degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal, longitude_decimal,
             georef_source, gps_datum, altitude, altitude_unit, altitude_in_m, fo_name, district_name, state, county,
-            visit_descriptions, zone):
+            zone):
         self.land_owner = land_owner
         self.geology = geology
         self.soil_type = soil_type
@@ -497,7 +497,6 @@ class GeoLocation(db.Model):
         self.district_name = district_name
         self.state = state
         self.county = county
-        self.visit_descriptions = visit_descriptions
         self.zone = zone
 
     def __repr__(self):
