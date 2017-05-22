@@ -109,20 +109,19 @@ class AccessionTests(unittest.TestCase):
                                                   'Baileya multiradiata, Atriplex canescens'),
                             mod='Grazed', mod2='Livestock grazing, recreation', slope='5-25 degrees',
                             aspect='varied', habitat='Mountain Brush; meadow along road', population_size=200,
-                            accession=None, geo_location=self.geo_location1, species=self.synonym1)
-        self.accession = Accession(data_source='UP', plant_habit='Forb/herb',
-                              coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76',
-                              acc_num1='UP', acc_num2='76', acc_num3=None,
-                              collected_with='GVR, CH, SP',
-                              collection_misc=('Hand-pick ripe seeds, all stages still on plants.'
-                                               'This Aster glaucodes is in a nice loamy field (not rocky cliff '
-                                               'like other Aster glaucodes)'), seed_source='P',
-                              description='Height: 0.15-0.45 m',
-                              notes=('Official SOS collection number is NM930N-69: details '
-                                     'submitted to SOS National Office by Farmington BLM Botanist.  '
-                                     'Germination and competition trials for early seral species '
-                                     '(Chicago Botanic Garden).  Photos of habitat, plant and seed'),
-                              increase=0, species=plant, location=location)
+                            accession=None, geo_location=self.geo_location2, species=self.synonym1)
+        self.accession1 = Accession(data_source='UP', plant_habit='Forb/herb',
+                                    coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-76', acc_num1='UP',
+                                    acc_num2='76', acc_num3=None, collected_with='GVR, CH, SP',
+                                    collection_misc=('Hand-pick ripe seeds, all stages still on plants. This Aster '
+                                                     'glaucodes is in a nice loamy field (not rocky cliff like other '
+                                                     'Aster glaucodes)'),
+                                    seed_source='P', description='Height: 0.15-0.45 m',
+                                    notes=('Official SOS collection number is NM930N-69: details submitted to SOS '
+                                           'National Office by Farmington BLM Botanist. Germination and competition '
+                                           'trials for early seral species (Chicago Botanic Garden).  Photos of habitat, '
+                                           'plant and seed'), increase=0, species=self.plant1,
+                                    location=self.geo_location1)
 
     def tearDown(self):
         db.session.remove()

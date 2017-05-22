@@ -73,7 +73,7 @@ class Accession(db.Model):
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 
     amounts_used = db.relationship('AmountUsed', backref='accession')
-    visits = db.relationship('Visit', backref='accession')
+    geo_location = db.relationship('GeoLocation', backref='accession', uselist=False)
     projects = db.relationship(
         'SeedUse', secondary=seed_use_accessions, backref=db.backref('accessions', lazy='dynamic'))
     releases = db.relationship('Release')
@@ -81,7 +81,7 @@ class Accession(db.Model):
 
     def __init__(
             self, data_source, plant_habit, coll_date, acc_num, acc_num1, acc_num2, acc_num3, collected_with,
-            collection_misc, occupancy, seed_source, description, notes, increase, species, visits, projects=None,
+            collection_misc, occupancy, seed_source, description, notes, increase, species, geo_location, projects=None,
             releases=None, tests=None):
         self.data_source = data_source
         self.plant_habit = plant_habit
@@ -98,7 +98,7 @@ class Accession(db.Model):
         self.notes = notes
         self.increase = increase
         self.species = species
-        self.visits = visits
+        self.geo_location = geo_location
 
         # It is unlikely that the following will be known at the time of an Accession creation
         if projects:
