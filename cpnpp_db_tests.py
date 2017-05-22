@@ -185,6 +185,29 @@ class AccessionTests(unittest.TestCase):
                             destination_entity=self.entity2, amounts_sent=amount)
         db.session.add(shipment)
         db.session.commit()
+        accessions = shipment.get_accession()
+        self.assertEqual(shipment.accession, self.accession1)
+        self.assertEqual(shipment.accession_id, self.accession1.id)
+
+    def test_multiple_shipment_accession_relationship(self):
+        db.session.add(self.entity1)
+        db.session.add(self.entity2)
+        db.session.add(self.plant1)
+        db.session.add(self.synonym1)
+        db.session.add(self.geo_location1)
+        db.session.add(self.zone1)
+        db.session.add(self.visit1)
+        db.session.add(self.accession1)
+        amount = AmountUsed(amount_gr=3.782, species=self.plant1.species, accession=self.accession1)
+        amount2 = AmountUsed(amount_gr=0.9923, species=self.synonym1.species, accession=self.accession2)
+        db.session.add(amount)
+        db.session.add(amount2)
+        shipment = Shipment(order_date=datetime.datetime.today(), ship_date=datetime.datetime.now(),
+                            tracking_num='40012345678', shipper='FedEx', origin_entity=self.entity1,
+                            destination_entity=self.entity2, amounts_sent=amount)
+        shipment.add_amount(amount2)
+        db.session.add(shipment)
+        db.session.commit()
         self.assertEqual(shipment.accession, self.accession1)
         self.assertEqual(shipment.accession_id, self.accession1.id)
 

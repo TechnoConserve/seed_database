@@ -691,6 +691,13 @@ class Shipment(db.Model):
     def add_amount(self, amount):
         self.amounts_sent += amount
 
+    def get_accessions(self):
+        accessions = []
+        for amount in self.amounts_sent:
+            accessions.append(amount.accession)
+
+        return accessions
+
 
 class Species(db.Model):
     """
