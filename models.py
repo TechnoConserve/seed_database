@@ -600,9 +600,9 @@ class Release(db.Model):
     species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 
     # Where does it do best?
-    priority_zones = db.relationship('Zone', backref='priority_releases')
+    priority_zones = db.relationship('Zone', backref='priority_release')
     # Where can it grow?
-    zones = db.relationship('Zone', backref='priority_releases')
+    zones = db.relationship('Zone', backref='release')
 
     def __init__(
             self, loc_desc, germ_origin, name, year, release_type, plant_origin, used_for, select_criteria,
@@ -923,6 +923,8 @@ class Zone(db.Model):
     avail_buff = db.Column(db.Boolean)
     avail_strict = db.Column(db.Boolean)
     usgs_zone = db.Column(db.Integer)
+
+    release_id = db.Column(db.Integer, db.ForeignKey('release.id'))
 
     def __init__(
             self, ptz, us_l4_code, us_l4_name, us_l3_code, us_l3_name, achy_sz_gridcode,
