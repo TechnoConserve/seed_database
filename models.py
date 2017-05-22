@@ -216,11 +216,11 @@ class Availability(db.Model):
     misc_avail_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
 
     accession = db.relationship('Accession', backref=db.backref('availability', uselist=False), uselist=False)
-    misc_avail_inst = db.relationship('Entity', backref=db.backref('availability', lazy='dynamic'), uselist=False)
+    misc_avail_ent = db.relationship('Entity', backref=db.backref('availability', lazy='dynamic'), uselist=False)
 
     def __init__(
             self, grin_avail, bend_avail, cbg_avail, meeker_avail, misc_avail, ephraim_avail,
-            nau_avail, accession, misc_avail_inst):
+            nau_avail, accession, misc_avail_ent):
 
         self.grin_avail = grin_avail
         self.bend_avail = bend_avail
@@ -230,7 +230,7 @@ class Availability(db.Model):
         self.ephraim_avail = ephraim_avail
         self.nau_avail = nau_avail
         self.accession = accession
-        self.misc_avail_inst = misc_avail_inst
+        self.misc_avail_ent = misc_avail_ent
 
         self.gr_avail = self.compute_gr_avail()
 
