@@ -697,6 +697,12 @@ class Shipment(db.Model):
         return accessions
 
 
+seed_use_species = db.Table('seed_use_species',
+                            db.Column('seed_use_id', db.Integer, db.ForeignKey('seed_use.id')),
+                            db.Column('species_id', db.Integer, db.ForeignKey('species.id'))
+                            )
+
+
 class Species(db.Model):
     """
     The Species table has a One-to-Many relationship with other objects
@@ -740,6 +746,8 @@ class Species(db.Model):
     amounts_used = db.relationship('AmountUsed', backref='species')
     releases = db.relationship('Release')
     synonyms = db.relationship('Species', backref=db.backref('usda_name', remote_side=[id]))
+    uses = db.relationship('SeedUse', secondary=seed_use_species,
+                           backref=(db.backref('species', lazy='dynamic')))
     visits = db.relationship('Visit', backref='species')
 
     def __init__(
