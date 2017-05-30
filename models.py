@@ -665,6 +665,7 @@ class Shipment(db.Model):
     ship_date = db.Column(db.DateTime)
     tracking_num = db.Column(db.String(25), unique=True)
     shipper = db.Column(db.String(30))  # E.g. Fedex
+    num_packages = db.Column(db.Integer)  # How many packages make up this shipment?
 
     origin_entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
     destination_entity_id = db.Column(db.Integer, db.ForeignKey('entity.id'))
@@ -674,11 +675,32 @@ class Shipment(db.Model):
     amounts_sent = db.relationship('AmountUsed')
 
     def __init__(
-            self, order_date, ship_date, tracking_num, shipper, origin_entity, destination_entity, amounts_sent):
+            self, order_date, ship_date, tracking_num, shipper, origin_entity, destination_entity, amounts_sent,
+            num_packages=1):
+        """
+        :param order_date: The date the order was made.
+        :param ship_date: The date the order was shipped.
+        :param tracking_num: The tracking number associated with the 
+        shipment.
+        :param shipper: The company handling the shipment.
+        :param origin_entity: The origin location of the shipment.
+        :param destination_entity: The destination location of the 
+        shipment.
+        :param amounts_sent: How much of each Species and/or Accession 
+        was sent in the the shipment.
+        :param num_packages: How many packages make up this shipment? 
+        Defaults to one.
+        
+        This method defines how Shipment objects are created. All 
+        parameters except for num_packages are required when creating 
+        a Shipment object. If not otherwise specified, num_packages
+        defaults to 1.
+        """
         self.order_date = order_date
         self.ship_date = ship_date
         self.tracking_num = tracking_num
         self.shipper = shipper
+        self.num_packages = num_packages
         self.origin_entity = origin_entity
         self.destination_entity = destination_entity
         self.amounts_sent = amounts_sent
