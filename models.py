@@ -58,7 +58,7 @@ class Accession(db.Model):
     data_source = db.Column(db.String(30))
     plant_habit = db.Column(db.String(30))  # Formerly Habit_rev
     coll_date = db.Column(db.DateTime)  # Sqlite expects YYYY-MM-DD format
-    acc_num = db.Column(db.String(10))
+    acc_num = db.Column(db.String(10), unique=True)
     acc_num1 = db.Column(db.String(10))
     acc_num2 = db.Column(db.String(10))
     acc_num3 = db.Column(db.String(10))
@@ -77,7 +77,7 @@ class Accession(db.Model):
     geo_location = db.relationship('GeoLocation', backref=db.backref('accession', uselist=False), uselist=False)
     projects = db.relationship(
         'SeedUse', secondary=seed_use_accessions, backref=db.backref('accessions', lazy='dynamic'))
-    releases = db.relationship('Release')
+    releases = db.relationship('Release', backref='accession')
     tests = db.relationship('Testing', backref='accession')
 
     def __init__(
@@ -465,9 +465,7 @@ class GeoLocation(db.Model):
     state = db.Column(db.String(20))  # Formerly SUB_CNT1
     county = db.Column(db.String(30))  # Formerly SUB_CNT2
 
-    zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
-
-    zone = db.relationship('Zone', uselist=False)
+    zone = db.relationship('Zone', backref='geo_location', uselist=False)
     visits = db.relationship('Visit', backref='geo_location')
 
     def __init__(
@@ -934,6 +932,7 @@ class Zone(db.Model):
     avail_strict = db.Column(db.Boolean)
     usgs_zone = db.Column(db.Integer)
 
+    geo_location_id = db.Column(db.Integer, db.ForeignKey('geo_location.id'))
     release_id = db.Column(db.Integer, db.ForeignKey('release.id'))
 
     def __init__(

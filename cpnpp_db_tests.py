@@ -249,6 +249,30 @@ class AccessionTests(unittest.TestCase):
         self.assertIn(self.accession1, self.plant1.accessions.all())
         self.assertEqual(self.accession1.species, self.plant1)
 
+    def test_accession_multiple_species(self):
+        accession3 = Accession(data_source='UP', plant_habit='Forb/herb',
+                               coll_date=datetime.date(year=2004, month=8, day=24), acc_num='UP-79', acc_num1='UP',
+                               acc_num2='76', acc_num3=None, collected_with='GVR, CH, SP',
+                               collection_misc=('Hand-pick ripe seeds, all stages still on plants. This Aster '
+                                                'glaucodes is in a nice loamy field (not rocky cliff like other '
+                                                'Aster glaucodes)'), seed_source='P', description='Height: 0.15-0.45 m',
+                               notes=('Official SOS collection number is NM930N-69: details submitted to SOS '
+                                      'National Office by Farmington BLM Botanist. Germination and competition '
+                                      'trials for early seral species (Chicago Botanic Garden).  Photos of '
+                                      'habitat, plant and seed'), increase=0, species=self.plant1,
+                               geo_location=self.geo_location1, occupancy=300)
+        db.session.add(self.plant1)
+        db.session.add(self.accession1)
+        db.session.add(accession3)
+        db.session.commit()
+        acc1_species = self.accession1.species
+        acc3_species = accession3.species
+        self.assertEqual(acc1_species, acc3_species)
+        self.assertIn(self.accession1, acc1_species.accessions.all())
+        self.assertIn(self.accession1, acc3_species.accessions.all())
+        self.assertIn(accession3, acc1_species.accessions.all())
+        self.assertIn(accession3, acc3_species.accessions.all())
+
     def test_testing_accession_relationship(self):
         db.session.add(self.plant1)
         db.session.add(self.visit1)
@@ -335,27 +359,30 @@ class AccessionTests(unittest.TestCase):
         self.contact2.seed_uses.append(use)
         self.entity1.seed_uses.append(use)
         self.entity2.seed_uses.append(use)
+        self.plant1.uses.append(use)
+        self.accession1.projects.append(use)
         db.session.add(self.contact1)
         db.session.add(self.contact2)
         db.session.add(self.entity1)
         db.session.add(self.entity2)
         db.session.commit()
         self.assertIn(use, self.plant1.uses)
-        self.assertIn(use, self.accession1.uses)
+        self.assertIn(use, self.accession1.projects)
         self.assertIn(use, self.contact1.seed_uses)
         self.assertIn(use, self.contact2.seed_uses)
         self.assertIn(use, self.entity1.seed_uses)
         self.assertIn(use, self.entity2.seed_uses)
-        self.assertEqual(self.plant1, use.species)
-        self.assertEqual(self.accession1, use.accession)
+        self.assertEqual(self.plant1, use.species.filter_by(name_full=self.plant1.name_full).first())
+        self.assertEqual(self.accession1, use.accessions.filter_by(acc_num=self.accession1.acc_num).first())
 
     def test_release_creation(self):
-        db.session.add(self.plant1)
-        db.session.add(self.visit1)
-        db.session.add(self.zone1)
-        db.session.add(self.zone2)
-        db.session.add(self.geo_location1)
-        db.session.add(self.accession1)
+        #db.session.add(self.plant1)
+        #db.session.add(self.visit1)
+        #db.session.add(self.zone1)
+        #db.session.add(self.zone2)
+        #db.session.add(self.entity1)
+        #db.session.add(self.geo_location1)
+        #db.session.add(self.accession1)
         rel = Release(loc_desc='Western Colorado', germ_origin='NRCS', name="'Paloma'", year=1974,
                       release_type='cultivar', plant_origin='native',
                       used_for='soil stabilization and range revegetation',
