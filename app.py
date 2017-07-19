@@ -297,8 +297,11 @@ def testing():
     form = forms.TestingForm()
     form.accession.choices = [
         (acc.id, acc.acc_num) for acc in models.Accession.query.order_by('acc_num')]
+    form.entity.choices = [
+        (ent.id, ent.name) for ent in models.Entity.query.order_by('name')]
     if form.validate_on_submit():
         accession = models.Accession.query.get(form.accession.data)
+        entity = models.Entity.query.get(form.en)
         test = models.Testing(
             amt_rcvd_lbs=form.amt_rcvd_lbs.data,
             clean_wt_lbs=form.clean_wt_lbs.data,
@@ -310,7 +313,8 @@ def testing():
             purity=form.purity.data,
             tz=form.tz.data,
             fill=form.fill.data,
-            accession=accession
+            accession=accession,
+            entity=entity,
         )
         models.db.session.add(test)
         models.db.session.commit()

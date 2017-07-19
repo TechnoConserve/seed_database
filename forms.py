@@ -450,6 +450,11 @@ class TestingForm(FlaskForm):
         validators=[validators.input_required()],
         coerce=int
     )
+    entity = SelectField(
+        'Entity',
+        validators=[validators.input_required()],
+        coerce=int
+    )
     amt_rcvd_lbs = FloatField(
         'Amount Received (Lbs)'
     )
