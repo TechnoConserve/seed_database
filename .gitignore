@@ -99,5 +99,4 @@ ENV/
 DB_export_updated123016_noGRINavail_with_SWSP_data.xlsx
 cpnpp.db
 settings.cfg
-static/
 test.db

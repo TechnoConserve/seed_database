@@ -6,6 +6,8 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="robots" content="noindex">
+        <!-- Custom CSS for sticky footer -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sticky-footer.css') }}">
 		<!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
       integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -29,8 +31,8 @@
 	</head>
 
 	<body>
-		<div class="navbar navbar-default navbar-static-top" role="navigation">
-			<div class="container">
+		<nav class="navbar navbar-default navbar-static-top" role="navigation">
+			<div class="container-fluid">
 				<div class="navbar-header">
 					<a class="navbar-brand" href="{{ url_for('display') }}">Index</a>
 				</div>
@@ -38,17 +40,33 @@
 					<ul class="nav navbar-nav">
 							<li><a href="{{ url_for('add') }}">Add to Database</a></li>
 					</ul>
-                    {% block extra_header %}{% endblock %}
-					{% block search_bar %}
-						<form action="{{ url_for('display') }}" class="navbar-form navbar-right" id="search-form" method="get" role="search">
-							<div class="form-group">
-								<input class="form-control" name="q" placeholder="Search" type="text" value="{% if search %}{{ search }}{% endif %}">
-							</div>
-						</form>
-					{% endblock %}
+                    <form action="{{ url_for('display') }}" class="navbar-form navbar-right" id="search-form" method="get" role="search">
+                        <div class="form-group">
+                            <input class="form-control" name="q" placeholder="Search" type="text" value="{% if search %}{{ search }}{% endif %}">
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                User Menu<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                {% if current_user.is_authenticated %}
+                                    <li><a href="{{ url_for('security.change') }}">Change Password</a> </li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{{ url_for('security.logout') }}">Log Out</a> </li>
+                                {% else %}
+                                    <li><a href="{{ url_for('security.login') }}">Log In</a> </li>
+                                    <li><a href="{{ url_for('security.register') }}">Register</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{{ url_for('security.forgot_password') }}">Forgot Password?</a> </li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    </ul>
 				</div>
 			</div>
-		</div>
+		</nav>
 
 		<div class="container">
 			{% for category, message in get_flashed_messages(with_categories=true) %}
@@ -70,9 +88,8 @@
 
 		<footer class="footer">
 			<div class="container">
-				<p class="text-muted text-center">Colorado Plateau Native Plant Program | Avery Uslaner | The Great Basin Institute</p>
+				<span class="text-muted text-center">Colorado Plateau Native Plant Program | Avery Uslaner | The Great Basin Institute</span>
 			</div>
 		</footer>
-
 	</body>
 </html>
