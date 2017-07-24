@@ -1,12 +1,16 @@
 from flask import Flask, redirect, render_template, flash
+from flask_mail import Mail
 from flask_security import Security, SQLAlchemyUserDatastore, login_required
+from werkzeug.contrib.fixers import ProxyFix
 
 import forms
 import models
 
 app = Flask(__name__)
 app.config.from_pyfile('settings.cfg')
+app.wsgi_app = ProxyFix(app.wsgi_app, num_proxies=1)
 app.app_context().push()
+mail = Mail(app)
 
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(models.db, models.User, models.Role)
@@ -14,7 +18,7 @@ security = Security(app, user_datastore)
 
 
 @app.route('/')
-def index():
+def landing():
     return render_template('landing.html')
 
 
