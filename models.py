@@ -2,12 +2,13 @@
 CPNPP Database
 
 Created:  4/13/2017
-Updated:  5/15/2017
+Updated:  7/24/2017
 Author:   Avery Uslaner
 
 This file holds the models and query logic for the database tables.
 """
 from flask_sqlalchemy import SQLAlchemy
+from flask_security import UserMixin, RoleMixin
 
 
 db = SQLAlchemy()
@@ -596,6 +597,37 @@ class Release(db.Model):
                                                             self.name, self.year,
                                                             self.release_type, self.lb_arce_sow,
                                                             self.lb_acre_yield))
+
+
+roles_users = db.Table('roles_users',
+                       db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+                       db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
+
+
+class Role(db.Model, RoleMixin):
+    """
+    The Role table defines the permissions of the seed database users.
+
+    For example, some users may only be able to retrieve records while
+    others have permission to make changes.
+    """
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+
+
+class User(db.Model, UserMixin):
+    """
+    The User table holds the user records. The permissions of each
+    user is defined by their role.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True)
+    password = db.Column(db.String(255))
+    active = db.Column(db.Boolean())
+    confirmed_at = db.Column(db.DateTime())
+    roles = db.relationship('Role', secondary=roles_users,
+                            backref=db.backref('users', lazy='dynamic'))
 
 
 class SeedUse(db.Model):

@@ -1,4 +1,5 @@
 from flask import Flask, redirect, render_template, flash
+from flask_security import Security, SQLAlchemyUserDatastore, login_required
 
 import forms
 import models
@@ -6,6 +7,10 @@ import models
 app = Flask(__name__)
 app.config.from_pyfile('settings.cfg')
 app.app_context().push()
+
+# Setup Flask-Security
+user_datastore = SQLAlchemyUserDatastore(models.db, models.User, models.Role)
+security = Security(app, user_datastore)
 
 
 @app.route('/')
@@ -145,6 +150,12 @@ def availability():
         flash('Yay, availability added for {}'.format(acc.species.name_full), 'success')
         return redirect('/success')
     return render_template('availability.html', form=form)
+
+
+@app.route('/display', methods=('GET', 'POST'))
+@login_required
+def display():
+    return render_template('display.html')
 
 
 @app.route('/institutions', methods=('GET', 'POST'))
