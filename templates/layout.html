@@ -34,7 +34,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             {% if current_user.is_authenticated %}
-                                <a class="dropdown-item" href="{{ url_for('security.change') }}">Change Password</a>
+                                <a class="dropdown-item" href="{{ url_for('security.change_password') }}">Change Password</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ url_for('security.logout') }}">Log Out</a>
                             {% else %}
