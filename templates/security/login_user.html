@@ -7,6 +7,7 @@
 {% block nav %}{{ super() }}{% endblock %}
 
 {% block content_title %}<div class="text-center">Please sign in</div>{% endblock %}
+{% block content_subtitle %}<p class="text-muted text-center">Still need to <a href="{{ url_for('security.register') }}">Register</a>?</p>{% endblock %}
 
 {% block content %}
 <div class="container">
