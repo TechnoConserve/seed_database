@@ -1,31 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends 'layout.html' %}
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
-          crossorigin="anonymous">
-  </head>
-  <body class="bg-info text-white">
-    <div class="container text-center mt-5 pt-5">
-        <h1 class="display-1">Colorado Plateau Native Plants Program</h1>
-        <p class="lead mt-5 p-5"><a class="btn btn-primary btn-block" href="{{ url_for('add') }}"
-                                    role="button">Seed Database</a></p>
+{% block title %}Welcome to the CPNPP Database{% endblock %}
+
+{% block nav %}{{ super() }}{% endblock %}
+
+{% block content_title %}Welcome{% endblock %}
+{% block content_subtitle %}Colorado Plateau Native Plant Program Seed Database{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <p class="lead">
+            The Colorado Plateau Native Plant Program (CPNPP) seed database is an important resource for both
+            CPNPP staff and agency partners. The database aggregates collection information, including geographic
+            locations of seed collections, made by all CPNPP partners. This data provides a basis for furthering
+            multiple CPNPP goals by allowing for the quantification and visualization of both accomplishments and
+            shortcomings of native plant material development.
+        </p>
     </div>
 
-    <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-            integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-            crossorigin="anonymous"></script>
-  </body>
-</html>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <h3 class="card-header text-center">
+                    Needs
+                </h3>
+                <div class="card-block">
+                    <p class="card-text">
+                        The CPNPP database must provide seed collection tracking per species and per accession and present the data in a way
+                        that allows for thorough analysis such that trends can easily be spotted and common queries can be quickly and
+                        intuitively be answered. Information should include all Seeds of Success data collection fields, accession-level test
+                        results, species and accession-level project use and release tracking. Geographic information should allow for the
+                        incorporation of seed zone information and facilitate easy integration with existing GIS tools and procedures.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="card" style="height: 100%">
+                <h3 class="card-header text-center">
+                    Development
+                </h3>
+                <div class="card-block">
+                    <p class="card-text">
+                        The development of this seed database is on-going. Because the database aggregates data from multiple sources that may
+                        or may not have their own data storage standards, there is a great deal of trial and error involved in feeding data
+                        into the new database.
+
+                        To accommodate all involved partners, development will continue to take into account the needs of all users.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
