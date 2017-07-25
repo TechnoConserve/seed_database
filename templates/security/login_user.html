@@ -3,7 +3,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/signin.css') }}">
 {% endblock %}
 {% from "security/_macros.html" import render_field_with_errors, render_field %}
-{% include "security/_messages.html" %}
+
 {% block nav %}{{ super() }}{% endblock %}
 
 {% block content_title %}<div class="text-center">Please sign in</div>{% endblock %}
