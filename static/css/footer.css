@@ -1,3 +1,6 @@
+body .container {
+    margin-bottom: 90px;
+}
 html {
     position: relative;
     min-height: 100%;

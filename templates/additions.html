@@ -1,16 +1,82 @@
 {% extends 'layout.html' %}
+{% block title %}Add to Database{% endblock %}
+
+{% block content_title %}Entry Forms{% endblock %}
+{% block content_subtitle %}Add to the database using the appropriate form below.{% endblock %}
+
 {% block content %}
-    <p>Add to the database using the appropriate form below.</p>
-    <h1>Forms</h1>
-    <ul>
-        <li><a href="{{ url_for('availability') }}">Availability</a></li>
-        <li><a href="{{ url_for('accessions') }}">Accessions</a></li>
-        <li><a href="{{ url_for('institutions') }}">Institutions</a></li>
-        <li><a href="{{ url_for('releases') }}">Releases</a></li>
-        <li><a href="{{ url_for('shipments') }}">Shipments</a></li>
-        <li><a href="{{ url_for('species') }}">Species</a></li>
-        <li><a href="{{ url_for('synonyms') }}">Synonyms</a></li>
-        <li><a href="{{ url_for('testing') }}">Testing</a></li>
-        <li><a href="{{ url_for('uses') }}">Uses</a></li>
-    </ul>
+    <div class="list-group">
+        <a href="{{ url_for('availability') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Availability</h5>
+            </div>
+            <p class="mb-1">
+                Use the availability form when seed becomes unavailable. This may be because it is reserved for a project, planted, lost, etc.
+            </p>
+        </a>
+        <a href="{{ url_for('accessions') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Accessions</h5>
+            </div>
+            <p class="mb-1">
+                Use the accession form to enter new collections or make changes to existing collections.
+            </p>
+        </a>
+        <a href="{{ url_for('institutions') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Institutions</h5>
+            </div>
+            <p class="mb-1">
+                Use the institution form to make changes to contacts information related to CPNPP partner institutions.
+            </p>
+        </a>
+        <a href="{{ url_for('releases') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Releases</h5>
+            </div>
+            <p class="mb-1">
+                The release form can be used to add or edit germplasm releases.
+            </p>
+        </a>
+        <a href="{{ url_for('shipments') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Shipments</h5>
+            </div>
+            <p class="mb-1">
+                Use the shipment form to record when you are mailing seed that is tracked by the database.
+            </p>
+        </a>
+        <a href="{{ url_for('species') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Species</h5>
+            </div>
+            <p class="mb-1">
+                This form can be used to add or edit species information.
+            </p>
+        </a>
+        <a href="{{ url_for('synonyms') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Synonyms</h5>
+            </div>
+            <p class="mb-1">
+                This form is useful for recording changes in taxonomic classification.
+            </p>
+        </a>
+        <a href="{{ url_for('testing') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Testing</h5>
+            </div>
+            <p class="mb-1">
+                This form can be used to add or edit germination, tetrazolium, or other seed tests.
+            </p>
+        </a>
+        <a href="{{ url_for('uses') }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Uses</h5>
+            </div>
+            <p class="mb-1">
+                The uses form is used to record information about projects that use seed tracked in the database.
+            </p>
+        </a>
+    </div>
 {% endblock content %}
