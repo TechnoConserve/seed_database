@@ -27,7 +27,8 @@ def accessions():
     form = forms.AccessionForm()
     form.species.choices = [
         (species.id, species.name_full) for species in
-        models.db.session.query(models.Species).distinct(models.Species.name_full).group_by(models.Species.name_full)]
+        models.db.session.query(models.Species).distinct(models.Species.name_full)
+            .group_by(models.Species.id, models.Species.name_full)]
     if form.validate_on_submit():
         species = models.Species.query.get(form.species.data)
         # Need to create the LocationDescription object first
