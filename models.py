@@ -473,7 +473,7 @@ class GeoLocation(db.Model):
             self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
             degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal, longitude_decimal,
             georef_source, gps_datum, altitude, altitude_unit, altitude_in_m, fo_name, district_name, state, county,
-            zone):
+            zone, visit):
         self.land_owner = land_owner
         self.geology = geology
         self.soil_type = soil_type
@@ -500,6 +500,7 @@ class GeoLocation(db.Model):
         self.state = state
         self.county = county
         self.zone = zone
+        self.visits = visit  # Likely to be only one visit when first initialized
 
     def __repr__(self):
         return "<GeoLocation(latitude_decimal={}, longitude_decimal={})>".format(

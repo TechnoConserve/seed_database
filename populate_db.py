@@ -2,7 +2,7 @@ import pandas as pd
 from sqlalchemy.exc import IntegrityError
 
 from app import app
-from models import db, Availability, Species, Accession, GeoLocation, GeoLocationDescription, Testing, Zone
+from models import db, Availability, Species, Accession, GeoLocation, Visit, Testing, Zone
 
 df = pd.read_excel('complete_plants_checklist_usda.xlsx')
 db_df = pd.read_excel('DB_export_updated123016_noGRINavail_with_SWSP_data.xlsx')
@@ -142,7 +142,7 @@ def get_zone_desc_loc(series):
     county = series['SUB_CNT2']
 
     zone = get_zone(series)
-    location_description = get_location_desc(series)
+    visit = get_visit(series)
 
     loc = GeoLocation(phytoregion=phytoregion, phytoregion_full=phytoregion_full, locality=locality, geog_area=geog_area,
                       directions=directions, latitude_decimal=latitude_decimal, longitude_decimal=longitude_decimal,
@@ -150,29 +150,23 @@ def get_zone_desc_loc(series):
                       minutes_w=minutes_w, seconds_w=seconds_w, georef_source=georef_source, gps_datum=gps_datum,
                       altitude=altitude, altitude_unit=altitude_unit, altitude_in_m=altitude_in_m, fo_name=fo_name,
                       district_name=district_name, state=state, county=county, zone=zone,
-                      location_description=location_description)
+                      visit=visit)
 
-    return zone, location_description, loc
+    return zone, visit, loc
 
 
-def get_location_desc(series):
-    land_owner = series['LAND_OWNER']
+def get_visit(series):
     associated_taxa_full = series['ASSOCIATED_TAXA_FULL']
     mod = series['USER2']   # modifying factors of collection site (grazed, etc.)
     mod2 = series['USER1']  # additional modifying factors of collection site (roadside, etc.)
-    geomorphology = series['GEOMORPHOLOGY']
     slope = series['SLOPE']
     aspect = series['ASPECT']
     habitat = series['HABITAT']
-    geology = series['GEOLOGY']
-    soil_type = series['SOIL_TYPE']
     population_size = series['POPULATION_SIZE']
-    occupancy = series['OCCUPANCY']  # Number of plants collected from
 
-    loc_desc = GeoLocationDescription(associated_taxa_full=associated_taxa_full, mod=mod, mod2=mod2,
-                                      geomorphology=geomorphology, slope=slope, aspect=aspect, habitat=habitat,
-                                      population_size=population_size, occupancy=occupancy)
-    return loc_desc
+    visit = Visit(associated_taxa_full=associated_taxa_full, mod=mod, mod2=mod2, slope=slope, aspect=aspect,
+                  habitat=habitat, population_size=population_size)
+    return visit
 
 
 def get_species(name):
@@ -268,6 +262,5 @@ if __name__ == '__main__':
     db.init_app(app)
     db.create_all()
 
-    # Already added to local database
-    #add_species(df)
-    #add_synonyms(df)
+    add_species(df)
+    add_synonyms(df)
