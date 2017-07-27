@@ -72,8 +72,6 @@ def accessions():
             altitude=altitude,
             altitude_unit=unit,
             altitude_in_m=altitude_m,
-            fo_name=form.fo_name.data,
-            district_name=form.district_name.data,
             state=form.state.data,
             county=form.county.data,
             zone=None,

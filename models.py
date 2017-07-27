@@ -458,8 +458,6 @@ class GeoLocation(db.Model):
     altitude = db.Column(db.Integer)
     altitude_unit = db.Column(db.String(10))
     altitude_in_m = db.Column(db.Integer)
-    fo_name = db.Column(db.String(50))
-    district_name = db.Column(db.String(50))
     state = db.Column(db.String(20))  # Formerly SUB_CNT1
     county = db.Column(db.String(30))  # Formerly SUB_CNT2
 
@@ -469,7 +467,7 @@ class GeoLocation(db.Model):
     def __init__(
             self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
             degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal, longitude_decimal,
-            georef_source, gps_datum, altitude, altitude_unit, altitude_in_m, fo_name, district_name, state, county,
+            georef_source, gps_datum, altitude, altitude_unit, altitude_in_m, state, county,
             zone=None):
         """
         Note that Zones are calculated after the user inputs accession
@@ -524,8 +522,6 @@ class GeoLocation(db.Model):
         self.altitude = altitude
         self.altitude_unit = altitude_unit
         self.altitude_in_m = altitude_in_m
-        self.fo_name = fo_name
-        self.district_name = district_name
         self.state = state
         self.county = county
         self.zone = zone
@@ -1023,6 +1019,8 @@ class Zone(db.Model):
     avail_buff = db.Column(db.Boolean)
     avail_strict = db.Column(db.Boolean)
     usgs_zone = db.Column(db.Integer)
+    fo_name = db.Column(db.String(50))
+    district_name = db.Column(db.String(50))
 
     geo_location_id = db.Column(db.Integer, db.ForeignKey('geo_location.id'))
     release_id = db.Column(db.Integer, db.ForeignKey('release.id'))
@@ -1031,7 +1029,7 @@ class Zone(db.Model):
             self, us_l4_code, us_l4_name, us_l3_code, us_l3_name, achy_sz_gridcode, achy_sz_zone, aslo3_sz_gridcode,
             aslo3_sz_zone, bogr2_sz_gridecode, bogr2_sz_zone, cllu2_sz_gridcode, cllu2_sz_zone, elel5_sz_gridcode,
             elel5_sz_zone, maca2_sz_gridcode, maca2_sz_zone, plja_sz_gridcode, plja_sz_zone, sppa2_sz_gridcode,
-            sppa2_sz_zone, cp_buff, cp_strict, avail_buff, avail_strict, usgs_zone, ptz):
+            sppa2_sz_zone, cp_buff, cp_strict, avail_buff, avail_strict, usgs_zone, ptz, fo_name, district_name):
 
         self.ptz = ptz
         self.us_l4_code = us_l4_code
@@ -1059,6 +1057,8 @@ class Zone(db.Model):
         self.avail_buff = avail_buff
         self.avail_strict = avail_strict
         self.usgs_zone = usgs_zone
+        self.fo_name = fo_name
+        self.district_name = district_name
 
     def __repr__(self):
         return "<Zone(ptz={})>".format(self.ptz)
