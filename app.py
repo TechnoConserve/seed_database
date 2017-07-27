@@ -1,5 +1,6 @@
 from flask import Flask, redirect, render_template, flash
 from flask_mail import Mail
+from flask_migrate import Migrate
 from flask_security import Security, SQLAlchemyUserDatastore, login_required
 from werkzeug.contrib.fixers import ProxyFix
 
@@ -16,6 +17,9 @@ mail = Mail(app)
 user_datastore = SQLAlchemyUserDatastore(models.db, models.User, models.Role)
 security = Security(app, user_datastore)
 
+# Flask-Migrate
+migrate = Migrate(app, models.db)
+
 
 @app.route('/')
 def landing():
@@ -31,23 +35,18 @@ def accessions():
             .group_by(models.Species.id, models.Species.name_full)]
     if form.validate_on_submit():
         species = models.Species.query.get(form.species.data)
-        # Need to create the LocationDescription object first
-        desc = models.GeoLocationDescription(
-            land_owner=form.land_owner.data,
+        # Assumed only one visit when accessions first created.
+        visit = models.Visit(
+            date=form.coll_date.data,
             associated_taxa_full=form.associated_taxa_full.data,
             mod=form.mod.data,
             mod2=form.mod2.data,
-            geomorphology=form.geomorphology.data,
             slope=form.slope.data,
             aspect=form.aspect.data,
             habitat=form.habitat.data,
-            geology=form.geology.data,
-            soil_type=form.soil_type.data,
             population_size=form.population_size.data,
-            occupancy=form.occupancy.data
         )
-        # TODO Compute the data needed to create the Zone object
-        # Then we create the GeoLocation object
+
         altitude = form.altitude.data
         unit = form.altitude_unit.data
         if unit == 'm':
@@ -77,8 +76,7 @@ def accessions():
             district_name=form.district_name.data,
             state=form.state.data,
             county=form.county.data,
-            location_description=desc,
-            zone=None
+            zone=None,
         )
         # Finally we create the Accession object
         acc_num = form.acc_num.data

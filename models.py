@@ -442,10 +442,7 @@ class GeoLocation(db.Model):
     soil_type = db.Column(db.String(100))
     phytoregion = db.Column(db.String(30))
     phytoregion_full = db.Column(db.String(50))
-
-    # locality of the collection site if applicable - i.e. National Forest/NCA's, etc.
     locality = db.Column(db.String(50))  # Formerly SUB_CNT3
-
     geog_area = db.Column(db.String(50))
     directions = db.Column(db.Text)  # Formerly locality
     degrees_n = db.Column(db.Integer)
@@ -473,7 +470,39 @@ class GeoLocation(db.Model):
             self, land_owner, geology, soil_type, phytoregion, phytoregion_full, locality, geog_area, directions,
             degrees_n, minutes_n, seconds_n, degrees_w, minutes_w, seconds_w, latitude_decimal, longitude_decimal,
             georef_source, gps_datum, altitude, altitude_unit, altitude_in_m, fo_name, district_name, state, county,
-            zone, visit):
+            zone=None):
+        """
+        Note that Zones are calculated after the user inputs accession
+        data so a Zone object is optional for object initialization.
+
+        :param land_owner: Who owns the land? Ex: BLM, USFS, Private
+        :param geology: Geology of the site. This could be computed
+        along with other Zone info, but this field is required on
+        Seeds of Success data forms so the user can supply it when
+        entering data. Ex: Basalt, Igneous, Volcanic
+        :param soil_type: Color determined from the Munsell soil color chart. Ex: 7.5YR 5/4; brown; sandy clay loam
+        :param phytoregion: Omernik Level III code. Ex: 20E
+        :param phytoregion_full: Full name of the Omernik Level II code. Ex: Colorado Plateau
+        :param locality: Locality of the site if applicable. Ex: National Forest, NCA, etc.
+        :param geog_area: Subunit for locality of site if applicable. Ex: Cottonwood Canyon
+        :param directions: Detailed driving directions back to the site.
+        :param degrees_n: Degrees North
+        :param minutes_n: Minutes North
+        :param seconds_n: Seconds North
+        :param degrees_w: Degrees West
+        :param minutes_w: Minutes West
+        :param seconds_w: Seconds West
+        :param latitude_decimal: Latitude in decimal degrees. Ex: 34.25478
+        :param longitude_decimal: Longitude in decimal degrees. Ex: -104.97852
+        :param georef_source: Source of the georeference data. Ex: GPS unit, Google Earth, etc.
+        :param gps_datum: GPS datum. Ex: NAD83, WGS84
+        :param altitude: Altitude in whichever unit it was collected in.
+        :param altitude_unit: Specify the unit of the altitude provided.
+        :param altitude_in_m: Altitude converted to meters.
+        :param state:
+        :param county:
+        :param zone:
+        """
         self.land_owner = land_owner
         self.geology = geology
         self.soil_type = soil_type
@@ -500,7 +529,6 @@ class GeoLocation(db.Model):
         self.state = state
         self.county = county
         self.zone = zone
-        self.visits = visit  # Likely to be only one visit when first initialized
 
     def __repr__(self):
         return "<GeoLocation(latitude_decimal={}, longitude_decimal={})>".format(
@@ -960,11 +988,14 @@ class Zone(db.Model):
     
     The Zone table has a Many-to-One relationship with the Release
     table.
+
+    Information for the Zone table will generally be computed rather
+    than supplied by the user.
     """
     __tablename__ = 'zone'
 
     id = db.Column(db.Integer, primary_key=True)
-    ptz = db.Column(db.String(30))
+    ptz = db.Column(db.String(30))  # Provisional Seed Transfer Zone
     us_l4_code = db.Column(db.String(10))
     us_l4_name = db.Column(db.String(30))
     us_l3_code = db.Column(db.String(10))
@@ -997,10 +1028,10 @@ class Zone(db.Model):
     release_id = db.Column(db.Integer, db.ForeignKey('release.id'))
 
     def __init__(
-            self, ptz, us_l4_code, us_l4_name, us_l3_code, us_l3_name, achy_sz_gridcode,
-            achy_sz_zone, aslo3_sz_gridcode, aslo3_sz_zone, bogr2_sz_gridecode, bogr2_sz_zone, cllu2_sz_gridcode,
-            cllu2_sz_zone, elel5_sz_gridcode, elel5_sz_zone, maca2_sz_gridcode, maca2_sz_zone, plja_sz_gridcode,
-            plja_sz_zone, sppa2_sz_gridcode, sppa2_sz_zone, cp_buff, cp_strict, avail_buff, avail_strict, usgs_zone):
+            self, us_l4_code, us_l4_name, us_l3_code, us_l3_name, achy_sz_gridcode, achy_sz_zone, aslo3_sz_gridcode,
+            aslo3_sz_zone, bogr2_sz_gridecode, bogr2_sz_zone, cllu2_sz_gridcode, cllu2_sz_zone, elel5_sz_gridcode,
+            elel5_sz_zone, maca2_sz_gridcode, maca2_sz_zone, plja_sz_gridcode, plja_sz_zone, sppa2_sz_gridcode,
+            sppa2_sz_zone, cp_buff, cp_strict, avail_buff, avail_strict, usgs_zone, ptz):
 
         self.ptz = ptz
         self.us_l4_code = us_l4_code
